@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Objects;
+
 /**
  * ContactsFragment
  *
@@ -36,7 +38,7 @@ public class ContactsFragment extends Fragment {
                 callback.contactClicked(contactId);
             }
         });
-        adapter.setItems(ContactFetcher.getContacts(getActivity()));
+        adapter.setItems(ContactFetcher.getContacts(Objects.requireNonNull(getActivity())));
         recyclerView.setAdapter(adapter);
     }
 

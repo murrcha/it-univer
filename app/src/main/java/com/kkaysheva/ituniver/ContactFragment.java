@@ -1,6 +1,5 @@
 package com.kkaysheva.ituniver;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 /**
  * ContactFragment
@@ -51,7 +52,7 @@ public class ContactFragment extends Fragment {
         TextView number = view.findViewById(R.id.number_detail);
         ImageView photo = view.findViewById(R.id.photo_detail);
         id.setText(String.valueOf(contactId));
-        Contact contact = ContactFetcher.getContactById(this.contactId, getActivity());
+        Contact contact = ContactFetcher.getContactById(this.contactId, Objects.requireNonNull(getActivity()));
         if (contact != null) {
             name.setText(contact.getName());
             number.setText(contact.getNumber());

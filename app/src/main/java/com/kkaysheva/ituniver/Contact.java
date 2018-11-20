@@ -1,14 +1,12 @@
 package com.kkaysheva.ituniver;
 
-import java.io.Serializable;
-
 /**
  * Contact
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class Contact implements Serializable {
+public class Contact {
 
     private int id;
     private String name;

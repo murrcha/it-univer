@@ -23,7 +23,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
     private OnItemClickListener listener;
 
-    private List<Contact> contacts = new ArrayList<>();
+    private final List<Contact> contacts = new ArrayList<>();
 
     @NonNull
     @Override
@@ -51,17 +51,17 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
     class ContactHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView name;
-        private TextView number;
+        private final TextView name;
+        private final TextView number;
 
-        public ContactHolder(@NonNull View itemView) {
+        ContactHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             number = itemView.findViewById(R.id.number);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(Contact contact) {
+        void bind(Contact contact) {
             name.setText(contact.getName());
             Log.d(TAG, "bind: " + contact.getName());
             number.setText(contact.getNumber());
