@@ -3,7 +3,8 @@ package com.kkaysheva.ituniver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -21,10 +22,10 @@ public class ContactFetcher {
         List<Contact> contacts = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{ContactsContract.Contacts._ID,
-                        ContactsContract.Contacts.DISPLAY_NAME,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER},
+                CommonDataKinds.Phone.CONTENT_URI,
+                new String[]{Contacts._ID,
+                        Contacts.DISPLAY_NAME,
+                        CommonDataKinds.Phone.NUMBER},
                 null,
                 null,
                 null
@@ -32,9 +33,9 @@ public class ContactFetcher {
         try {
             if (cursor != null && cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                    String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    int id = cursor.getInt(cursor.getColumnIndex(Contacts._ID));
+                    String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                    String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
                     contacts.add(new Contact(id, name, number));
                 }
             }
@@ -50,20 +51,20 @@ public class ContactFetcher {
         Contact contact = new Contact();
         ContentResolver contentResolver = context.getContentResolver();
         Cursor cursor = contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{ContactsContract.Contacts.DISPLAY_NAME,
-                        ContactsContract.Contacts.PHOTO_URI,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER},
-                String.format("%s = ?", ContactsContract.Contacts._ID),
+                CommonDataKinds.Phone.CONTENT_URI,
+                new String[]{Contacts.DISPLAY_NAME,
+                        Contacts.PHOTO_URI,
+                        CommonDataKinds.Phone.NUMBER},
+                String.format("%s = ?", Contacts._ID),
                 new String[]{String.valueOf(contactId)},
                 null
         );
         try {
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                String photoUri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                String photoUri = cursor.getString(cursor.getColumnIndex(Contacts.PHOTO_URI));
+                String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
                 contact.setId(contactId);
                 contact.setName(name);
                 contact.setPhotoUri(photoUri);
