@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,8 +40,15 @@ public class ContactsFragment extends Fragment {
                 callback.contactClicked(contactId);
             }
         });
-        adapter.setItems(ContactFetcher.getContacts(Objects.requireNonNull(getActivity())));
-        recyclerView.setAdapter(adapter);
+        TextView noContacts = view.findViewById(R.id.no_contacts);
+        List<Contact> contacts = ContactFetcher.getContacts(Objects.requireNonNull(getActivity()));
+        if (contacts != null && !contacts.isEmpty()) {
+            noContacts.setVisibility(View.GONE);
+            adapter.setItems(contacts);
+            recyclerView.setAdapter(adapter);
+        } else {
+            noContacts.setVisibility(View.VISIBLE);
+        }
     }
 
     @Nullable
