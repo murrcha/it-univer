@@ -6,21 +6,18 @@ package com.kkaysheva.ituniver;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class Contact {
+public final class Contact {
 
-    private int id;
-    private String name;
-    private String number;
-    private String photoUri;
+    private final int id;
+    private final String name;
+    private final String number;
+    private final String photoUri;
 
-    public Contact() {
-
-    }
-
-    public Contact(int id, String name, String number) {
+    public Contact(int id, String name, String number, String photoUri) {
+        this.id = id;
         this.name = name;
         this.number = number;
-        this.id = id;
+        this.photoUri = photoUri;
     }
 
     public int getId() {
@@ -37,21 +34,5 @@ public class Contact {
 
     public String getPhotoUri() {
         return photoUri;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public void setPhotoUri(String photoUri) {
-        this.photoUri = photoUri;
     }
 }
