@@ -1,7 +1,6 @@
 package com.kkaysheva.ituniver;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
 
 /**
  * ContactFragment
@@ -82,9 +84,9 @@ public class ContactFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onDestroyView() {
         loaderThread = null;
+        super.onDestroyView();
     }
 
     @Override
@@ -112,18 +114,27 @@ public class ContactFragment extends Fragment {
         }
     }
 
-    private class LoaderThread extends Thread {
+    private static class LoaderThread extends Thread {
 
-        private final Context context;
+        private final WeakReference<FragmentActivity> activityWeakReference;
+        private final Handler handler;
 
-        public LoaderThread(Context context) {
-            this.context = context;
+        LoaderThread(FragmentActivity activity) {
+            activityWeakReference = new WeakReference<>(activity);
+            handler = new Handler(Looper.getMainLooper());
         }
 
         @Override
         public void run() {
-            Contact contact = ContactFetcher.getContactById(contactId, context);
-            new Handler(Looper.getMainLooper()).post(() -> loadContact(contact));
+            FragmentActivity activity = activityWeakReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            Fragment fragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (fragment != null && fragment instanceof ContactFragment) {
+                Contact contact = ContactFetcher.getContactById(((ContactFragment) fragment).contactId, activity);
+                handler.post(() -> ((ContactFragment) fragment).loadContact(contact));
+            }
         }
     }
 }

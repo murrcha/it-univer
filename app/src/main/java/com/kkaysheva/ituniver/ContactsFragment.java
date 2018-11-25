@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -69,10 +71,15 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        callback = null;
+    public void onDestroyView() {
         loaderThread = null;
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        callback = null;
+        super.onDetach();
     }
 
     @Override
@@ -114,18 +121,27 @@ public class ContactsFragment extends Fragment {
         void contactClicked(int contactId);
     }
 
-    private class LoaderThread extends Thread {
+    private static class LoaderThread extends Thread {
 
-        private final Context context;
+        private final WeakReference<FragmentActivity> activityWeakReference;
+        private final Handler handler;
 
-        public LoaderThread(Context context) {
-            this.context = context;
+        LoaderThread(FragmentActivity activity) {
+            activityWeakReference = new WeakReference<>(activity);
+            handler = new Handler(Looper.getMainLooper());
         }
 
         @Override
         public void run() {
-            List<Contact> contacts = ContactFetcher.getContacts(context);
-            new Handler(Looper.getMainLooper()).post(() -> loadContacts(contacts));
+            FragmentActivity activity = activityWeakReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return;
+            }
+            List<Contact> contacts = ContactFetcher.getContacts(activity);
+            Fragment fragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (fragment != null && fragment instanceof ContactsFragment) {
+                handler.post(() -> ((ContactsFragment) fragment).loadContacts(contacts));
+            }
         }
     }
 }
