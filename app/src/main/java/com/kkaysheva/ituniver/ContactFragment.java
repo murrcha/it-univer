@@ -131,7 +131,7 @@ public class ContactFragment extends Fragment {
                 return;
             }
             Fragment fragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (fragment != null && fragment instanceof ContactFragment) {
+            if (fragment instanceof ContactFragment) {
                 Contact contact = ContactFetcher.getContactById(((ContactFragment) fragment).contactId, activity);
                 handler.post(() -> ((ContactFragment) fragment).loadContact(contact));
             }

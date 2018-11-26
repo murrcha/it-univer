@@ -139,7 +139,7 @@ public class ContactsFragment extends Fragment {
             }
             List<Contact> contacts = ContactFetcher.getContacts(activity);
             Fragment fragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (fragment != null && fragment instanceof ContactsFragment) {
+            if (fragment instanceof ContactsFragment) {
                 handler.post(() -> ((ContactsFragment) fragment).loadContacts(contacts));
             }
         }
