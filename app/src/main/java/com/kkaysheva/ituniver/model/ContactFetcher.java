@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.model;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
+
+import com.kkaysheva.ituniver.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;

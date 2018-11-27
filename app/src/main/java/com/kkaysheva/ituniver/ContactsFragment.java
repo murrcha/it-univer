@@ -4,12 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.presenter.ContactsFragmentPresenter;
+import com.kkaysheva.ituniver.view.ContactsFragmentView;
+
 import java.util.List;
 
 /**
@@ -28,16 +30,19 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends MvpAppCompatFragment implements ContactsFragmentView {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
+
+    @InjectPresenter
+    ContactsFragmentPresenter contactsFragmentPresenter;
 
     private ClickContactCallback callback;
     private RecyclerView recyclerView;
     private ContactAdapter adapter;
     private TextView noContacts;
-    private LoaderThread loaderThread;
+    private ProgressBar progressBar;
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
@@ -53,13 +58,13 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView(view);
-        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS)
+        progressBar = view.findViewById(R.id.progress_contacts_load);
+        if (ContextCompat.checkSelfPermission(App.getContext(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "initRecyclerView: permission accept, load contact");
-            loaderThread = new LoaderThread(requireActivity());
-            loaderThread.start();
+            Log.d(TAG, "updateUI: permission granted, update ui");
+            contactsFragmentPresenter.updateUI();
         } else {
-            Log.d(TAG, "initRecyclerView: permission denied, request permissions");
+            Log.d(TAG, "updateUI: permission denied, request permission");
             requestPermissions(new String[] {Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
         }
     }
@@ -68,12 +73,6 @@ public class ContactsFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         callback = (ClickContactCallback) context;
-    }
-
-    @Override
-    public void onDestroyView() {
-        loaderThread = null;
-        super.onDestroyView();
     }
 
     @Override
@@ -87,8 +86,7 @@ public class ContactsFragment extends Fragment {
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: permissions accept, load contacts");
-                loaderThread = new LoaderThread(requireActivity());
-                loaderThread.start();
+                contactsFragmentPresenter.updateUI();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
                 noContacts.setVisibility(View.VISIBLE);
@@ -106,7 +104,8 @@ public class ContactsFragment extends Fragment {
         noContacts = view.findViewById(R.id.no_contacts);
     }
 
-    private void loadContacts(List<Contact> contacts) {
+    @Override
+    public void loadContacts(List<Contact> contacts) {
         if (!contacts.isEmpty()) {
             noContacts.setVisibility(View.GONE);
             adapter.setItems(contacts);
@@ -117,31 +116,12 @@ public class ContactsFragment extends Fragment {
         }
     }
 
-    public interface ClickContactCallback {
-        void contactClicked(int contactId);
+    @Override
+    public void showProgress(boolean isLoading) {
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
-    private static class LoaderThread extends Thread {
-
-        private final WeakReference<FragmentActivity> activityWeakReference;
-        private final Handler handler;
-
-        LoaderThread(FragmentActivity activity) {
-            activityWeakReference = new WeakReference<>(activity);
-            handler = new Handler(Looper.getMainLooper());
-        }
-
-        @Override
-        public void run() {
-            FragmentActivity activity = activityWeakReference.get();
-            if (activity == null || activity.isFinishing()) {
-                return;
-            }
-            List<Contact> contacts = ContactFetcher.getContacts(activity);
-            Fragment fragment = activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (fragment instanceof ContactsFragment) {
-                handler.post(() -> ((ContactsFragment) fragment).loadContacts(contacts));
-            }
-        }
+    public interface ClickContactCallback {
+        void contactClicked(int contactId);
     }
 }

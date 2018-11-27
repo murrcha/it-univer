@@ -1,9 +1,13 @@
 package com.kkaysheva.ituniver;
 
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.kkaysheva.ituniver.presenter.MainActivityPresenter;
+import com.kkaysheva.ituniver.view.MainView;
 
 /**
  * MainActivity
@@ -11,7 +15,10 @@ import android.view.MenuItem;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class MainActivity extends AppCompatActivity implements ContactsFragment.ClickContactCallback {
+public class MainActivity extends MvpAppCompatActivity implements ContactsFragment.ClickContactCallback, MainView {
+
+    @InjectPresenter
+    MainActivityPresenter mainActivityPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,5 +56,15 @@ public class MainActivity extends AppCompatActivity implements ContactsFragment.
                 .replace(R.id.fragment_container, ContactFragment.newInstance(contactId))
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void addContactsFragment() {
+        //todo
+    }
+
+    @Override
+    public void replaceContactFragment() {
+        //todo
     }
 }
