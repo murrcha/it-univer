@@ -35,7 +35,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     private static final String CONTACT_ID = "contactId";
 
     @InjectPresenter
-    ContactFragmentPresenter contactFragmentPresenter;
+    ContactFragmentPresenter presenter;
 
     private int contactId;
     private TextView name;
@@ -80,7 +80,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "onViewCreated: permission granted, load contact");
-            contactFragmentPresenter.updateUI(contactId);
+            presenter.load(contactId);
         } else {
             Log.d(TAG, "onViewCreated: permission denied, request permissions");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
@@ -91,7 +91,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                contactFragmentPresenter.updateUI(contactId);
+                presenter.load(contactId);
             } else {
                 name.setText(R.string.no_permissions);
             }

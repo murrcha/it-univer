@@ -9,6 +9,8 @@ import com.kkaysheva.ituniver.view.ContactFragmentView;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
+import java.lang.ref.WeakReference;
+
 /**
  * ContactFragmentPresenter
  *
@@ -19,33 +21,51 @@ import com.kkaysheva.ituniver.model.ContactFetcher;
 @InjectViewState
 public class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> {
 
-    public void updateUI(int contactId) {
-        new LoadContactAsyncTask(this)
-                .execute(contactId);
+    private LoadContactAsyncTask task;
+
+    public void load(int contactId) {
+        task = new LoadContactAsyncTask(this);
+        task.execute(contactId);
+    }
+
+    @Override
+    public void onDestroy() {
+        task.cancel(true);
+        task = null;
+        super.onDestroy();
     }
 
     static class LoadContactAsyncTask extends AsyncTask<Integer, Void, Contact> {
 
-        private final ContactFragmentPresenter contactFragmentPresenter;
+        private WeakReference<ContactFragmentPresenter> reference;
 
-        public LoadContactAsyncTask(ContactFragmentPresenter contactFragmentPresenter) {
-            this.contactFragmentPresenter = contactFragmentPresenter;
+        public LoadContactAsyncTask(ContactFragmentPresenter presenter) {
+            reference = new WeakReference<>(presenter);
         }
 
         @Override
         protected void onPreExecute() {
-            contactFragmentPresenter.getViewState().showProgress(true);
+            ContactFragmentPresenter presenter = reference.get();
+            if (!isCancelled() && presenter != null) {
+                presenter.getViewState().showProgress(true);
+            }
         }
 
         @Override
         protected Contact doInBackground(Integer... integers) {
-            return ContactFetcher.getContactById(integers[0], App.getContext());
+            if (!isCancelled()) {
+                return ContactFetcher.getContactById(integers[0], App.getContext());
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(Contact contact) {
-            contactFragmentPresenter.getViewState().loadContact(contact);
-            contactFragmentPresenter.getViewState().showProgress(false);
+            ContactFragmentPresenter presenter = reference.get();
+            if (presenter != null) {
+                presenter.getViewState().loadContact(contact);
+                presenter.getViewState().showProgress(false);
+            }
         }
     }
 }

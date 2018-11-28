@@ -36,7 +36,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
 
     @InjectPresenter
-    ContactsFragmentPresenter contactsFragmentPresenter;
+    ContactsFragmentPresenter presenter;
 
     private ClickContactCallback callback;
     private RecyclerView recyclerView;
@@ -67,10 +67,10 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         progressBar = view.findViewById(R.id.progress_contacts_load);
         if (ContextCompat.checkSelfPermission(App.getContext(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "updateUI: permission granted, update ui");
-            contactsFragmentPresenter.updateUI();
+            Log.d(TAG, "load: permission granted, update ui");
+            presenter.load();
         } else {
-            Log.d(TAG, "updateUI: permission denied, request permission");
+            Log.d(TAG, "load: permission denied, request permission");
             requestPermissions(new String[] {Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
         }
     }
@@ -86,7 +86,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: permissions accept, load contacts");
-                contactsFragmentPresenter.updateUI();
+                presenter.load();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
                 noContacts.setVisibility(View.VISIBLE);

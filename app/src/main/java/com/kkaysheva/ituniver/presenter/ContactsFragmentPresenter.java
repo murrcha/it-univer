@@ -9,6 +9,7 @@ import com.kkaysheva.ituniver.view.ContactsFragmentView;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -21,33 +22,51 @@ import java.util.List;
 @InjectViewState
 public class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
 
-    public void updateUI() {
-        new LoadContactsAsyncTask(this)
-                .execute();
+    private LoadContactsAsyncTask task;
+
+    public void load() {
+        task = new LoadContactsAsyncTask(this);
+        task.execute();
+    }
+
+    @Override
+    public void onDestroy() {
+        task.cancel(true);
+        task = null;
+        super.onDestroy();
     }
 
     static class LoadContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
 
-        private final ContactsFragmentPresenter contactsFragmentPresenter;
+        private WeakReference<ContactsFragmentPresenter> reference;
 
-        public LoadContactsAsyncTask(ContactsFragmentPresenter contactsFragmentPresenter) {
-            this.contactsFragmentPresenter = contactsFragmentPresenter;
+        public LoadContactsAsyncTask(ContactsFragmentPresenter presenter) {
+            reference = new WeakReference<>(presenter);
         }
 
         @Override
         protected void onPreExecute() {
-            contactsFragmentPresenter.getViewState().showProgress(true);
+            ContactsFragmentPresenter presenter = reference.get();
+            if (!isCancelled() && presenter != null) {
+                presenter.getViewState().showProgress(true);
+            }
         }
 
         @Override
         protected List<Contact> doInBackground(Void... voids) {
-            return ContactFetcher.getContacts(App.getContext());
+            if (!isCancelled()) {
+                return ContactFetcher.getContacts(App.getContext());
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(List<Contact> contacts) {
-            contactsFragmentPresenter.getViewState().loadContacts(contacts);
-            contactsFragmentPresenter.getViewState().showProgress(false);
+            ContactsFragmentPresenter presenter = reference.get();
+            if (presenter != null) {
+                presenter.getViewState().loadContacts(contacts);
+                presenter.getViewState().showProgress(false);
+            }
         }
     }
 }
