@@ -15,7 +15,7 @@ import com.kkaysheva.ituniver.view.MainView;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class MainActivity extends MvpAppCompatActivity implements ContactsFragment.ClickContactCallback, MainView {
+public final class MainActivity extends MvpAppCompatActivity implements ContactsFragment.ClickContactCallback, MainView {
 
     @InjectPresenter
     MainActivityPresenter mainActivityPresenter;

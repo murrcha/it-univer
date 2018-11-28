@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactFetcher {
+public final class ContactFetcher {
 
     public static List<Contact> getContacts(@NonNull Context context) {
         List<Contact> contacts = new ArrayList<>();

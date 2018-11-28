@@ -9,7 +9,7 @@ import android.content.Context;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class App extends Application {
+public final class App extends Application {
 
     private static Context context;
 

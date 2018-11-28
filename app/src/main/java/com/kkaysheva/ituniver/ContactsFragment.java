@@ -30,7 +30,7 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactsFragment extends MvpAppCompatFragment implements ContactsFragmentView {
+public final class ContactsFragment extends MvpAppCompatFragment implements ContactsFragmentView {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
@@ -46,6 +46,12 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContactsFr
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        callback = (ClickContactCallback) context;
     }
 
     @Nullable
@@ -67,12 +73,6 @@ public class ContactsFragment extends MvpAppCompatFragment implements ContactsFr
             Log.d(TAG, "updateUI: permission denied, request permission");
             requestPermissions(new String[] {Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        callback = (ClickContactCallback) context;
     }
 
     @Override

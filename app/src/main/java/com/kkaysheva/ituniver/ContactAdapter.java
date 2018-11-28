@@ -19,7 +19,7 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
+public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
 
     private static final String TAG = ContactAdapter.class.getSimpleName();
 

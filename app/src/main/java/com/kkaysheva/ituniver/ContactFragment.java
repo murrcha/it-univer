@@ -28,7 +28,7 @@ import com.kkaysheva.ituniver.view.ContactFragmentView;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactFragment extends MvpAppCompatFragment implements ContactFragmentView {
+public final class ContactFragment extends MvpAppCompatFragment implements ContactFragmentView {
 
     private static final String TAG = ContactFragment.class.getSimpleName();
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
