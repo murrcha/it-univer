@@ -3,6 +3,10 @@ package com.kkaysheva.ituniver;
 import android.app.Application;
 import android.content.Context;
 
+import ru.terrakok.cicerone.Cicerone;
+import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.Router;
+
 /**
  * App
  *
@@ -11,7 +15,11 @@ import android.content.Context;
  */
 public final class App extends Application {
 
+    public static App INSTANCE;
+
     private static Context context;
+
+    private Cicerone<Router> cicerone;
 
     public static Context getContext() {
         return context;
@@ -21,5 +29,19 @@ public final class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
+        INSTANCE = this;
+        initCicerone();
+    }
+
+    private void initCicerone() {
+        cicerone = Cicerone.create();
+    }
+
+    public NavigatorHolder getNavigatorHolder() {
+        return cicerone.getNavigatorHolder();
+    }
+
+    public Router getRouter() {
+        return cicerone.getRouter();
     }
 }

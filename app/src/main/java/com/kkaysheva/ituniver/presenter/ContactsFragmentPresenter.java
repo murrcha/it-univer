@@ -5,12 +5,15 @@ import android.os.AsyncTask;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.App;
+import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import ru.terrakok.cicerone.Router;
 
 /**
  * ContactsFragmentPresenter
@@ -20,25 +23,34 @@ import java.util.List;
  */
 
 @InjectViewState
-public class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
+public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
 
+    private Router router;
     private LoadContactsAsyncTask task;
 
     public void load() {
+        router = App.INSTANCE.getRouter();
         task = new LoadContactsAsyncTask(this);
         task.execute();
     }
 
+    public void onForwardCommandClick(int contactId) {
+        router.navigateTo(new Screens.ContactScreen(contactId));
+    }
+
     @Override
     public void onDestroy() {
-        task.cancel(true);
+        if (task != null) {
+            task.cancel(true);
+        }
         task = null;
+        router = null;
         super.onDestroy();
     }
 
-    static class LoadContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
+    static final class LoadContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
 
-        private WeakReference<ContactsFragmentPresenter> reference;
+        private final WeakReference<ContactsFragmentPresenter> reference;
 
         public LoadContactsAsyncTask(ContactsFragmentPresenter presenter) {
             reference = new WeakReference<>(presenter);

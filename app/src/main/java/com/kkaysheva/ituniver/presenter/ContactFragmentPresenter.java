@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  */
 
 @InjectViewState
-public class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> {
+public final class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> {
 
     private LoadContactAsyncTask task;
 
@@ -30,14 +30,16 @@ public class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> 
 
     @Override
     public void onDestroy() {
-        task.cancel(true);
+        if (task != null) {
+            task.cancel(true);
+        }
         task = null;
         super.onDestroy();
     }
 
-    static class LoadContactAsyncTask extends AsyncTask<Integer, Void, Contact> {
+    static final class LoadContactAsyncTask extends AsyncTask<Integer, Void, Contact> {
 
-        private WeakReference<ContactFragmentPresenter> reference;
+        private final WeakReference<ContactFragmentPresenter> reference;
 
         public LoadContactAsyncTask(ContactFragmentPresenter presenter) {
             reference = new WeakReference<>(presenter);

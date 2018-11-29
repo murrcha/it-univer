@@ -1,7 +1,6 @@
 package com.kkaysheva.ituniver;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,7 +37,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @InjectPresenter
     ContactsFragmentPresenter presenter;
 
-    private ClickContactCallback callback;
     private RecyclerView recyclerView;
     private ContactAdapter adapter;
     private TextView noContacts;
@@ -46,12 +44,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        callback = (ClickContactCallback) context;
     }
 
     @Nullable
@@ -76,12 +68,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     @Override
-    public void onDetach() {
-        callback = null;
-        super.onDetach();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -100,7 +86,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         adapter = new ContactAdapter();
-        adapter.setOnClickListener(callback::contactClicked);
+        adapter.setOnClickListener(presenter::onForwardCommandClick);
         noContacts = view.findViewById(R.id.no_contacts);
     }
 
@@ -119,9 +105,5 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void showProgress(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-    }
-
-    public interface ClickContactCallback {
-        void contactClicked(int contactId);
     }
 }

@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.kkaysheva.ituniver.presenter.MainActivityPresenter;
-import com.kkaysheva.ituniver.view.MainView;
+
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.android.support.SupportAppNavigator;
+import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Replace;
 
 /**
  * MainActivity
@@ -15,10 +17,12 @@ import com.kkaysheva.ituniver.view.MainView;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class MainActivity extends MvpAppCompatActivity implements ContactsFragment.ClickContactCallback, MainView {
+public final class MainActivity extends MvpAppCompatActivity /*implements ContactsFragment.ClickContactCallback, MainView*/ {
 
-    @InjectPresenter
-    MainActivityPresenter mainActivityPresenter;
+    private Navigator navigator = new SupportAppNavigator(
+            MainActivity.this,
+            getSupportFragmentManager(),
+            R.id.fragment_container);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,10 +30,22 @@ public final class MainActivity extends MvpAppCompatActivity implements Contacts
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, ContactsFragment.newInstance())
-                    .commit();
+            navigator.applyCommands(new Command[] {
+                    new Replace(new Screens.ContactsScreen())
+            });
         }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        App.INSTANCE.getNavigatorHolder().setNavigator(navigator);
+    }
+
+    @Override
+    protected void onPause() {
+        App.INSTANCE.getNavigatorHolder().removeNavigator();
+        super.onPause();
     }
 
     @Override
@@ -48,23 +64,5 @@ public final class MainActivity extends MvpAppCompatActivity implements Contacts
     public void onBackPressed() {
         super.onBackPressed();
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
-
-    @Override
-    public void contactClicked(int contactId) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ContactFragment.newInstance(contactId))
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void addContactsFragment() {
-        //todo
-    }
-
-    @Override
-    public void replaceContactFragment() {
-        //todo
     }
 }
