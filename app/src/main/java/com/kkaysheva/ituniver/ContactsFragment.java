@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.kkaysheva.ituniver.adapter.ContactAdapter;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.presenter.ContactsFragmentPresenter;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;

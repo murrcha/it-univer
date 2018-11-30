@@ -15,7 +15,7 @@ import ru.terrakok.cicerone.Router;
  */
 public final class App extends Application {
 
-    public static App INSTANCE;
+    public static App instance;
 
     private static Context context;
 
@@ -29,7 +29,7 @@ public final class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
-        INSTANCE = this;
+        instance = this;
         initCicerone();
     }
 

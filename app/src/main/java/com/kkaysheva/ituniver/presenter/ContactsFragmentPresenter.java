@@ -25,11 +25,14 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
 
-    private Router router;
+    private final Router router;
     private LoadContactsAsyncTask task;
 
+    public ContactsFragmentPresenter() {
+        router = App.instance.getRouter();
+    }
+
     public void load() {
-        router = App.INSTANCE.getRouter();
         task = new LoadContactsAsyncTask(this);
         task.execute();
     }
@@ -44,7 +47,6 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
             task.cancel(true);
         }
         task = null;
-        router = null;
         super.onDestroy();
     }
 

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.kkaysheva.ituniver.presenter.MainActivityPresenter;
+import com.kkaysheva.ituniver.view.MainActivityView;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.android.support.SupportAppNavigator;
@@ -17,7 +20,10 @@ import ru.terrakok.cicerone.commands.Replace;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class MainActivity extends MvpAppCompatActivity /*implements ContactsFragment.ClickContactCallback, MainView*/ {
+public final class MainActivity extends MvpAppCompatActivity implements MainActivityView {
+
+    @InjectPresenter
+    MainActivityPresenter presenter;
 
     private Navigator navigator = new SupportAppNavigator(
             MainActivity.this,
@@ -28,23 +34,17 @@ public final class MainActivity extends MvpAppCompatActivity /*implements Contac
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState == null) {
-            navigator.applyCommands(new Command[] {
-                    new Replace(new Screens.ContactsScreen())
-            });
-        }
     }
 
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        App.INSTANCE.getNavigatorHolder().setNavigator(navigator);
+        App.instance.getNavigatorHolder().setNavigator(navigator);
     }
 
     @Override
     protected void onPause() {
-        App.INSTANCE.getNavigatorHolder().removeNavigator();
+        App.instance.getNavigatorHolder().removeNavigator();
         super.onPause();
     }
 
@@ -64,5 +64,12 @@ public final class MainActivity extends MvpAppCompatActivity /*implements Contac
     public void onBackPressed() {
         super.onBackPressed();
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    @Override
+    public void navigateTo(Screens.ContactsScreen screen) {
+        navigator.applyCommands(new Command[] {
+                new Replace(new Screens.ContactsScreen())
+        });
     }
 }
