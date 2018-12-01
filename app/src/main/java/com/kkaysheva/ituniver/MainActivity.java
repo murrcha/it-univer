@@ -53,7 +53,6 @@ public final class MainActivity extends MvpAppCompatActivity implements MainActi
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -61,13 +60,7 @@ public final class MainActivity extends MvpAppCompatActivity implements MainActi
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
-
-    @Override
-    public void navigateTo(Screens.ContactsScreen screen) {
+    public void addContacts(Screens.ContactsScreen screen) {
         navigator.applyCommands(new Command[] {
                 new Replace(new Screens.ContactsScreen())
         });

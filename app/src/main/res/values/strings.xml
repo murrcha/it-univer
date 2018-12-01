@@ -2,4 +2,6 @@
     <string name="app_name">IT Univer</string>
     <string name="no_contacts">NO CONTACTS</string>
     <string name="no_permissions">NO PERMISSIONS</string>
+    <string name="contacts_title">Contacts</string>
+    <string name="contact_title">Contact</string>
 </resources>

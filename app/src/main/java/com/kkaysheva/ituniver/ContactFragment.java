@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,14 +69,15 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((AppCompatActivity) requireActivity())
-                .getSupportActionBar()
-                .setDisplayHomeAsUpEnabled(true);
         TextView id = view.findViewById(R.id.id_detail);
         name = view.findViewById(R.id.name_detail);
         number = view.findViewById(R.id.number_detail);
         photo = view.findViewById(R.id.photo_detail);
         progressBar = view.findViewById(R.id.progress_contact_load);
+        Toolbar toolbar = view.findViewById(R.id.contact_toolbar);
+        toolbar.setTitle(R.string.contact_title);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         id.setText(String.valueOf(contactId));
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {

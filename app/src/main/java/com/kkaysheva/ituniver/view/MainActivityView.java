@@ -14,5 +14,5 @@ import com.kkaysheva.ituniver.Screens;
 public interface MainActivityView extends MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void navigateTo(Screens.ContactsScreen screen);
+    void addContacts(Screens.ContactsScreen screen);
 }

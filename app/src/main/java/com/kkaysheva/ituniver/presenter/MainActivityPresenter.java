@@ -1,11 +1,11 @@
 package com.kkaysheva.ituniver.presenter;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.MainActivityView;
-
-import ru.terrakok.cicerone.Router;
 
 /**
  * MainActivityPresenter
@@ -16,13 +16,17 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class MainActivityPresenter extends MvpPresenter<MainActivityView> {
 
+    public static final String TAG = MainActivityPresenter.class.getSimpleName();
+
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        navigateToContacts();
+        Log.d(TAG, "onFirstViewAttach: addContacts");
+        addContacts();
     }
 
-    private void navigateToContacts() {
-        getViewState().navigateTo(new Screens.ContactsScreen());
+    private void addContacts() {
+        Log.d(TAG, "addContacts: restore = " + isInRestoreState(getViewState()));
+        getViewState().addContacts(new Screens.ContactsScreen());
     }
 }

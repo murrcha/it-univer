@@ -22,7 +22,7 @@ public final class Screens {
 
     public static final class ContactScreen extends SupportAppScreen {
 
-        private int contactId;
+        private final int contactId;
 
         public ContactScreen(int contactId) {
             this.contactId = contactId;
