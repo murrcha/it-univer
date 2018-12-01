@@ -12,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -42,7 +45,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     private RecyclerView recyclerView;
     private ContactAdapter adapter;
-    private TextView noContacts;
+    private TextView message;
     private ProgressBar progressBar;
 
     public static ContactsFragment newInstance() {
@@ -58,6 +61,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
         initRecyclerView(view);
         progressBar = view.findViewById(R.id.progress_contacts_load);
         Toolbar toolbar = view.findViewById(R.id.contacts_toolbar);
@@ -69,21 +73,38 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
             presenter.load();
         } else {
             Log.d(TAG, "load: permission denied, request permission");
-            requestPermissions(new String[] {Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
         }
+        presenter.hideMessage();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        presenter.hideMessage();
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: permissions accept, load contacts");
                 presenter.load();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
-                noContacts.setVisibility(View.VISIBLE);
-                noContacts.setText(R.string.no_permissions);
+                presenter.showMessage(R.string.no_permissions);
             }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_contacts, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sync_item:
+                presenter.load();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -93,23 +114,33 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         recyclerView.setHasFixedSize(true);
         adapter = new ContactAdapter();
         adapter.setOnClickListener(presenter::onForwardCommandClick);
-        noContacts = view.findViewById(R.id.no_contacts);
+        message = view.findViewById(R.id.contacts_message);
     }
 
     @Override
     public void loadContacts(List<Contact> contacts) {
         if (!contacts.isEmpty()) {
-            noContacts.setVisibility(View.GONE);
+            message.setVisibility(View.GONE);
             adapter.setItems(contacts);
             recyclerView.setAdapter(adapter);
         } else {
-            noContacts.setVisibility(View.VISIBLE);
-            noContacts.setText(R.string.no_contacts);
+            presenter.showMessage(R.string.no_contacts);
         }
     }
 
     @Override
     public void showProgress(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showMessage(int message) {
+        this.message.setVisibility(View.VISIBLE);
+        this.message.setText(message);
+    }
+
+    @Override
+    public void hideMessage() {
+        this.message.setVisibility(View.GONE);
     }
 }

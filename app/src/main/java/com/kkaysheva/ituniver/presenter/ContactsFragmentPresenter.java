@@ -41,6 +41,14 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         router.navigateTo(new Screens.ContactScreen(contactId));
     }
 
+    public void showMessage(int message) {
+        getViewState().showMessage(message);
+    }
+
+    public void hideMessage() {
+        getViewState().hideMessage();
+    }
+
     @Override
     public void onDestroy() {
         if (task != null) {
