@@ -43,7 +43,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @InjectPresenter
     ContactsFragmentPresenter presenter;
 
-    private RecyclerView recyclerView;
     private ContactAdapter adapter;
     private TextView message;
     private ProgressBar progressBar;
@@ -79,6 +78,14 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     @Override
+    public void onDestroyView() {
+        adapter = null;
+        message = null;
+        progressBar = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         presenter.hideMessage();
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
@@ -109,11 +116,12 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     private void initRecyclerView(@NonNull final View view) {
-        recyclerView = view.findViewById(R.id.contacts_recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.contacts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         adapter = new ContactAdapter();
         adapter.setOnClickListener(presenter::onForwardCommandClick);
+        recyclerView.setAdapter(adapter);
         message = view.findViewById(R.id.contacts_message);
     }
 
@@ -122,7 +130,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         if (!contacts.isEmpty()) {
             message.setVisibility(View.GONE);
             adapter.setItems(contacts);
-            recyclerView.setAdapter(adapter);
         } else {
             presenter.showMessage(R.string.no_contacts);
         }

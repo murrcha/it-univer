@@ -95,6 +95,15 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     }
 
     @Override
+    public void onDestroyView() {
+        name = null;
+        number = null;
+        photo = null;
+        progressBar = null;
+        super.onDestroyView();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
