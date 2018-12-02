@@ -1,5 +1,6 @@
 package com.kkaysheva.ituniver.presenter;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -8,8 +9,6 @@ import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.view.ContactFragmentView;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
-
-import java.lang.ref.WeakReference;
 
 /**
  * ContactFragmentPresenter
@@ -23,8 +22,8 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
 
     private LoadContactAsyncTask task;
 
-    public void load(int contactId) {
-        task = new LoadContactAsyncTask(this);
+    public void fetchContact(int contactId) {
+        task = new LoadContactAsyncTask();
         task.execute(contactId);
     }
 
@@ -37,19 +36,13 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
         super.onDestroy();
     }
 
-    static final class LoadContactAsyncTask extends AsyncTask<Integer, Void, Contact> {
-
-        private final WeakReference<ContactFragmentPresenter> reference;
-
-        public LoadContactAsyncTask(ContactFragmentPresenter presenter) {
-            reference = new WeakReference<>(presenter);
-        }
+    @SuppressLint("StaticFieldLeak")
+    final class LoadContactAsyncTask extends AsyncTask<Integer, Void, Contact> {
 
         @Override
         protected void onPreExecute() {
-            ContactFragmentPresenter presenter = reference.get();
-            if (!isCancelled() && presenter != null) {
-                presenter.getViewState().showProgress(true);
+            if (!isCancelled()) {
+                getViewState().showProgress(true);
             }
         }
 
@@ -63,11 +56,8 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
 
         @Override
         protected void onPostExecute(Contact contact) {
-            ContactFragmentPresenter presenter = reference.get();
-            if (presenter != null) {
-                presenter.getViewState().loadContact(contact);
-                presenter.getViewState().showProgress(false);
-            }
+            getViewState().loadContact(contact);
+            getViewState().showProgress(false);
         }
     }
 }

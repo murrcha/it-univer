@@ -68,10 +68,10 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         if (ContextCompat.checkSelfPermission(App.getContext(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "load: permission granted, update ui");
-            presenter.load();
+            Log.d(TAG, "fetchContacts: permission granted, update ui");
+            presenter.fetchContacts();
         } else {
-            Log.d(TAG, "load: permission denied, request permission");
+            Log.d(TAG, "fetchContacts: permission denied, request permission");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
         }
         presenter.hideMessage();
@@ -90,8 +90,8 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         presenter.hideMessage();
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: permissions accept, load contacts");
-                presenter.load();
+                Log.d(TAG, "onRequestPermissionsResult: permissions accept, fetchContacts contacts");
+                presenter.fetchContacts();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
                 presenter.showMessage(R.string.no_permissions);
@@ -108,7 +108,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sync_item:
-                presenter.load();
+                presenter.fetchContacts();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

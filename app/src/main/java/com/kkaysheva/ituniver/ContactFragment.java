@@ -86,8 +86,8 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         id.setText(String.valueOf(contactId));
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "onViewCreated: permission granted, load contact");
-            presenter.load(contactId);
+            Log.d(TAG, "onViewCreated: permission granted, fetchContacts contact");
+            presenter.fetchContact(contactId);
         } else {
             Log.d(TAG, "onViewCreated: permission denied, request permissions");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
@@ -107,7 +107,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                presenter.load(contactId);
+                presenter.fetchContact(contactId);
             } else {
                 name.setText(R.string.no_permissions);
             }
@@ -124,7 +124,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         switch (item.getItemId()) {
             case R.id.location_contact:
                 //todo forward to map fragment
-                Toast.makeText(requireActivity(), "Go to map", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Go to map", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

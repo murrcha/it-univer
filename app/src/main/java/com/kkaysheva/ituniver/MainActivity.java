@@ -11,8 +11,6 @@ import com.kkaysheva.ituniver.view.MainActivityView;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.android.support.SupportAppNavigator;
-import ru.terrakok.cicerone.commands.Command;
-import ru.terrakok.cicerone.commands.Replace;
 
 /**
  * MainActivity
@@ -57,12 +55,5 @@ public final class MainActivity extends MvpAppCompatActivity implements MainActi
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void addContacts(Screens.ContactsScreen screen) {
-        navigator.applyCommands(new Command[] {
-                new Replace(new Screens.ContactsScreen())
-        });
     }
 }
