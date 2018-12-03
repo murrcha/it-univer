@@ -1,9 +1,16 @@
 package com.kkaysheva.ituniver;
 
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.kkaysheva.ituniver.presenter.MainActivityPresenter;
+import com.kkaysheva.ituniver.view.MainActivityView;
+
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.android.support.SupportAppNavigator;
 
 /**
  * MainActivity
@@ -11,18 +18,32 @@ import android.view.MenuItem;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class MainActivity extends AppCompatActivity implements ContactsFragment.ClickContactCallback {
+public final class MainActivity extends MvpAppCompatActivity implements MainActivityView {
+
+    @InjectPresenter
+    MainActivityPresenter presenter;
+
+    private Navigator navigator = new SupportAppNavigator(
+            MainActivity.this,
+            getSupportFragmentManager(),
+            R.id.fragment_container);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, ContactsFragment.newInstance())
-                    .commit();
-        }
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        App.instance.getNavigatorHolder().setNavigator(navigator);
+    }
+
+    @Override
+    protected void onPause() {
+        App.instance.getNavigatorHolder().removeNavigator();
+        super.onPause();
     }
 
     @Override
@@ -30,24 +51,9 @@ public class MainActivity extends AppCompatActivity implements ContactsFragment.
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    }
-
-    @Override
-    public void contactClicked(int contactId) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, ContactFragment.newInstance(contactId))
-                .addToBackStack(null)
-                .commit();
     }
 }

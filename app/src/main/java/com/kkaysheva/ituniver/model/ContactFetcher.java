@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.model;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
+
+import com.kkaysheva.ituniver.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public class ContactFetcher {
+public final class ContactFetcher {
 
     public static List<Contact> getContacts(@NonNull Context context) {
         List<Contact> contacts = new ArrayList<>();
