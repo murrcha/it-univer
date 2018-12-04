@@ -6,4 +6,5 @@
     <string name="contact_title">Contact</string>
     <string name="sync">Sync contacts</string>
     <string name="location">Location</string>
+    <string name="search">Search</string>
 </resources>

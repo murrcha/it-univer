@@ -32,6 +32,6 @@ public class MainActivityPresenter extends MvpPresenter<MainActivityView> {
     }
 
     private void addContactsScreen() {
-        router.replaceScreen(new Screens.ContactsScreen());
+        router.newRootScreen(new Screens.ContactsScreen());
     }
 }

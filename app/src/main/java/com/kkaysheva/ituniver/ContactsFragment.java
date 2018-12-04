@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +18,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.kkaysheva.ituniver.adapter.ContactAdapter;
+import com.kkaysheva.ituniver.adapter.ContactItemDecoration;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.presenter.ContactsFragmentPresenter;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;
@@ -43,6 +46,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @InjectPresenter
     ContactsFragmentPresenter presenter;
 
+    private RecyclerView recyclerView;
     private ContactAdapter adapter;
     private TextView message;
     private ProgressBar progressBar;
@@ -82,6 +86,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         adapter = null;
         message = null;
         progressBar = null;
+        recyclerView.setAdapter(null);
         super.onDestroyView();
     }
 
@@ -102,12 +107,27 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_contacts, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.sync_item:
+            case R.id.action_sync:
                 presenter.fetchContacts();
                 return true;
             default:
@@ -116,9 +136,10 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     private void initRecyclerView(@NonNull final View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.contacts_recycler_view);
+        recyclerView = view.findViewById(R.id.contacts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new ContactItemDecoration());
         adapter = new ContactAdapter();
         adapter.setOnClickListener(presenter::onForwardCommandClick);
         recyclerView.setAdapter(adapter);
@@ -129,7 +150,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     public void loadContacts(List<Contact> contacts) {
         if (!contacts.isEmpty()) {
             message.setVisibility(View.GONE);
-            adapter.setItems(contacts);
+            adapter.updateItems(contacts);
         } else {
             presenter.showMessage(R.string.no_contacts);
         }
