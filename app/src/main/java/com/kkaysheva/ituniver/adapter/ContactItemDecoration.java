@@ -11,14 +11,24 @@ import android.view.View;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public class ContactItemDecoration extends RecyclerView.ItemDecoration {
+public final class ContactItemDecoration extends RecyclerView.ItemDecoration {
 
-    private static final int margin = 16;
+    private final int margin;
+
+    public ContactItemDecoration(int margin) {
+        this.margin = margin;
+    }
 
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
                                @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        outRect.set(margin, margin, margin, margin);
+        outRect.set(margin + margin, margin, margin + margin, margin);
+        if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+            outRect.bottom = margin + margin;
+        }
+        if (parent.getChildAdapterPosition(view) == 0) {
+            outRect.top = margin + margin;
+        }
     }
 }

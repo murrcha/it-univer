@@ -49,6 +49,10 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         getViewState().hideMessage();
     }
 
+    public void search(String query) {
+        getViewState().search(query);
+    }
+
     @Override
     public void onDestroy() {
         if (task != null) {

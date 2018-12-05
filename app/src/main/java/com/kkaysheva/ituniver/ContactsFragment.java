@@ -50,6 +50,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     private ContactAdapter adapter;
     private TextView message;
     private ProgressBar progressBar;
+    private String searchQuery;
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
@@ -110,15 +111,21 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            searchItem.expandActionView();
+            searchView.setQuery(searchQuery, true);
+            searchView.clearFocus();
+            presenter.search(searchQuery);
+        }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.getFilter().filter(query);
+                presenter.search(query);
                 return false;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+                presenter.search(newText);
                 return false;
             }
         });
@@ -139,7 +146,8 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         recyclerView = view.findViewById(R.id.contacts_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new ContactItemDecoration());
+        recyclerView.addItemDecoration(
+                new ContactItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_view)));
         adapter = new ContactAdapter();
         adapter.setOnClickListener(presenter::onForwardCommandClick);
         recyclerView.setAdapter(adapter);
@@ -150,7 +158,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     public void loadContacts(List<Contact> contacts) {
         if (!contacts.isEmpty()) {
             message.setVisibility(View.GONE);
-            adapter.updateItems(contacts);
+            adapter.updateItems(contacts, false);
         } else {
             presenter.showMessage(R.string.no_contacts);
         }
@@ -170,5 +178,11 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void hideMessage() {
         this.message.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void search(String query) {
+        searchQuery = query;
+        adapter.getFilter().filter(query);
     }
 }
