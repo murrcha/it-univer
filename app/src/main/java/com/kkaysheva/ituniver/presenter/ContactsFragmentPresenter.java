@@ -37,6 +37,12 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         task.execute();
     }
 
+    public void fetchContactsByName(String name) {
+        getViewState().saveQuery(name);
+        task = new LoadContactsAsyncTask();
+        task.execute(name);
+    }
+
     public void onForwardCommandClick(int contactId) {
         router.navigateTo(new Screens.ContactScreen(contactId));
     }
@@ -49,8 +55,8 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         getViewState().hideMessage();
     }
 
-    public void search(String query) {
-        getViewState().search(query);
+    public void saveQuery(String query) {
+        getViewState().saveQuery(query);
     }
 
     @Override
@@ -63,7 +69,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
     }
 
     @SuppressLint("StaticFieldLeak")
-    final class LoadContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
+    final class LoadContactsAsyncTask extends AsyncTask<String, Void, List<Contact>> {
 
         @Override
         protected void onPreExecute() {
@@ -73,11 +79,15 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         }
 
         @Override
-        protected List<Contact> doInBackground(Void... voids) {
-            if (!isCancelled()) {
-                return ContactFetcher.getContacts(App.getContext());
+        protected List<Contact> doInBackground(String... strings) {
+            if (isCancelled()) {
+                return null;
             }
-            return null;
+            if (strings == null || strings.length == 0) {
+                return ContactFetcher.getContacts(App.getContext());
+            } else {
+                return ContactFetcher.getContactsByName(strings[0], App.getContext());
+            }
         }
 
         @Override

@@ -28,5 +28,5 @@ public interface ContactsFragmentView extends MvpView {
     void hideMessage();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void search(String query);
+    void saveQuery(String query);
 }

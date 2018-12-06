@@ -84,6 +84,10 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void onDestroyView() {
+        Thread task = adapter.getTask();
+        if (task != null) {
+            task.interrupt();
+        }
         adapter = null;
         message = null;
         progressBar = null;
@@ -115,17 +119,18 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
             searchItem.expandActionView();
             searchView.setQuery(searchQuery, true);
             searchView.clearFocus();
-            presenter.search(searchQuery);
+            presenter.fetchContactsByName(searchQuery);
         }
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                presenter.search(query);
+                presenter.fetchContactsByName(query);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
-                presenter.search(newText);
+                presenter.fetchContactsByName(newText);
                 return false;
             }
         });
@@ -156,11 +161,11 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void loadContacts(List<Contact> contacts) {
-        if (!contacts.isEmpty()) {
-            message.setVisibility(View.GONE);
-            adapter.updateItems(contacts, false);
-        } else {
+        adapter.updateItems(contacts);
+        if (contacts.isEmpty()) {
             presenter.showMessage(R.string.no_contacts);
+        } else {
+            presenter.hideMessage();
         }
     }
 
@@ -181,8 +186,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     @Override
-    public void search(String query) {
+    public void saveQuery(String query) {
         searchQuery = query;
-        adapter.getFilter().filter(query);
     }
 }

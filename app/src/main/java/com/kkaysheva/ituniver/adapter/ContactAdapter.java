@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.kkaysheva.ituniver.R;
@@ -26,39 +24,13 @@ import java.util.Queue;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> implements Filterable {
+public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
 
     private static final String TAG = ContactAdapter.class.getSimpleName();
     private OnItemClickListener listener;
     private final List<Contact> contacts = new ArrayList<>();
-    private final List<Contact> contactsFull = new ArrayList<>();
     private Queue<List<Contact>> pendingUpdates = new ArrayDeque<>();
-
-    private Filter contactFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<Contact> filteredContacts = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0) {
-                filteredContacts.addAll(contactsFull);
-            } else {
-                String filter = constraint.toString().toLowerCase().trim();
-                for (Contact contact : contactsFull) {
-                    if (contact.getName().toLowerCase().contains(filter)) {
-                        filteredContacts.add(contact);
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredContacts;
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            List<Contact> filteredContacts = new ArrayList<>((List<Contact>) results.values);
-            updateItems(filteredContacts, true);
-        }
-    };
+    private Thread task;
 
     @NonNull
     @Override
@@ -78,45 +50,45 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         return contacts.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return contactFilter;
+    public Thread getTask() {
+        return task;
     }
 
-    public void updateItems(final List<Contact> newContacts, boolean isSearch) {
+    public void updateItems(final List<Contact> newContacts) {
         pendingUpdates.add(newContacts);
         if (pendingUpdates.size() > 1) {
             return;
         }
-        updateItemsInternal(newContacts, isSearch);
+        updateItemsInternal(newContacts);
     }
 
-    private void updateItemsInternal(final List<Contact> newContacts, boolean isSearch) {
+    private void updateItemsInternal(final List<Contact> newContacts) {
         final List<Contact> oldContacts = new ArrayList<>(this.contacts);
         final Handler handler = new Handler();
-        new Thread(() -> {
-            final DiffUtil.DiffResult diffResult =
-                    DiffUtil.calculateDiff(new ContactDiffCallback(oldContacts, newContacts));
-            handler.post(() -> applyDiffResult(newContacts, diffResult, isSearch));
-        }).start();
+        task = new Thread(() -> {
+            if (!Thread.currentThread().isInterrupted()) {
+                final DiffUtil.DiffResult diffResult =
+                        DiffUtil.calculateDiff(new ContactDiffCallback(oldContacts, newContacts));
+                if (!Thread.currentThread().isInterrupted()) {
+                    handler.post(() -> applyDiffResult(newContacts, diffResult));
+                }
+            }
+        });
+        task.start();
     }
 
-    private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult, boolean isSearch) {
+    private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
         pendingUpdates.remove();
-        dispatchUpdates(newContacts, diffResult, isSearch);
+        dispatchUpdates(newContacts, diffResult);
         if (pendingUpdates.size() > 0) {
-            updateItemsInternal(pendingUpdates.peek(), isSearch);
+            updateItemsInternal(pendingUpdates.peek());
         }
     }
 
-    private void dispatchUpdates(List<Contact> newContacts, DiffUtil.DiffResult diffResult, boolean isSearch) {
+    private void dispatchUpdates(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
         diffResult.dispatchUpdatesTo(this);
         contacts.clear();
         contacts.addAll(newContacts);
-        if (!isSearch) {
-            contactsFull.clear();
-            contactsFull.addAll(newContacts);
-        }
     }
 
     class ContactHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

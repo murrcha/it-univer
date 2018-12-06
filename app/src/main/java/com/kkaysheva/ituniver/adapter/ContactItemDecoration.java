@@ -24,10 +24,11 @@ public final class ContactItemDecoration extends RecyclerView.ItemDecoration {
                                @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         outRect.set(margin + margin, margin, margin + margin, margin);
-        if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
+        int position = parent.getChildAdapterPosition(view);
+        if (position == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = margin + margin;
         }
-        if (parent.getChildAdapterPosition(view) == 0) {
+        if (position == 0) {
             outRect.top = margin + margin;
         }
     }
