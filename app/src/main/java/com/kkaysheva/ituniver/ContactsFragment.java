@@ -51,6 +51,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     private TextView message;
     private ProgressBar progressBar;
     private String searchQuery;
+    private boolean isGranted = false;
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
@@ -75,6 +76,8 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "fetchContacts: permission granted, update ui");
             presenter.fetchContacts();
+            isGranted = true;
+            requireActivity().invalidateOptionsMenu();
         } else {
             Log.d(TAG, "fetchContacts: permission denied, request permission");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
@@ -102,6 +105,8 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: permissions accept, fetchContacts contacts");
                 presenter.fetchContacts();
+                isGranted = true;
+                requireActivity().invalidateOptionsMenu();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
                 presenter.showMessage(R.string.no_permissions);
@@ -113,6 +118,9 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_contacts, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem syncItem = menu.findItem(R.id.action_sync);
+        searchItem.setVisible(isGranted);
+        syncItem.setVisible(isGranted);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         if (searchQuery != null && !searchQuery.isEmpty()) {
