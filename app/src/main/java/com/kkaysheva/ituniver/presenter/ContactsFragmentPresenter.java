@@ -32,6 +32,15 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         router = App.instance.getRouter();
     }
 
+    @Override
+    public void onDestroy() {
+        if (task != null) {
+            task.cancel(true);
+        }
+        task = null;
+        super.onDestroy();
+    }
+
     public void fetchContacts() {
         task = new LoadContactsAsyncTask();
         task.execute();
@@ -53,19 +62,6 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     public void hideMessage() {
         getViewState().hideMessage();
-    }
-
-    public void saveQuery(String query) {
-        getViewState().saveQuery(query);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (task != null) {
-            task.cancel(true);
-        }
-        task = null;
-        super.onDestroy();
     }
 
     @SuppressLint("StaticFieldLeak")

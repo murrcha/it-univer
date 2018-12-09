@@ -6,9 +6,12 @@ import android.os.AsyncTask;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.App;
+import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.ContactFragmentView;
 import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
+
+import ru.terrakok.cicerone.Router;
 
 /**
  * ContactFragmentPresenter
@@ -20,11 +23,11 @@ import com.kkaysheva.ituniver.model.ContactFetcher;
 @InjectViewState
 public final class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> {
 
+    private final Router router;
     private LoadContactAsyncTask task;
 
-    public void fetchContact(int contactId) {
-        task = new LoadContactAsyncTask();
-        task.execute(contactId);
+    public ContactFragmentPresenter() {
+        this.router = App.instance.getRouter();
     }
 
     @Override
@@ -34,6 +37,15 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
         }
         task = null;
         super.onDestroy();
+    }
+
+    public void fetchContact(int contactId) {
+        task = new LoadContactAsyncTask();
+        task.execute(contactId);
+    }
+
+    public void onForwardCommandClick() {
+        router.navigateTo(new Screens.MapScreen());
     }
 
     @SuppressLint("StaticFieldLeak")

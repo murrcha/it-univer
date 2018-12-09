@@ -76,8 +76,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "fetchContacts: permission granted, update ui");
             presenter.fetchContacts();
-            isGranted = true;
-            requireActivity().invalidateOptionsMenu();
+            reloadOptionsMenu();
         } else {
             Log.d(TAG, "fetchContacts: permission denied, request permission");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
@@ -105,8 +104,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "onRequestPermissionsResult: permissions accept, fetchContacts contacts");
                 presenter.fetchContacts();
-                isGranted = true;
-                requireActivity().invalidateOptionsMenu();
+                reloadOptionsMenu();
             } else {
                 Log.d(TAG, "onRequestPermissionsResult: permission denied, set holder text");
                 presenter.showMessage(R.string.no_permissions);
@@ -165,6 +163,11 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         adapter.setOnClickListener(presenter::onForwardCommandClick);
         recyclerView.setAdapter(adapter);
         message = view.findViewById(R.id.contacts_message);
+    }
+
+    private void reloadOptionsMenu() {
+        isGranted = true;
+        requireActivity().invalidateOptionsMenu();
     }
 
     @Override

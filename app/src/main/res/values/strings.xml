@@ -7,4 +7,5 @@
     <string name="sync">Sync contacts</string>
     <string name="location">Location</string>
     <string name="search">Search by name</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
