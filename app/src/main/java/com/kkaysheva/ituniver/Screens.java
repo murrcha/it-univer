@@ -38,7 +38,7 @@ public final class Screens {
 
         @Override
         public Fragment getFragment() {
-            return GoogleMapFragment.newInstance();
+            return ContactMapFragment.newInstance();
         }
     }
 }
