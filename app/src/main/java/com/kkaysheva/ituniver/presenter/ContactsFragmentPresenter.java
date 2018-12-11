@@ -7,16 +7,11 @@ import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;
-import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
-import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
@@ -35,29 +30,6 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
     private final Router router;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private final Observer<List<Contact>> observer = new Observer<List<Contact>>() {
-        @Override
-        public void onSubscribe(Disposable d) {
-            getViewState().showProgress(true);
-            compositeDisposable.add(d);
-        }
-
-        @Override
-        public void onNext(List<Contact> contacts) {
-            getViewState().loadContacts(contacts);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-        }
-
-        @Override
-        public void onComplete() {
-            getViewState().showProgress(false);
-        }
-    };
-
     public ContactsFragmentPresenter() {
         router = App.instance.getRouter();
     }
@@ -69,18 +41,36 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
     }
 
     public void fetchContacts() {
-        Observable.fromCallable(ContactFetcher.getContacts(App.getContext()))
+        Single.fromCallable(ContactFetcher.getContacts(App.getContext()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+                .doOnSubscribe(disposable -> {
+                    getViewState().showProgress(true);
+                    compositeDisposable.add(disposable);
+                })
+                .doOnSuccess(contacts -> {
+                    getViewState().loadContacts(contacts);
+                    getViewState().showProgress(false);
+                })
+                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
+                .subscribe();
     }
 
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
-        Observable.fromCallable(ContactFetcher.getContactsByName(name, App.getContext()))
+        Single.fromCallable(ContactFetcher.getContactsByName(name, App.getContext()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+                .doOnSubscribe(disposable -> {
+                    getViewState().showProgress(true);
+                    compositeDisposable.add(disposable);
+                })
+                .doOnSuccess(contacts -> {
+                    getViewState().loadContacts(contacts);
+                    getViewState().showProgress(false);
+                })
+                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
+                .subscribe();
     }
 
     public void onForwardCommandClick(int contactId) {
