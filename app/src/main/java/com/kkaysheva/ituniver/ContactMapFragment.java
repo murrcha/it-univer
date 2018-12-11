@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -106,8 +107,8 @@ public final class ContactMapFragment extends MvpAppCompatFragment implements On
 
     @Override
     public void onDestroyView() {
-        map = null;
-        mapFragment = null;
+        //map = null;
+        //mapFragment = null;
         super.onDestroyView();
     }
 
@@ -185,6 +186,11 @@ public final class ContactMapFragment extends MvpAppCompatFragment implements On
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.setOnMapClickListener(latLng -> {
+            Toast.makeText(requireContext(), "Tap here", Toast.LENGTH_SHORT).show();
+            map.clear();
+            map.addMarker(new MarkerOptions().position(latLng));
+        });
         configureMap();
     }
 }
