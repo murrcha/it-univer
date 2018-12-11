@@ -18,10 +18,8 @@ import java.util.List;
 import java.util.Queue;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -74,27 +72,11 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
             DiffUtil.calculateDiff(new ContactDiffCallback(oldContacts, newContacts)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DiffUtil.DiffResult>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(DiffUtil.DiffResult diffResult) {
-                        applyDiffResult(newContacts, diffResult);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "onError: ", e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: done");
-                    }
-                });
+                .doOnSubscribe(compositeDisposable::add)
+                .doOnNext(diffResult -> applyDiffResult(newContacts, diffResult))
+                .doOnComplete(() -> Log.d(TAG, "onComplete: done"))
+                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
+                .subscribe();
     }
 
     private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
