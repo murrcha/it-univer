@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * ContactFetcher
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public final class ContactFetcher {
 
-    public static List<Contact> getContacts(@NonNull Context context) {
+    public static Callable<List<Contact>> getContacts(@NonNull Context context) {
         List<Contact> contacts = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         try (Cursor cursor = contentResolver.query(
@@ -32,10 +33,10 @@ public final class ContactFetcher {
         )) {
             contacts.addAll(getContactsFromCursor(cursor));
         }
-        return contacts;
+        return () -> contacts;
     }
 
-    public static List<Contact> getContactsByName(String searchName, @NonNull Context context) {
+    public static Callable<List<Contact>> getContactsByName(String searchName, @NonNull Context context) {
         List<Contact> contacts = new ArrayList<>();
         ContentResolver contentResolver = context.getContentResolver();
         try (Cursor cursor = contentResolver.query(
@@ -49,10 +50,10 @@ public final class ContactFetcher {
         )) {
             contacts.addAll(getContactsFromCursor(cursor));
         }
-        return contacts;
+        return () -> contacts;
     }
 
-    public static Contact getContactById(int contactId, @NonNull Context context) {
+    public static Callable<Contact> getContactById(int contactId, @NonNull Context context) {
         Contact contact = null;
         ContentResolver contentResolver = context.getContentResolver();
         try (Cursor cursor = contentResolver.query(
@@ -72,7 +73,8 @@ public final class ContactFetcher {
                 contact = new Contact(contactId, name, number, photoUri);
             }
         }
-        return contact;
+        Contact finalContact = contact;
+        return () -> finalContact;
     }
 
     private static List<Contact> getContactsFromCursor(Cursor cursor) {

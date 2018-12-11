@@ -1,7 +1,6 @@
 package com.kkaysheva.ituniver.presenter;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -13,6 +12,12 @@ import com.kkaysheva.ituniver.model.ContactFetcher;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 /**
@@ -25,8 +30,33 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
 
+    private static final String TAG = ContactsFragmentPresenter.class.getSimpleName();
+
     private final Router router;
-    private LoadContactsAsyncTask task;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private final Observer<List<Contact>> observer = new Observer<List<Contact>>() {
+        @Override
+        public void onSubscribe(Disposable d) {
+            getViewState().showProgress(true);
+            compositeDisposable.add(d);
+        }
+
+        @Override
+        public void onNext(List<Contact> contacts) {
+            getViewState().loadContacts(contacts);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onComplete() {
+            getViewState().showProgress(false);
+        }
+    };
 
     public ContactsFragmentPresenter() {
         router = App.instance.getRouter();
@@ -34,22 +64,23 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     @Override
     public void onDestroy() {
-        if (task != null) {
-            task.cancel(true);
-        }
-        task = null;
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 
     public void fetchContacts() {
-        task = new LoadContactsAsyncTask();
-        task.execute();
+        Observable.fromCallable(ContactFetcher.getContacts(App.getContext()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
-        task = new LoadContactsAsyncTask();
-        task.execute(name);
+        Observable.fromCallable(ContactFetcher.getContactsByName(name, App.getContext()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     public void onForwardCommandClick(int contactId) {
@@ -62,34 +93,5 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     public void hideMessage() {
         getViewState().hideMessage();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    final class LoadContactsAsyncTask extends AsyncTask<String, Void, List<Contact>> {
-
-        @Override
-        protected void onPreExecute() {
-            if (!isCancelled()) {
-                getViewState().showProgress(true);
-            }
-        }
-
-        @Override
-        protected List<Contact> doInBackground(String... strings) {
-            if (isCancelled()) {
-                return null;
-            }
-            if (strings == null || strings.length == 0) {
-                return ContactFetcher.getContacts(App.getContext());
-            } else {
-                return ContactFetcher.getContactsByName(strings[0], App.getContext());
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Contact> contacts) {
-            getViewState().loadContacts(contacts);
-            getViewState().showProgress(false);
-        }
     }
 }

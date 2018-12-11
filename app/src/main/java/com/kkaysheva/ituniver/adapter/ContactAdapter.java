@@ -1,6 +1,5 @@
 package com.kkaysheva.ituniver.adapter;
 
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * ContactAdapter
  *
@@ -29,8 +35,8 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
     private static final String TAG = ContactAdapter.class.getSimpleName();
     private OnItemClickListener listener;
     private final List<Contact> contacts = new ArrayList<>();
-    private Queue<List<Contact>> pendingUpdates = new ArrayDeque<>();
-    private Thread task;
+    private final Queue<List<Contact>> pendingUpdates = new ArrayDeque<>();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @NonNull
     @Override
@@ -50,8 +56,8 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         return contacts.size();
     }
 
-    public Thread getTask() {
-        return task;
+    public CompositeDisposable getCompositeDisposable() {
+        return compositeDisposable;
     }
 
     public void updateItems(final List<Contact> newContacts) {
@@ -64,17 +70,31 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
 
     private void updateItemsInternal(final List<Contact> newContacts) {
         final List<Contact> oldContacts = new ArrayList<>(this.contacts);
-        final Handler handler = new Handler();
-        task = new Thread(() -> {
-            if (!Thread.currentThread().isInterrupted()) {
-                final DiffUtil.DiffResult diffResult =
-                        DiffUtil.calculateDiff(new ContactDiffUtilCallback(oldContacts, newContacts));
-                if (!Thread.currentThread().isInterrupted()) {
-                    handler.post(() -> applyDiffResult(newContacts, diffResult));
-                }
-            }
-        });
-        task.start();
+        Observable.fromCallable(() ->
+            DiffUtil.calculateDiff(new ContactDiffUtilCallback(oldContacts, newContacts)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DiffUtil.DiffResult>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(DiffUtil.DiffResult diffResult) {
+                        applyDiffResult(newContacts, diffResult);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: done");
+                    }
+                });
     }
 
     private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
