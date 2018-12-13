@@ -1,5 +1,6 @@
 package com.kkaysheva.ituniver.presenter;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -40,6 +41,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
         super.onDestroy();
     }
 
+    @SuppressLint("CheckResult")
     public void fetchContacts() {
         Single.fromCallable(ContactFetcher.getContacts(App.getContext()))
                 .subscribeOn(Schedulers.io())
@@ -48,14 +50,16 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                     getViewState().showProgress(true);
                     compositeDisposable.add(disposable);
                 })
-                .doOnSuccess(contacts -> {
-                    getViewState().loadContacts(contacts);
-                    getViewState().showProgress(false);
-                })
-                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
-                .subscribe();
+                .subscribe(
+                        contacts -> {
+                            getViewState().loadContacts(contacts);
+                            getViewState().showProgress(false);
+                        },
+                        throwable -> Log.e(TAG, "onError: ", throwable)
+                );
     }
 
+    @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
         Single.fromCallable(ContactFetcher.getContactsByName(name, App.getContext()))
@@ -65,12 +69,13 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                     getViewState().showProgress(true);
                     compositeDisposable.add(disposable);
                 })
-                .doOnSuccess(contacts -> {
-                    getViewState().loadContacts(contacts);
-                    getViewState().showProgress(false);
-                })
-                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
-                .subscribe();
+                .subscribe(
+                        contacts -> {
+                            getViewState().loadContacts(contacts);
+                            getViewState().showProgress(false);
+                        },
+                        throwable -> Log.e(TAG, "onError: ", throwable)
+                );
     }
 
     public void onForwardCommandClick(int contactId) {

@@ -1,5 +1,6 @@
 package com.kkaysheva.ituniver.adapter;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Queue;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -66,17 +68,18 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         updateItemsInternal(newContacts);
     }
 
+    @SuppressLint("CheckResult")
     private void updateItemsInternal(final List<Contact> newContacts) {
         final List<Contact> oldContacts = new ArrayList<>(this.contacts);
-        Observable.fromCallable(() ->
+        Single.fromCallable(() ->
             DiffUtil.calculateDiff(new ContactDiffCallback(oldContacts, newContacts)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)
-                .doOnNext(diffResult -> applyDiffResult(newContacts, diffResult))
-                .doOnComplete(() -> Log.d(TAG, "onComplete: done"))
-                .doOnError(throwable -> Log.e(TAG, "onError: ", throwable))
-                .subscribe();
+                .subscribe(
+                        diffResult -> applyDiffResult(newContacts, diffResult),
+                        throwable -> Log.e(TAG, "onError: ", throwable)
+                );
     }
 
     private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
