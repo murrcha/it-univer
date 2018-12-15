@@ -7,8 +7,6 @@ import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.model.Contact;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +30,7 @@ public final class ContactFetcher {
                 null,
                 String.format("%s ASC", Contacts.DISPLAY_NAME)
         )) {
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndex(Contacts._ID));
-                    String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
-                    String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                    contacts.add(new Contact(id, name, number, null));
-                }
-            }
+            contacts.addAll(getContactsFromCursor(cursor));
         }
         return contacts;
     }
@@ -56,14 +47,7 @@ public final class ContactFetcher {
                 new String[]{"%" + searchName + "%"},
                 String.format("%s ASC", Contacts.DISPLAY_NAME)
         )) {
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    int id = cursor.getInt(cursor.getColumnIndex(Contacts._ID));
-                    String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
-                    String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                    contacts.add(new Contact(id, name, number, null));
-                }
-            }
+            contacts.addAll(getContactsFromCursor(cursor));
         }
         return contacts;
     }
@@ -89,5 +73,18 @@ public final class ContactFetcher {
             }
         }
         return contact;
+    }
+
+    private static List<Contact> getContactsFromCursor(Cursor cursor) {
+        List<Contact> contacts = new ArrayList<>();
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(Contacts._ID));
+                String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
+                contacts.add(new Contact(id, name, number, null));
+            }
+        }
+        return contacts;
     }
 }

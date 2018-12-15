@@ -7,17 +7,17 @@ import com.kkaysheva.ituniver.model.Contact;
 import java.util.List;
 
 /**
- * ContactDiffCallback
+ * ContactDiffUtilCallback
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public final class ContactDiffCallback extends DiffUtil.Callback {
+public final class ContactDiffUtilCallback extends DiffUtil.Callback {
 
     private List<Contact> current;
     private List<Contact> next;
 
-    public ContactDiffCallback(List<Contact> current, List<Contact> next) {
+    public ContactDiffUtilCallback(List<Contact> current, List<Contact> next) {
         this.current = current;
         this.next = next;
     }

@@ -68,7 +68,7 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         task = new Thread(() -> {
             if (!Thread.currentThread().isInterrupted()) {
                 final DiffUtil.DiffResult diffResult =
-                        DiffUtil.calculateDiff(new ContactDiffCallback(oldContacts, newContacts));
+                        DiffUtil.calculateDiff(new ContactDiffUtilCallback(oldContacts, newContacts));
                 if (!Thread.currentThread().isInterrupted()) {
                     handler.post(() -> applyDiffResult(newContacts, diffResult));
                 }
