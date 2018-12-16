@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -36,6 +35,8 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
     private OnItemClickListener listener;
     private final List<Contact> contacts = new ArrayList<>();
     private final Queue<List<Contact>> pendingUpdates = new ArrayDeque<>();
+
+    @io.reactivex.annotations.NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @NonNull
@@ -56,6 +57,7 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         return contacts.size();
     }
 
+    @io.reactivex.annotations.NonNull
     public CompositeDisposable getCompositeDisposable() {
         return compositeDisposable;
     }

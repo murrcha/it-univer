@@ -10,8 +10,8 @@ import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
@@ -29,6 +29,8 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
     private static final String TAG = ContactsFragmentPresenter.class.getSimpleName();
 
     private final Router router;
+
+    @NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ContactsFragmentPresenter() {
@@ -43,7 +45,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     @SuppressLint("CheckResult")
     public void fetchContacts() {
-        Single.fromCallable(ContactFetcher.getContacts(App.getContext()))
+        ContactFetcher.getContacts(App.getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -55,14 +57,17 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                             getViewState().loadContacts(contacts);
                             getViewState().showProgress(false);
                         },
-                        throwable -> Log.e(TAG, "onError: ", throwable)
+                        throwable -> {
+                            getViewState().showProgress(false);
+                            Log.e(TAG, "onError: ", throwable);
+                        }
                 );
     }
 
     @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
-        Single.fromCallable(ContactFetcher.getContactsByName(name, App.getContext()))
+        ContactFetcher.getContactsByName(name, App.getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -74,7 +79,10 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                             getViewState().loadContacts(contacts);
                             getViewState().showProgress(false);
                         },
-                        throwable -> Log.e(TAG, "onError: ", throwable)
+                        throwable -> {
+                            getViewState().showProgress(false);
+                            Log.e(TAG, "onError: ", throwable);
+                        }
                 );
     }
 

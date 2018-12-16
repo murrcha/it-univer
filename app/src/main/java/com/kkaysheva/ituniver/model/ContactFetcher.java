@@ -9,7 +9,8 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 /**
  * ContactFetcher
@@ -19,62 +20,67 @@ import java.util.concurrent.Callable;
  */
 public final class ContactFetcher {
 
-    public static Callable<List<Contact>> getContacts(@NonNull Context context) {
-        List<Contact> contacts = new ArrayList<>();
-        ContentResolver contentResolver = context.getContentResolver();
-        try (Cursor cursor = contentResolver.query(
-                CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{Contacts._ID,
-                        Contacts.DISPLAY_NAME,
-                        CommonDataKinds.Phone.NUMBER},
-                null,
-                null,
-                String.format("%s ASC", Contacts.DISPLAY_NAME)
-        )) {
-            contacts.addAll(getContactsFromCursor(cursor));
-        }
-        return () -> contacts;
-    }
-
-    public static Callable<List<Contact>> getContactsByName(String searchName, @NonNull Context context) {
-        List<Contact> contacts = new ArrayList<>();
-        ContentResolver contentResolver = context.getContentResolver();
-        try (Cursor cursor = contentResolver.query(
-                CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{Contacts._ID,
-                        Contacts.DISPLAY_NAME,
-                        CommonDataKinds.Phone.NUMBER},
-                String.format(" %s LIKE ? ", Contacts.DISPLAY_NAME),
-                new String[]{"%" + searchName + "%"},
-                String.format("%s ASC", Contacts.DISPLAY_NAME)
-        )) {
-            contacts.addAll(getContactsFromCursor(cursor));
-        }
-        return () -> contacts;
-    }
-
-    public static Callable<Contact> getContactById(int contactId, @NonNull Context context) {
-        Contact contact = null;
-        ContentResolver contentResolver = context.getContentResolver();
-        try (Cursor cursor = contentResolver.query(
-                CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{Contacts.DISPLAY_NAME,
-                        Contacts.PHOTO_URI,
-                        CommonDataKinds.Phone.NUMBER},
-                String.format("%s = ?", Contacts._ID),
-                new String[]{String.valueOf(contactId)},
-                null
-        )) {
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
-                String photoUri = cursor.getString(cursor.getColumnIndex(Contacts.PHOTO_URI));
-                String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
-                contact = new Contact(contactId, name, number, photoUri);
+    public static Single<List<Contact>> getContacts(@NonNull Context context) {
+        return Single.fromCallable(() -> {
+            List<Contact> contacts = new ArrayList<>();
+            ContentResolver contentResolver = context.getContentResolver();
+            try (Cursor cursor = contentResolver.query(
+                    CommonDataKinds.Phone.CONTENT_URI,
+                    new String[]{Contacts._ID,
+                            Contacts.DISPLAY_NAME,
+                            CommonDataKinds.Phone.NUMBER},
+                    null,
+                    null,
+                    String.format("%s ASC", Contacts.DISPLAY_NAME)
+            )) {
+                contacts.addAll(getContactsFromCursor(cursor));
             }
-        }
-        Contact finalContact = contact;
-        return () -> finalContact;
+            return contacts;
+        });
+    }
+
+    public static Single<List<Contact>> getContactsByName(String searchName, @NonNull Context context) {
+        return Single.fromCallable(() -> {
+            List<Contact> contacts = new ArrayList<>();
+            ContentResolver contentResolver = context.getContentResolver();
+            try (Cursor cursor = contentResolver.query(
+                    CommonDataKinds.Phone.CONTENT_URI,
+                    new String[]{Contacts._ID,
+                            Contacts.DISPLAY_NAME,
+                            CommonDataKinds.Phone.NUMBER},
+                    String.format(" %s LIKE ? ", Contacts.DISPLAY_NAME),
+                    new String[]{"%" + searchName + "%"},
+                    String.format("%s ASC", Contacts.DISPLAY_NAME)
+            )) {
+                contacts.addAll(getContactsFromCursor(cursor));
+            }
+            return contacts;
+        });
+    }
+
+    public static Single<Contact> getContactById(int contactId, @NonNull Context context) {
+        return Single.fromCallable(() -> {
+            Contact contact = null;
+            ContentResolver contentResolver = context.getContentResolver();
+            try (Cursor cursor = contentResolver.query(
+                    CommonDataKinds.Phone.CONTENT_URI,
+                    new String[]{Contacts.DISPLAY_NAME,
+                            Contacts.PHOTO_URI,
+                            CommonDataKinds.Phone.NUMBER},
+                    String.format("%s = ?", Contacts._ID),
+                    new String[]{String.valueOf(contactId)},
+                    null
+            )) {
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                    String photoUri = cursor.getString(cursor.getColumnIndex(Contacts.PHOTO_URI));
+                    String number = cursor.getString(cursor.getColumnIndex(CommonDataKinds.Phone.NUMBER));
+                    contact = new Contact(contactId, name, number, photoUri);
+                }
+            }
+            return contact;
+        });
     }
 
     private static List<Contact> getContactsFromCursor(Cursor cursor) {
