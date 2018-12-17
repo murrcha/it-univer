@@ -32,8 +32,6 @@ import com.kkaysheva.ituniver.view.ContactsFragmentView;
 
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
-
 /**
  * ContactsFragment
  *
@@ -88,10 +86,6 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void onDestroyView() {
-        CompositeDisposable compositeDisposable = adapter.getCompositeDisposable();
-        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-        }
         adapter = null;
         message = null;
         progressBar = null;
@@ -174,7 +168,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void loadContacts(List<Contact> contacts) {
-        adapter.updateItems(contacts);
+        adapter.submitItems(contacts);
         if (contacts.isEmpty()) {
             presenter.showMessage(R.string.no_contacts);
         } else {

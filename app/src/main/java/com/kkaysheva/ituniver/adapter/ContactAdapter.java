@@ -1,7 +1,7 @@
 package com.kkaysheva.ituniver.adapter;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.AsyncListDiffer;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,16 +13,7 @@ import android.widget.TextView;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.model.Contact;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * ContactAdapter
@@ -34,9 +25,7 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
 
     private static final String TAG = ContactAdapter.class.getSimpleName();
     private OnItemClickListener listener;
-    private final List<Contact> contacts = new ArrayList<>();
-    private final Queue<List<Contact>> pendingUpdates = new ArrayDeque<>();
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final AsyncListDiffer<Contact> differ = new AsyncListDiffer<>(this, DIFF_CALLBACK);
 
     @NonNull
     @Override
@@ -48,52 +37,16 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
 
     @Override
     public void onBindViewHolder(@NonNull ContactHolder contactHolder, int position) {
-        contactHolder.bind(contacts.get(position));
+        contactHolder.bind(differ.getCurrentList().get(position));
     }
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return differ.getCurrentList().size();
     }
 
-    public CompositeDisposable getCompositeDisposable() {
-        return compositeDisposable;
-    }
-
-    public void updateItems(final List<Contact> newContacts) {
-        pendingUpdates.add(newContacts);
-        if (pendingUpdates.size() > 1) {
-            return;
-        }
-        updateItemsInternal(newContacts);
-    }
-
-    @SuppressLint("CheckResult")
-    private void updateItemsInternal(final List<Contact> newContacts) {
-        final List<Contact> oldContacts = new ArrayList<>(this.contacts);
-        Single.fromCallable(() ->
-            DiffUtil.calculateDiff(new ContactDiffUtilCallback(oldContacts, newContacts)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(compositeDisposable::add)
-                .subscribe(
-                        diffResult -> applyDiffResult(newContacts, diffResult),
-                        throwable -> Log.e(TAG, "onError: ", throwable)
-                );
-    }
-
-    private void applyDiffResult(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
-        pendingUpdates.remove();
-        dispatchUpdates(newContacts, diffResult);
-        if (pendingUpdates.size() > 0) {
-            updateItemsInternal(pendingUpdates.peek());
-        }
-    }
-
-    private void dispatchUpdates(List<Contact> newContacts, DiffUtil.DiffResult diffResult) {
-        diffResult.dispatchUpdatesTo(this);
-        contacts.clear();
-        contacts.addAll(newContacts);
+    public void submitItems(List<Contact> contacts) {
+        differ.submitList(contacts);
     }
 
     class ContactHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -119,11 +72,24 @@ public final class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Co
         public void onClick(View view) {
             int position = getAdapterPosition();
             if (listener != null && position != RecyclerView.NO_POSITION) {
-                Contact contact = contacts.get(position);
+                Contact contact = differ.getCurrentList().get(position);
                 listener.onItemClicked(contact.getId());
             }
         }
     }
+
+    public static final DiffUtil.ItemCallback<Contact> DIFF_CALLBACK = new DiffUtil.ItemCallback<Contact>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Contact oldContact, @NonNull Contact newContact) {
+            return oldContact.getId() == newContact.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Contact oldContact, @NonNull Contact newContact) {
+            return oldContact.getName().equals(newContact.getName())
+                    && oldContact.getNumber().equals(newContact.getNumber());
+        }
+    };
 
     public interface OnItemClickListener {
         void onItemClicked(int contactId);
