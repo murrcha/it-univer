@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,7 +35,7 @@ import com.google.android.gms.tasks.Task;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public class ContactMapFragment extends MvpAppCompatFragment implements OnMapReadyCallback {
+public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String TAG = ContactMapFragment.class.getSimpleName();
     private static final String MAP_VIEW_BUNDLE_KEY = "map_view_bundle_key";
