@@ -7,15 +7,12 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.view.ContactFragmentView;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
@@ -32,6 +29,8 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
     private static final String TAG = ContactFragmentPresenter.class.getSimpleName();
 
     private final Router router;
+
+    @NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ContactFragmentPresenter() {
@@ -46,7 +45,7 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
 
     @SuppressLint("CheckResult")
     public void fetchContact(int contactId) {
-        Single.fromCallable(ContactFetcher.getContactById(contactId, App.getContext()))
+        ContactFetcher.getContactById(contactId, App.getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -58,7 +57,10 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
                             getViewState().loadContact(contact);
                             getViewState().showProgress(false);
                         },
-                        throwable -> Log.e(TAG, "fetchContact: ", throwable)
+                        throwable -> {
+                            getViewState().showProgress(false);
+                            Log.e(TAG, "fetchContact: ", throwable);
+                        }
                 );
     }
 
