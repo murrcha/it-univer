@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.adapter;
+package com.kkaysheva.ituniver.presentation.adapter;
 
 import android.graphics.Rect;
 import android.support.annotation.NonNull;

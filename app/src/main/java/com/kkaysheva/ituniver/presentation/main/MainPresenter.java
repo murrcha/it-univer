@@ -1,26 +1,30 @@
-package com.kkaysheva.ituniver.presenter;
+package com.kkaysheva.ituniver.presentation.main;
+
+import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.view.MainActivityView;
+
+import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Router;
 
 /**
- * MainActivityPresenter
+ * MainPresenter
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
 @InjectViewState
-public class MainActivityPresenter extends MvpPresenter<MainActivityView> {
+public class MainPresenter extends MvpPresenter<MainView> {
 
+    @NonNull
     private final Router router;
 
-    public MainActivityPresenter() {
-        router = App.instance.getRouter();
+    @Inject
+    public MainPresenter(Router router) {
+        this.router = router;
     }
 
     @Override

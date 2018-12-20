@@ -2,6 +2,10 @@ package com.kkaysheva.ituniver;
 
 import android.support.v4.app.Fragment;
 
+import com.kkaysheva.ituniver.presentation.contact.ContactFragment;
+import com.kkaysheva.ituniver.presentation.contact.ContactMapFragment;
+import com.kkaysheva.ituniver.presentation.contacts.ContactsFragment;
+
 import ru.terrakok.cicerone.android.support.SupportAppScreen;
 
 /**

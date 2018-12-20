@@ -1,13 +1,12 @@
-package com.kkaysheva.ituniver.view;
+package com.kkaysheva.ituniver.presentation.main;
 
 import com.arellomobile.mvp.MvpView;
 
 /**
- * MainActivityView
+ * MainView
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public interface MainActivityView extends MvpView {
-
+public interface MainView extends MvpView {
 }

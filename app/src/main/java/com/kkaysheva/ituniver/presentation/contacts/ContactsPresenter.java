@@ -1,40 +1,48 @@
-package com.kkaysheva.ituniver.presenter;
+package com.kkaysheva.ituniver.presentation.contacts;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.view.ContactsFragmentView;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
+
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 /**
- * ContactsFragmentPresenter
+ * ContactsPresenter
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
 
 @InjectViewState
-public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
+public final class ContactsPresenter extends MvpPresenter<ContactsView> {
 
-    private static final String TAG = ContactsFragmentPresenter.class.getSimpleName();
+    private static final String TAG = ContactsPresenter.class.getSimpleName();
 
+    @NonNull
     private final Router router;
 
     @NonNull
+    private final Context context;
+
+    @io.reactivex.annotations.NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ContactsFragmentPresenter() {
-        router = App.instance.getRouter();
+    @Inject
+    public ContactsPresenter(@NonNull Router router, @NonNull Context context) {
+        this.router = router;
+        this.context = context;
     }
 
     @Override
@@ -45,7 +53,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     @SuppressLint("CheckResult")
     public void fetchContacts() {
-        ContactFetcher.getContacts(App.getContext())
+        ContactFetcher.getContacts(context)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -54,7 +62,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                 })
                 .subscribe(
                         contacts -> {
-                            getViewState().loadContacts(contacts);
+                            getViewState().showContacts(contacts);
                             getViewState().showProgress(false);
                         },
                         throwable -> {
@@ -67,7 +75,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
     @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
-        ContactFetcher.getContactsByName(name, App.getContext())
+        ContactFetcher.getContactsByName(name, context)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -76,7 +84,7 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
                 })
                 .subscribe(
                         contacts -> {
-                            getViewState().loadContacts(contacts);
+                            getViewState().showContacts(contacts);
                             getViewState().showProgress(false);
                         },
                         throwable -> {

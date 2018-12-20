@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.adapter;
+package com.kkaysheva.ituniver.presentation.adapter;
 
 import android.support.v7.util.DiffUtil;
 

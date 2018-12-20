@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.adapter;
+package com.kkaysheva.ituniver.presentation.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.recyclerview.extensions.AsyncListDiffer;

@@ -1,32 +1,21 @@
-package com.kkaysheva.ituniver.view;
+package com.kkaysheva.ituniver.presentation.contact;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.kkaysheva.ituniver.model.Contact;
 
-import java.util.List;
-
 /**
- * ContactsFragmentView
+ * ContactView
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public interface ContactsFragmentView extends MvpView {
+public interface ContactView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void loadContacts(List<Contact> contacts);
+    void loadContact(Contact contact);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showProgress(boolean isLoading);
-
-    @StateStrategyType(AddToEndSingleStrategy.class)
-    void showMessage(int message);
-
-    @StateStrategyType(AddToEndSingleStrategy.class)
-    void hideMessage();
-
-    @StateStrategyType(AddToEndSingleStrategy.class)
-    void saveQuery(String query);
 }

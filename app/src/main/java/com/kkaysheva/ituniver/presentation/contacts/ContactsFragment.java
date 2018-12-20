@@ -1,6 +1,7 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.presentation.contacts;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,13 +25,18 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.kkaysheva.ituniver.adapter.ContactAdapter;
-import com.kkaysheva.ituniver.adapter.ContactItemDecoration;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.kkaysheva.ituniver.R;
+import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
+import com.kkaysheva.ituniver.presentation.adapter.ContactAdapter;
+import com.kkaysheva.ituniver.presentation.adapter.ContactItemDecoration;
+import com.kkaysheva.ituniver.app.AppDelegate;
 import com.kkaysheva.ituniver.model.Contact;
-import com.kkaysheva.ituniver.presenter.ContactsFragmentPresenter;
-import com.kkaysheva.ituniver.view.ContactsFragmentView;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * ContactsFragment
@@ -38,13 +44,16 @@ import java.util.List;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class ContactsFragment extends MvpAppCompatFragment implements ContactsFragmentView {
+public final class ContactsFragment extends MvpAppCompatFragment implements ContactsView {
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
 
+    @Inject
+    Provider<ContactsPresenter> presenterProvider;
+
     @InjectPresenter
-    ContactsFragmentPresenter presenter;
+    ContactsPresenter presenter;
 
     private RecyclerView recyclerView;
     private ContactAdapter adapter;
@@ -55,6 +64,15 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     public static ContactsFragment newInstance() {
         return new ContactsFragment();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
+        ContactsComponent contactsComponent = appDelegate.getAppComponent()
+                .plusContactsComponent();
+        contactsComponent.inject(this);
+        super.onAttach(context);
     }
 
     @Nullable
@@ -72,7 +90,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         Toolbar toolbar = view.findViewById(R.id.contacts_toolbar);
         toolbar.setTitle(R.string.contacts_title);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        if (ContextCompat.checkSelfPermission(App.getContext(), Manifest.permission.READ_CONTACTS)
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "fetchContacts: permission granted, update ui");
             presenter.fetchContacts();
@@ -167,7 +185,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     }
 
     @Override
-    public void loadContacts(List<Contact> contacts) {
+    public void showContacts(List<Contact> contacts) {
         adapter.submitItems(contacts);
         if (contacts.isEmpty()) {
             presenter.showMessage(R.string.no_contacts);
@@ -195,5 +213,10 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
     @Override
     public void saveQuery(String query) {
         searchQuery = query;
+    }
+
+    @ProvidePresenter
+    ContactsPresenter providePresenter() {
+        return presenterProvider.get();
     }
 }

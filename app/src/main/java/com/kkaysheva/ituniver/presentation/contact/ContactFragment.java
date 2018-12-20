@@ -1,6 +1,7 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.presentation.contact;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,9 +24,13 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.kkaysheva.ituniver.model.Contact;
-import com.kkaysheva.ituniver.presenter.ContactFragmentPresenter;
-import com.kkaysheva.ituniver.view.ContactFragmentView;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.kkaysheva.ituniver.R;
+import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.di.contact.ContactComponent;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * ContactFragment
@@ -33,14 +38,17 @@ import com.kkaysheva.ituniver.view.ContactFragmentView;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class ContactFragment extends MvpAppCompatFragment implements ContactFragmentView {
+public final class ContactFragment extends MvpAppCompatFragment implements ContactView {
 
     private static final String TAG = ContactFragment.class.getSimpleName();
     private static final int PERMISSION_REQUEST_READ_CONTACTS = 1;
     private static final String CONTACT_ID = "contactId";
 
+    @Inject
+    Provider<ContactPresenter> presenterProvider;
+
     @InjectPresenter
-    ContactFragmentPresenter presenter;
+    ContactPresenter presenter;
 
     private int contactId;
     private TextView name;
@@ -54,6 +62,15 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         ContactFragment fragment = new ContactFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
+        ContactComponent contactComponent = appDelegate.getAppComponent()
+                .plusContactComponent();
+        contactComponent.inject(this);
+        super.onAttach(context);
     }
 
     @Override
@@ -123,7 +140,6 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.location_contact:
-                //todo forward to map fragment
                 presenter.onForwardCommandClick();
                 Toast.makeText(requireContext(), "Go to map", Toast.LENGTH_SHORT).show();
                 return true;
@@ -133,7 +149,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     }
 
     @Override
-    public void loadContact(Contact contact) {
+    public void loadContact(com.kkaysheva.ituniver.model.Contact contact) {
         if (contact != null) {
             name.setText(contact.getName());
             number.setText(contact.getNumber());
@@ -149,5 +165,10 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     @Override
     public void showProgress(boolean isLoading) {
         progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+    }
+
+    @ProvidePresenter
+    ContactPresenter providePresenter() {
+        return presenterProvider.get();
     }
 }

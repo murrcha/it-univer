@@ -1,40 +1,47 @@
-package com.kkaysheva.ituniver.presenter;
+package com.kkaysheva.ituniver.presentation.contact;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.view.ContactFragmentView;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 /**
- * ContactFragmentPresenter
+ * ContactPresenter
  *
  * @author Ksenya Kaysheva  (murrcha@me.com)
  * @since 11.2018
  */
 
 @InjectViewState
-public final class ContactFragmentPresenter extends MvpPresenter<ContactFragmentView> {
+public final class ContactPresenter extends MvpPresenter<ContactView> {
 
-    private static final String TAG = ContactFragmentPresenter.class.getSimpleName();
-
-    private final Router router;
+    private static final String TAG = ContactPresenter.class.getSimpleName();
 
     @NonNull
+    private final Context context;
+
+    @NonNull
+    private final Router router;
+
+    @io.reactivex.annotations.NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public ContactFragmentPresenter() {
-        this.router = App.instance.getRouter();
+    @Inject
+    public ContactPresenter(@android.support.annotation.NonNull Router router, @NonNull Context context) {
+        this.router = router;
+        this.context = context;
     }
 
     @Override
@@ -45,7 +52,7 @@ public final class ContactFragmentPresenter extends MvpPresenter<ContactFragment
 
     @SuppressLint("CheckResult")
     public void fetchContact(int contactId) {
-        ContactFetcher.getContactById(contactId, App.getContext())
+        ContactFetcher.getContactById(contactId, context)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
