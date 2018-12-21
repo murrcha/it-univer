@@ -3,6 +3,7 @@ package com.kkaysheva.ituniver.di.app;
 import android.content.Context;
 
 import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.database.AppDatabase;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.di.main.MainComponent;
@@ -21,12 +22,13 @@ import ru.terrakok.cicerone.Router;
  * @since 12.2018
  */
 @Singleton
-@Component (modules = {AppModule.class, NavigationModule.class})
+@Component (modules = {AppModule.class, NavigationModule.class, DatabaseModule.class})
 public interface AppComponent {
 
     Router provideRouter();
     NavigatorHolder provideNavigationHolder();
     Context provideApplicationContext();
+    AppDatabase provideDatabase();
 
     MainComponent plusMainComponent(MainModule mainModule);
     ContactsComponent plusContactsComponent();
