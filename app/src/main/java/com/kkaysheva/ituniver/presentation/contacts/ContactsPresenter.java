@@ -40,7 +40,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
-    public ContactsPresenter(@NonNull Router router, @NonNull Context context) {
+    ContactsPresenter(@NonNull Router router, @NonNull Context context) {
         this.router = router;
         this.context = context;
     }

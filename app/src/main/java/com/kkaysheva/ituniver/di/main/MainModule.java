@@ -5,12 +5,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.presentation.main.MainPresenter;
 
 import dagger.Module;
 import dagger.Provides;
 import ru.terrakok.cicerone.Navigator;
-import ru.terrakok.cicerone.Router;
 import ru.terrakok.cicerone.android.support.SupportAppNavigator;
 
 /**
@@ -20,7 +18,7 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator;
  * @since 12.2018
  */
 @Module
-public class MainModule {
+public final class MainModule {
 
     @NonNull
     private FragmentActivity activity;
@@ -31,11 +29,6 @@ public class MainModule {
     public MainModule(@NonNull FragmentActivity activity, @NonNull FragmentManager fragmentManager) {
         this.activity = activity;
         this.fragmentManager = fragmentManager;
-    }
-
-    @Provides
-    public MainPresenter providePresenter(Router router) {
-        return new MainPresenter(router);
     }
 
     @Provides

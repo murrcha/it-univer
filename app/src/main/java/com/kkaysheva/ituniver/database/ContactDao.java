@@ -13,9 +13,14 @@ import com.kkaysheva.ituniver.model.ContactInfo;
 
 import java.util.List;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 
+/**
+ * ContactDao
+ *
+ * @author Ksenya Kaysheva (murrcha@me.com)
+ * @since 12.2018
+ */
 @Dao
 public interface ContactDao {
 
@@ -28,14 +33,14 @@ public interface ContactDao {
     Single<ContactInfo> getContactInfoById(Long id);
 
     @Update
-    Completable updateContactInfo(ContactInfo contactInfo);
+    void updateContactInfo(ContactInfo contactInfo);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    Completable insertContactInfo(ContactInfo contactInfo);
+    void insertContactInfo(ContactInfo contactInfo);
 
     @Delete
-    Completable deleteContactInfo(ContactInfo contactInfo);
+    void deleteContactInfo(ContactInfo contactInfo);
 
     @Query("DELETE FROM contacts")
-    Completable deleteAll();
+    void deleteAll();
 }

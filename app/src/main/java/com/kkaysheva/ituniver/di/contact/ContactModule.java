@@ -1,13 +1,6 @@
 package com.kkaysheva.ituniver.di.contact;
 
-import android.content.Context;
-
-import com.kkaysheva.ituniver.di.scope.FragmentScope;
-import com.kkaysheva.ituniver.presentation.contact.ContactPresenter;
-
 import dagger.Module;
-import dagger.Provides;
-import ru.terrakok.cicerone.Router;
 
 /**
  * ContactModule
@@ -16,11 +9,5 @@ import ru.terrakok.cicerone.Router;
  * @since 12.2018
  */
 @Module
-public class ContactModule {
-
-    @Provides
-    @FragmentScope
-    public ContactPresenter getContactPresenter(Router router, Context context) {
-        return new ContactPresenter(router, context);
-    }
+public final class ContactModule {
 }

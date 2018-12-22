@@ -29,7 +29,6 @@ public final class AppDelegate extends Application {
                 .appModule(new AppModule(this))
                 .navigationModule(new NavigationModule())
                 .build();
-        appComponent.inject(this);
     }
 
     @NonNull

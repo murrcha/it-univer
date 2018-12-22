@@ -8,6 +8,12 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
+/**
+ * BaseRepository
+ *
+ * @author Ksenya Kaysheva (murrcha@me.com)
+ * @since 12.2018
+ */
 public interface BaseRepository<Entity, Id> {
 
     @NonNull

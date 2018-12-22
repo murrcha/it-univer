@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.presentation.contact;
+package com.kkaysheva.ituniver.presentation.map;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -29,8 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
-
-import java.util.Objects;
 
 /**
  * ContactMapFragment

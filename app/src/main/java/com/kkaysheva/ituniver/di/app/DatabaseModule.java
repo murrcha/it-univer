@@ -11,6 +11,12 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+/**
+ * DatabaseModule
+ *
+ * @author Ksenya Kaysheva (murrcha@me.com)
+ * @since 12.2018
+ */
 @Module
 public final class DatabaseModule {
 

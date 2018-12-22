@@ -12,6 +12,12 @@ import javax.inject.Inject;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
+/**
+ * ContactRepository
+ *
+ * @author Ksenya Kaysheva (murrcha@me.com)
+ * @since 12.2018
+ */
 public final class ContactRepository implements BaseRepository<ContactInfo, Long> {
 
     @NonNull
@@ -37,24 +43,24 @@ public final class ContactRepository implements BaseRepository<ContactInfo, Long
     @NonNull
     @Override
     public Completable update(@NonNull ContactInfo contactInfo) {
-        return appDatabase.getContactDaO().updateContactInfo(contactInfo);
+        return Completable.fromAction(() -> appDatabase.getContactDaO().updateContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable insert(@NonNull ContactInfo contactInfo) {
-        return appDatabase.getContactDaO().insertContactInfo(contactInfo);
+        return Completable.fromAction(() -> appDatabase.getContactDaO().insertContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable delete(@NonNull ContactInfo contactInfo) {
-        return appDatabase.getContactDaO().deleteContactInfo(contactInfo);
+        return Completable.fromAction(() -> appDatabase.getContactDaO().deleteContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable deleteAll() {
-        return appDatabase.getContactDaO().deleteAll();
+        return Completable.fromAction(() -> appDatabase.getContactDaO().deleteAll());
     }
 }

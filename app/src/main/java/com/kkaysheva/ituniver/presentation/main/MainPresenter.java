@@ -23,7 +23,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
     private final Router router;
 
     @Inject
-    public MainPresenter(Router router) {
+    MainPresenter(@NonNull Router router) {
         this.router = router;
     }
 
