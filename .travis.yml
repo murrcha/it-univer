@@ -1,0 +1,26 @@
+sudo: required
+
+language: android
+
+jdk: oraclejdk8
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-28.0.3
+    - android-28
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-android-support
+    - extra-google-google_play_services
+
+notifications:
+  email:
+    - murrcha@me.com
+
+script:
+  - ./gradlew checkstyle
+  - ./gradlew assembleDebug
+  - ./gradlew assembleDebugAndroidTest
+
