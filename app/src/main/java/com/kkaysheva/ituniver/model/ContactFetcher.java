@@ -20,6 +20,9 @@ import io.reactivex.Single;
  */
 public final class ContactFetcher {
 
+    private ContactFetcher() {
+    }
+
     public static Single<List<Contact>> getContacts(@NonNull Context context) {
         return Single.fromCallable(() -> {
             List<Contact> contacts = new ArrayList<>();

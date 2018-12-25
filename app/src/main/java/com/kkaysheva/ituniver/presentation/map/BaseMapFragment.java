@@ -35,7 +35,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
             Manifest.permission.ACCESS_COARSE_LOCATION,
     };
 
-    protected MapView mapView;
+    private MapView mapView;
 
     private boolean isGoogleMapReady = false;
     private boolean isStateSaved = false;
@@ -53,7 +53,9 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(fragmentLayout(), container, false);
     }
 
