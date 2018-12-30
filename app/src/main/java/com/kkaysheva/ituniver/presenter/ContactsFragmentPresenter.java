@@ -1,18 +1,19 @@
 package com.kkaysheva.ituniver.presenter;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.App;
 import com.kkaysheva.ituniver.Screens;
 import com.kkaysheva.ituniver.view.ContactsFragmentView;
-import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.model.ContactFetcher;
 
-import java.util.List;
-
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 /**
@@ -25,16 +26,64 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragmentView> {
 
+    private static final String TAG = ContactsFragmentPresenter.class.getSimpleName();
+
     private final Router router;
-    private LoadContactsAsyncTask task;
+
+    @NonNull
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public ContactsFragmentPresenter() {
         router = App.instance.getRouter();
     }
 
+    @Override
+    public void onDestroy() {
+        compositeDisposable.dispose();
+        super.onDestroy();
+    }
+
+    @SuppressLint("CheckResult")
     public void fetchContacts() {
-        task = new LoadContactsAsyncTask();
-        task.execute();
+        ContactFetcher.getContacts(App.getContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> {
+                    getViewState().showProgress(true);
+                    compositeDisposable.add(disposable);
+                })
+                .subscribe(
+                        contacts -> {
+                            getViewState().loadContacts(contacts);
+                            getViewState().showProgress(false);
+                        },
+                        throwable -> {
+                            getViewState().showProgress(false);
+                            Log.e(TAG, "onError: ", throwable);
+                        }
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void fetchContactsByName(String name) {
+        getViewState().saveQuery(name);
+        ContactFetcher.getContactsByName(name, App.getContext())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> {
+                    getViewState().showProgress(true);
+                    compositeDisposable.add(disposable);
+                })
+                .subscribe(
+                        contacts -> {
+                            getViewState().loadContacts(contacts);
+                            getViewState().showProgress(false);
+                        },
+                        throwable -> {
+                            getViewState().showProgress(false);
+                            Log.e(TAG, "onError: ", throwable);
+                        }
+                );
     }
 
     public void onForwardCommandClick(int contactId) {
@@ -47,39 +96,5 @@ public final class ContactsFragmentPresenter extends MvpPresenter<ContactsFragme
 
     public void hideMessage() {
         getViewState().hideMessage();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (task != null) {
-            task.cancel(true);
-        }
-        task = null;
-        super.onDestroy();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    final class LoadContactsAsyncTask extends AsyncTask<Void, Void, List<Contact>> {
-
-        @Override
-        protected void onPreExecute() {
-            if (!isCancelled()) {
-                getViewState().showProgress(true);
-            }
-        }
-
-        @Override
-        protected List<Contact> doInBackground(Void... voids) {
-            if (!isCancelled()) {
-                return ContactFetcher.getContacts(App.getContext());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Contact> contacts) {
-            getViewState().loadContacts(contacts);
-            getViewState().showProgress(false);
-        }
     }
 }

@@ -33,4 +33,12 @@ public final class Screens {
             return ContactFragment.newInstance(contactId);
         }
     }
+
+    public static final class MapScreen extends SupportAppScreen {
+
+        @Override
+        public Fragment getFragment() {
+            return ContactMapFragment.newInstance();
+        }
+    }
 }

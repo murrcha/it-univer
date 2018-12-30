@@ -124,6 +124,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         switch (item.getItemId()) {
             case R.id.location_contact:
                 //todo forward to map fragment
+                presenter.onForwardCommandClick();
                 Toast.makeText(requireContext(), "Go to map", Toast.LENGTH_SHORT).show();
                 return true;
             default:

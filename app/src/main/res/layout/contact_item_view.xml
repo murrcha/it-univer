@@ -4,11 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/margin_card_view"
-    android:layout_marginStart="@dimen/margin_card_view"
-    android:layout_marginEnd="@dimen/margin_card_view"
-    android:layout_marginTop="@dimen/margin_half_card_view"
-    android:layout_marginBottom="@dimen/margin_half_card_view">
+    app:cardCornerRadius="@dimen/margin_card_view" >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
