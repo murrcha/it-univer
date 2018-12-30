@@ -8,6 +8,7 @@ import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.di.main.MainComponent;
 import com.kkaysheva.ituniver.di.main.MainModule;
+import com.kkaysheva.ituniver.network.GeoCodeApi;
 
 import javax.inject.Singleton;
 
@@ -22,13 +23,14 @@ import ru.terrakok.cicerone.Router;
  * @since 12.2018
  */
 @Singleton
-@Component (modules = {AppModule.class, NavigationModule.class, DatabaseModule.class})
+@Component (modules = {AppModule.class, NavigationModule.class, DatabaseModule.class, NetworkModule.class})
 public interface AppComponent {
 
     Router provideRouter();
     NavigatorHolder provideNavigationHolder();
     Context provideApplicationContext();
     AppDatabase provideDatabase();
+    GeoCodeApi provideGeoCodeApi();
 
     MainComponent plusMainComponent(MainModule mainModule);
     ContactsComponent plusContactsComponent();

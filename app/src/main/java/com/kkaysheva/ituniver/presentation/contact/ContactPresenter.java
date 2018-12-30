@@ -1,14 +1,13 @@
 package com.kkaysheva.ituniver.presentation.contact;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.model.ContactFetcher;
+import com.kkaysheva.ituniver.domain.ContactInteractor;
+import com.kkaysheva.ituniver.presentation.Screens;
 
 import javax.inject.Inject;
 
@@ -30,7 +29,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
     private static final String TAG = ContactPresenter.class.getSimpleName();
 
     @NonNull
-    private final Context context;
+    private final ContactInteractor interactor;
 
     @NonNull
     private final Router router;
@@ -39,9 +38,9 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
-    ContactPresenter(@NonNull Router router, @NonNull Context context) {
+    ContactPresenter(@NonNull Router router, @NonNull ContactInteractor interactor) {
         this.router = router;
-        this.context = context;
+        this.interactor = interactor;
     }
 
     @Override
@@ -52,7 +51,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
 
     @SuppressLint("CheckResult")
     public void fetchContact(int contactId) {
-        ContactFetcher.getContactById(contactId, context)
+        interactor.getContactById(contactId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {

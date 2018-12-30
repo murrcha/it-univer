@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.presentation;
 
 import android.support.v4.app.Fragment;
 

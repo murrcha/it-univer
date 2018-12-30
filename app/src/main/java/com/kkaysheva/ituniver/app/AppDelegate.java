@@ -6,7 +6,9 @@ import android.support.annotation.NonNull;
 import com.kkaysheva.ituniver.di.app.AppComponent;
 import com.kkaysheva.ituniver.di.app.AppModule;
 import com.kkaysheva.ituniver.di.app.DaggerAppComponent;
+import com.kkaysheva.ituniver.di.app.DatabaseModule;
 import com.kkaysheva.ituniver.di.app.NavigationModule;
+import com.kkaysheva.ituniver.di.app.NetworkModule;
 
 /**
  * AppDelegate
@@ -28,6 +30,8 @@ public final class AppDelegate extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .navigationModule(new NavigationModule())
+                .databaseModule(new DatabaseModule())
+                .networkModule(new NetworkModule())
                 .build();
     }
 

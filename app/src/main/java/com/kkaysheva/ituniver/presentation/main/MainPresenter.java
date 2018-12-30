@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.Screens;
+import com.kkaysheva.ituniver.presentation.Screens;
 
 import javax.inject.Inject;
 

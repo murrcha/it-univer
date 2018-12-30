@@ -170,9 +170,9 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMapClickListener(latLng -> {
-            Toast.makeText(requireContext(), "Tap here", Toast.LENGTH_SHORT).show();
             map.clear();
             map.addMarker(new MarkerOptions().position(latLng));
+            Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
         });
         Log.d(TAG, "onMapReady: ready");
         configureMap();

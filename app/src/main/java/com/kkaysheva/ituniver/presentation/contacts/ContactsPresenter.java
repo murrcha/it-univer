@@ -1,19 +1,17 @@
 package com.kkaysheva.ituniver.presentation.contacts;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.Screens;
-import com.kkaysheva.ituniver.model.ContactFetcher;
+import com.kkaysheva.ituniver.domain.ContactsInteractor;
+import com.kkaysheva.ituniver.presentation.Screens;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
@@ -34,15 +32,15 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
     private final Router router;
 
     @NonNull
-    private final Context context;
+    private final ContactsInteractor interactor;
 
     @io.reactivex.annotations.NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
-    ContactsPresenter(@NonNull Router router, @NonNull Context context) {
+    ContactsPresenter(@NonNull Router router, @NonNull ContactsInteractor interactor) {
         this.router = router;
-        this.context = context;
+        this.interactor = interactor;
     }
 
     @Override
@@ -53,7 +51,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
 
     @SuppressLint("CheckResult")
     public void fetchContacts() {
-        ContactFetcher.getContacts(context)
+        interactor.getContacts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
@@ -75,7 +73,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
     @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
-        ContactFetcher.getContactsByName(name, context)
+        interactor.getContactsByName(name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> {
