@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain;
+package com.kkaysheva.ituniver.domain.contact;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

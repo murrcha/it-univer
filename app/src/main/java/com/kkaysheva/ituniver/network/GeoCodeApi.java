@@ -4,7 +4,7 @@ import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * GeoCodeApi
@@ -14,8 +14,10 @@ import retrofit2.http.Path;
  */
 public interface GeoCodeApi {
 
-    String BASE_URL = "https://geocode-maps.yandex.ru/";
+    String BASE_URL = "https://geocode-maps.yandex.ru/1.x/";
 
-    @GET("1.x/?geocode={latLng}&format=json")
-    Single<GeoCodeResponse> loadAddress(@Path("latLng") String latLng);
+    @GET(".")
+    Single<GeoCodeResponse> loadAddress(
+            @Query("geocode") String latLng,
+            @Query("format") String format);
 }

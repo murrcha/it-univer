@@ -13,7 +13,10 @@ import io.reactivex.Single;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public class GeoCodeServiceRetrofit {
+public final class GeoCodeServiceRetrofit {
+
+    private static final String FORMAT = "json";
+    private static final int FIRST_ELEMENT = 0;
 
     @NonNull
     private GeoCodeApi geoCodeApi;
@@ -25,16 +28,19 @@ public class GeoCodeServiceRetrofit {
 
     @NonNull
     public Single<String> loadGeoCode(String latLng) {
-        return geoCodeApi.loadAddress(latLng)
+        return geoCodeApi.loadAddress(latLng, FORMAT)
                 .flatMap(geoCodeResponse ->
                         Single.just(geoCodeResponse
+                                .getResponse()
                                 .getGeoObjectCollection()
-                                .getGeoObjects()
-                                .get(0)
+                                .getFeatureMember()
+                                .get(FIRST_ELEMENT)
+                                .getGeoObject()
                                 .getMetaDataProperty()
                                 .getGeocoderMetaData()
                                 .getAddressDetails()
                                 .getCountry()
-                                .getAddressLine()));
+                                .getAddressLine()
+                        ));
     }
 }

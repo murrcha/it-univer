@@ -8,6 +8,7 @@ import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.di.main.MainComponent;
 import com.kkaysheva.ituniver.di.main.MainModule;
+import com.kkaysheva.ituniver.di.map.MapComponent;
 import com.kkaysheva.ituniver.network.GeoCodeApi;
 
 import javax.inject.Singleton;
@@ -35,6 +36,7 @@ public interface AppComponent {
     MainComponent plusMainComponent(MainModule mainModule);
     ContactsComponent plusContactsComponent();
     ContactComponent plusContactComponent();
+    MapComponent plusMapComponent();
 
     void inject(AppDelegate appDelegate);
 }

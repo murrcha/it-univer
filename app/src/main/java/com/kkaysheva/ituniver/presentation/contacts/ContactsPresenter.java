@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.kkaysheva.ituniver.domain.ContactsInteractor;
+import com.kkaysheva.ituniver.domain.contacts.ContactsInteractor;
 import com.kkaysheva.ituniver.presentation.Screens;
 
 import javax.inject.Inject;

@@ -1,34 +1,31 @@
 package com.kkaysheva.ituniver.presentation.map;
 
-import android.Manifest;
-import android.app.Dialog;
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
+import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.di.map.MapComponent;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 /**
  * ContactMapFragment
@@ -36,122 +33,74 @@ import com.kkaysheva.ituniver.R;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
+public final class ContactMapFragment extends BaseMapFragment implements ContactMapView {
 
     private static final String TAG = ContactMapFragment.class.getSimpleName();
-    private static final String MAP_VIEW_BUNDLE_KEY = "map_view_bundle_key";
 
-    private static final int REQUEST_ERROR = 0;
-    private static final int REQUEST_LOCATION_PERMISSIONS = 1;
-    private static final String[] LOCATION_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-    };
-    private static final int DEFAULT_ZOOM = 17;
-    private static final int MIN_ZOOM = 11;
-    private static final double DEFAULT_LATITUDE = 55.753215;
-    private static final double DEFAULT_LONGITUDE = 37.622504;
+    @Inject
+    Provider<ContactMapPresenter> presenterProvider;
+
+    @InjectPresenter
+    ContactMapPresenter presenter;
+
+    private GoogleMap map;
 
     private Location lastKnownLocation;
     private LatLng defaultLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
-
-    private MapView mapView;
-    private GoogleMap map;
 
     public static ContactMapFragment newInstance() {
         return new ContactMapFragment();
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        defaultLocation = new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
+    public void onAttach(Context context) {
+        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
+        MapComponent mapComponent = appDelegate.getAppComponent()
+                .plusMapComponent();
+        mapComponent.inject(this);
+        super.onAttach(context);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_map, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        defaultLocation = new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Toolbar toolbar = view.findViewById(R.id.map_toolbar);
         toolbar.setTitle(R.string.map_title);
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Bundle mapViewBundle = null;
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
-        }
-        mapView = view.findViewById(R.id.map_view);
-        mapView.onCreate(mapViewBundle);
-        mapView.getMapAsync(this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mapView.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int errorCode = apiAvailability.isGooglePlayServicesAvailable(requireContext());
-        if (errorCode != ConnectionResult.SUCCESS) {
-            Dialog errorDialog = apiAvailability
-                    .getErrorDialog(requireActivity(), errorCode, REQUEST_ERROR,
-                            dialog -> {
-                                Toast.makeText(requireContext(), "No Google Play Services", Toast.LENGTH_SHORT).show();
-                                requireActivity().onBackPressed();
-                            });
-            errorDialog.show();
-        } else {
-            mapView.onResume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        mapView.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Bundle mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY);
-        if (mapViewBundle == null) {
-            mapViewBundle = new Bundle();
-            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle);
-        }
-        mapView.onSaveInstanceState(mapViewBundle);
-    }
-
-    @Override
-    public void onStop() {
-        mapView.onStop();
-        super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        mapView.onDestroy();
+        Log.d(TAG, "onDestroy: ");
         super.onDestroy();
     }
 
     @Override
-    public void onLowMemory() {
-        mapView.onLowMemory();
-        super.onLowMemory();
+    protected int fragmentLayout() {
+        return R.layout.fragment_map;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        super.onMapReady(googleMap);
+        map = googleMap;
+        presenter.configureMap();
+        map.setOnMapClickListener(latLng -> {
+            presenter.addMarker(latLng);
+            presenter.getAddress(latLng);
+        });
+        Log.d(TAG, "onMapReady: ready");
     }
 
     @Override
@@ -160,27 +109,61 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS:
-                configureMap();
+                presenter.configureMap();
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        map.setOnMapClickListener(latLng -> {
-            map.clear();
-            map.addMarker(new MarkerOptions().position(latLng));
-            Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
-        });
-        Log.d(TAG, "onMapReady: ready");
-        configureMap();
+    public void configureMap() {
+        if (map == null) {
+            Log.d(TAG, "configureMap: map = null");
+            return;
+        }
+        try {
+            if (hasLocationPermission()) {
+                Log.d(TAG, "configureMap: has permissions");
+                map.setMyLocationEnabled(true);
+                map.getUiSettings().setMyLocationButtonEnabled(true);
+                map.getUiSettings().setZoomControlsEnabled(true);
+                map.setMinZoomPreference(MIN_ZOOM);
+                getDeviceLocation();
+                map.setOnMyLocationButtonClickListener(() -> {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                            lastKnownLocation.getLatitude(),
+                            lastKnownLocation.getLongitude()
+                    ), DEFAULT_ZOOM));
+                    return false;
+                });
+            } else {
+                Log.d(TAG, "configureMap: request permissions");
+                map.setMyLocationEnabled(false);
+                map.getUiSettings().setMyLocationButtonEnabled(false);
+                lastKnownLocation = null;
+                requestPermissions();
+            }
+        } catch (SecurityException e) {
+            Log.e(TAG, "configureMap: ", e);
+        }
     }
 
-    private boolean hasLocationPermission() {
-        int result = ContextCompat.checkSelfPermission(requireActivity(), LOCATION_PERMISSIONS[0]);
-        return result == PackageManager.PERMISSION_GRANTED;
+    @Override
+    public void addMarker(@NonNull LatLng latLng) {
+        if (map != null) {
+            map.clear();
+            map.addMarker(new MarkerOptions().position(latLng));
+        }
+    }
+
+    @Override
+    public void showAddress(@NonNull String address) {
+        Toast.makeText(requireContext(), address, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showErrorLog(@NonNull Throwable throwable) {
+        Log.e(TAG, "showErrorLog: ", throwable);
     }
 
     private void getDeviceLocation() {
@@ -209,36 +192,8 @@ public class ContactMapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void configureMap() {
-        if (map == null) {
-            Log.d(TAG, "configureMap: map = null");
-            return;
-        }
-        try {
-            if (hasLocationPermission()) {
-                Log.d(TAG, "configureMap: has permissions");
-                map.setMyLocationEnabled(true);
-                map.getUiSettings().setMyLocationButtonEnabled(true);
-                map.getUiSettings().setZoomControlsEnabled(true);
-                map.setMinZoomPreference(MIN_ZOOM);
-                getDeviceLocation();
-                map.setOnMyLocationButtonClickListener(() -> {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-                            lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude()
-                    ), DEFAULT_ZOOM));
-                    return false;
-                });
-            } else {
-                Log.d(TAG, "configureMap: request permissions");
-                map.setMyLocationEnabled(false);
-                map.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
-                requestPermissions(LOCATION_PERMISSIONS,
-                        REQUEST_LOCATION_PERMISSIONS);
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "configureMap: ", e);
-        }
+    @ProvidePresenter
+    ContactMapPresenter providePresenter() {
+        return presenterProvider.get();
     }
 }
