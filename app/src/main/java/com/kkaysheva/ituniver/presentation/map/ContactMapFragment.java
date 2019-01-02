@@ -36,6 +36,7 @@ import javax.inject.Provider;
 public final class ContactMapFragment extends BaseMapFragment implements ContactMapView {
 
     private static final String TAG = ContactMapFragment.class.getSimpleName();
+    private static final String CONTACT_ID = "contactId";
 
     @Inject
     Provider<ContactMapPresenter> presenterProvider;
@@ -45,12 +46,18 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
 
     private GoogleMap map;
 
+    private int contactId;
+
     private Location lastKnownLocation;
     private LatLng defaultLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    public static ContactMapFragment newInstance() {
-        return new ContactMapFragment();
+    public static ContactMapFragment newInstance(int contactId) {
+        Bundle args = new Bundle();
+        args.putInt(CONTACT_ID, contactId);
+        ContactMapFragment fragment = new ContactMapFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -65,6 +72,10 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            contactId = getArguments().getInt(CONTACT_ID);
+        }
 
         defaultLocation = new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
@@ -96,9 +107,10 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
         super.onMapReady(googleMap);
         map = googleMap;
         presenter.configureMap();
+        //presenter.getLocationById(contactId);
         map.setOnMapClickListener(latLng -> {
             presenter.addMarker(latLng);
-            presenter.getAddress(latLng);
+            presenter.getAddress(contactId, latLng);
         });
         Log.d(TAG, "onMapReady: ready");
     }
@@ -127,13 +139,16 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                 map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
                 map.getUiSettings().setZoomControlsEnabled(true);
-                map.setMinZoomPreference(MIN_ZOOM);
                 getDeviceLocation();
                 map.setOnMyLocationButtonClickListener(() -> {
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-                            lastKnownLocation.getLatitude(),
-                            lastKnownLocation.getLongitude()
-                    ), DEFAULT_ZOOM));
+                    if (lastKnownLocation != null) {
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+                                lastKnownLocation.getLatitude(),
+                                lastKnownLocation.getLongitude()
+                        ), DEFAULT_ZOOM));
+                    } else {
+                        Toast.makeText(requireContext(), "No current location", Toast.LENGTH_SHORT).show();
+                    }
                     return false;
                 });
             } else {
@@ -143,16 +158,9 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                 lastKnownLocation = null;
                 requestPermissions();
             }
+            presenter.getLocationById(contactId);
         } catch (SecurityException e) {
             Log.e(TAG, "configureMap: ", e);
-        }
-    }
-
-    @Override
-    public void addMarker(@NonNull LatLng latLng) {
-        if (map != null) {
-            map.clear();
-            map.addMarker(new MarkerOptions().position(latLng));
         }
     }
 
@@ -162,8 +170,22 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     }
 
     @Override
-    public void showErrorLog(@NonNull Throwable throwable) {
-        Log.e(TAG, "showErrorLog: ", throwable);
+    public void addMarker(@NonNull LatLng latLng) {
+        if (map != null) {
+            map.clear();
+            map.addMarker(new MarkerOptions().position(latLng));
+        } else {
+            Log.d(TAG, "addMarker: map is null");
+        }
+    }
+
+    @Override
+    public void showMarker(@NonNull LatLng latLng) {
+        if (map != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        } else {
+            Log.d(TAG, "showMarker: map is null");
+        }
     }
 
     private void getDeviceLocation() {
@@ -174,11 +196,11 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                 locationResult.addOnCompleteListener(requireActivity(), task -> {
                     if (task.isSuccessful()) {
                         lastKnownLocation = (Location) task.getResult();
-                        if (lastKnownLocation != null) {
+                        /*if (lastKnownLocation != null) {
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(lastKnownLocation.getLatitude(),
                                             lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                        }
+                        }*/
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");
                         Log.e(TAG, "getDeviceLocation: ", task.getException());

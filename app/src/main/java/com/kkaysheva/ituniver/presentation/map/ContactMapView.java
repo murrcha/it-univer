@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
-import com.arellomobile.mvp.viewstate.strategy.SingleStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -20,11 +19,11 @@ public interface ContactMapView extends MvpView {
     void configureMap();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
+    void showAddress(@NonNull String address);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
     void addMarker(@NonNull LatLng latLng);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void showAddress(@NonNull String address);
-
-    @StateStrategyType(SingleStateStrategy.class)
-    void showErrorLog(Throwable throwable);
+    void showMarker(@NonNull LatLng latLng);
 }

@@ -31,36 +31,36 @@ public final class ContactRepository implements BaseRepository<ContactInfo, Long
     @NonNull
     @Override
     public Single<List<ContactInfo>> getAll() {
-        return appDatabase.getContactDaO().getAll();
+        return appDatabase.getContactDao().getAll();
     }
 
     @Nullable
     @Override
     public Single<ContactInfo> getById(@NonNull Long id) {
-        return appDatabase.getContactDaO().getContactInfoById(id);
+        return appDatabase.getContactDao().getContactInfoById(id);
     }
 
     @NonNull
     @Override
     public Completable update(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDaO().updateContactInfo(contactInfo));
+        return Completable.fromAction(() -> appDatabase.getContactDao().updateContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable insert(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDaO().insertContactInfo(contactInfo));
+        return Completable.fromAction(() -> appDatabase.getContactDao().insertContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable delete(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDaO().deleteContactInfo(contactInfo));
+        return Completable.fromAction(() -> appDatabase.getContactDao().deleteContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable deleteAll() {
-        return Completable.fromAction(() -> appDatabase.getContactDaO().deleteAll());
+        return Completable.fromAction(() -> appDatabase.getContactDao().deleteAll());
     }
 }

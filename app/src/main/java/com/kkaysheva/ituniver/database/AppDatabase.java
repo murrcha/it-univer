@@ -13,5 +13,5 @@ import com.kkaysheva.ituniver.model.ContactInfo;
  */
 @Database(entities = {ContactInfo.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract ContactDao getContactDaO();
+    public abstract ContactDao getContactDao();
 }

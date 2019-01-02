@@ -60,7 +60,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
                 })
                 .subscribe(
                         contact -> {
-                            getViewState().loadContact(contact);
+                            getViewState().showContact(contact);
                             getViewState().showProgress(false);
                         },
                         throwable -> {
@@ -70,7 +70,19 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
                 );
     }
 
-    public void onForwardCommandClick() {
-        router.navigateTo(new Screens.MapScreen());
+    @SuppressLint("CheckResult")
+    public void fetchContactInfo(int contactId) {
+        interactor.getContactInfoById(contactId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(compositeDisposable::add)
+                .subscribe(
+                        contactInfo -> getViewState().showContactInfo(contactInfo),
+                        throwable -> Log.e(TAG, "fetchContactInfo: error", throwable)
+                );
+    }
+
+    public void onForwardCommandClick(int contactId) {
+        router.navigateTo(new Screens.MapScreen(contactId));
     }
 }

@@ -40,9 +40,15 @@ public final class Screens {
 
     public static final class MapScreen extends SupportAppScreen {
 
+        private final int contactId;
+
+        public MapScreen(int contactId) {
+            this.contactId = contactId;
+        }
+
         @Override
         public Fragment getFragment() {
-            return ContactMapFragment.newInstance();
+            return ContactMapFragment.newInstance(contactId);
         }
     }
 }

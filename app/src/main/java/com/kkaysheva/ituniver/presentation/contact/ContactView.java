@@ -4,6 +4,7 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.model.ContactInfo;
 
 /**
  * ContactView
@@ -14,7 +15,10 @@ import com.kkaysheva.ituniver.model.Contact;
 public interface ContactView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void loadContact(Contact contact);
+    void showContact(Contact contact);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showContactInfo(ContactInfo contactInfo);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showProgress(boolean isLoading);

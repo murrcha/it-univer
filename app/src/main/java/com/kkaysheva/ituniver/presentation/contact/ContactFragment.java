@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -28,6 +27,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.app.AppDelegate;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
+import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.model.ContactInfo;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -53,6 +54,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     private int contactId;
     private TextView name;
     private TextView number;
+    private TextView geoInfo;
     private ImageView photo;
     private ProgressBar progressBar;
 
@@ -96,6 +98,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         TextView id = view.findViewById(R.id.id_detail);
         name = view.findViewById(R.id.name_detail);
         number = view.findViewById(R.id.number_detail);
+        geoInfo = view.findViewById(R.id.geo_info);
         photo = view.findViewById(R.id.photo_detail);
         progressBar = view.findViewById(R.id.progress_contact_load);
         Toolbar toolbar = view.findViewById(R.id.contact_toolbar);
@@ -107,6 +110,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
                 == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "onViewCreated: permission granted, fetchContacts contact");
             presenter.fetchContact(contactId);
+            presenter.fetchContactInfo(contactId);
         } else {
             Log.d(TAG, "onViewCreated: permission denied, request permissions");
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_READ_CONTACTS);
@@ -118,6 +122,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         name = null;
         number = null;
         photo = null;
+        geoInfo = null;
         progressBar = null;
         super.onDestroyView();
     }
@@ -129,6 +134,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
         if (requestCode == PERMISSION_REQUEST_READ_CONTACTS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 presenter.fetchContact(contactId);
+                presenter.fetchContactInfo(contactId);
             } else {
                 name.setText(R.string.no_permissions);
             }
@@ -144,8 +150,7 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.location_contact:
-                presenter.onForwardCommandClick();
-                Toast.makeText(requireContext(), "Go to map", Toast.LENGTH_SHORT).show();
+                presenter.onForwardCommandClick(contactId); // go to map
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -153,16 +158,45 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
     }
 
     @Override
-    public void loadContact(com.kkaysheva.ituniver.model.Contact contact) {
-        if (contact != null) {
-            name.setText(contact.getName());
-            number.setText(contact.getNumber());
-            if (contact.getPhotoUri() != null) {
-                Uri uri = Uri.parse(contact.getPhotoUri());
-                photo.setImageURI(uri);
-            }
+    public void showContact(Contact contact) {
+        if (contact == null) {
+            name.append(getString(R.string.no_info));
+            Log.d(TAG, "showContact: contact is null");
         } else {
-            Log.d(TAG, "loadContact: contact is null");
+            String name = contact.getName() != null
+                    ? contact.getName()
+                    : "";
+            String number = contact.getNumber() != null
+                    ? contact.getNumber()
+                    : "";
+            Uri photoUri = contact.getPhotoUri() != null
+                    ? Uri.parse(contact.getPhotoUri())
+                    : null;
+            this.name.setText(name);
+            this.number.setText(number);
+            if (photoUri != null) {
+                photo.setImageURI(photoUri);
+            }
+        }
+    }
+
+    @Override
+    public void showContactInfo(ContactInfo contactInfo) {
+        if (contactInfo == null) {
+            geoInfo.append(getString(R.string.no_info));
+            Log.d(TAG, "showContactInfo: contact info is null");
+        } else {
+            String address = contactInfo.getAddress() != null
+                    ? contactInfo.getAddress()
+                    : "";
+            String longitude = contactInfo.getLongitude() != null
+                    ? contactInfo.getLongitude()
+                    : "";
+            String latitude = contactInfo.getLatitude() != null
+                    ? contactInfo.getLatitude()
+                    : "";
+            geoInfo.setText(String.format("Address:\n%s.\n\nLocation:\n%s, %s",
+                    address, longitude, latitude));
         }
     }
 

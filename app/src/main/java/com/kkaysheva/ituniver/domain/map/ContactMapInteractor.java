@@ -9,6 +9,7 @@ import com.kkaysheva.ituniver.network.GeoCodeServiceRetrofit;
 
 import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 /**
@@ -22,6 +23,7 @@ public final class ContactMapInteractor {
     @NonNull
     private final GeoCodeServiceRetrofit service;
 
+    @NonNull
     private final ContactRepository repository;
 
     @Inject
@@ -35,10 +37,21 @@ public final class ContactMapInteractor {
         return service.loadGeoCode(latLngString);
     }
 
-    public void saveAddress(int contactId, LatLng latLng, String address) {
+    public Completable saveAddress(int contactId, LatLng latLng, String address) {
         String longitude = String.valueOf(latLng.longitude);
         String latitude = String.valueOf(latLng.latitude);
         ContactInfo contactInfo = new ContactInfo(contactId, longitude, latitude, address);
-        repository.update(contactInfo);
+        return repository.insert(contactInfo);
+    }
+
+    public Single<LatLng> getLatLngById(int contactId) {
+        return repository.getById((long) contactId)
+                .flatMap(contactInfo ->
+                        Single.just(
+                                new LatLng(
+                                        Double.parseDouble(contactInfo.getLatitude()),
+                                        Double.parseDouble(contactInfo.getLongitude()))
+                        )
+                );
     }
 }
