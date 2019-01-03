@@ -83,6 +83,6 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
     }
 
     public void onForwardCommandClick(int contactId) {
-        router.navigateTo(new Screens.MapScreen(contactId));
+        router.navigateTo(new Screens.ContactMapScreen(contactId));
     }
 }

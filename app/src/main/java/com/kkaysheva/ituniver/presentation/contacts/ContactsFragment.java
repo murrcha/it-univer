@@ -166,6 +166,9 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
             case R.id.action_sync:
                 presenter.fetchContacts();
                 return true;
+            case R.id.action_map:
+                presenter.onForwardCommandClickToMap();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -178,7 +181,7 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
         recyclerView.addItemDecoration(
                 new ContactItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_view)));
         adapter = new ContactAdapter();
-        adapter.setOnClickListener(presenter::onForwardCommandClick);
+        adapter.setOnClickListener(presenter::onForwardCommandClickToContact);
         recyclerView.setAdapter(adapter);
         message = view.findViewById(R.id.contacts_message);
     }

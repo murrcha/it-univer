@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.presentation.map;
+package com.kkaysheva.ituniver.presentation.map.contacts;
 
 import android.content.Context;
 import android.location.Location;
@@ -18,46 +18,44 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.app.AppDelegate;
 import com.kkaysheva.ituniver.di.map.MapComponent;
+import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 /**
- * ContactMapFragment
+ * ContactsMapFragment
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
- * @since 12.2018
+ * @since 01.2019
  */
-public final class ContactMapFragment extends BaseMapFragment implements ContactMapView {
+public final class ContactsMapFragment extends BaseMapFragment implements ContactsMapView {
 
-    private static final String TAG = ContactMapFragment.class.getSimpleName();
-    private static final String CONTACT_ID = "contactId";
+    private static final String TAG = ContactsMapFragment.class.getSimpleName();
+    private static final int PADDING = 100;
 
     @Inject
-    Provider<ContactMapPresenter> presenterProvider;
+    Provider<ContactsMapPresenter> presenterProvider;
 
     @InjectPresenter
-    ContactMapPresenter presenter;
+    ContactsMapPresenter presenter;
 
     private GoogleMap map;
-
-    private int contactId;
 
     private Location lastKnownLocation;
     private LatLng defaultLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    public static ContactMapFragment newInstance(int contactId) {
-        Bundle args = new Bundle();
-        args.putInt(CONTACT_ID, contactId);
-        ContactMapFragment fragment = new ContactMapFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static ContactsMapFragment newInstance() {
+        return new ContactsMapFragment();
     }
 
     @Override
@@ -74,10 +72,6 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            contactId = getArguments().getInt(CONTACT_ID);
-        }
-
         defaultLocation = new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
@@ -93,18 +87,6 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     }
 
     @Override
-    public void onDestroyView() {
-        map = null;
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
-        super.onDestroy();
-    }
-
-    @Override
     protected int fragmentLayout() {
         return R.layout.fragment_map;
     }
@@ -114,10 +96,6 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
         super.onMapReady(googleMap);
         map = googleMap;
         presenter.configureMap();
-        map.setOnMapClickListener(latLng -> {
-            presenter.addMarker(latLng);
-            presenter.getAddress(contactId, latLng);
-        });
         Log.d(TAG, "onMapReady: ready");
     }
 
@@ -164,33 +142,34 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                 lastKnownLocation = null;
                 requestPermissions();
             }
-            presenter.getLocationById(contactId);
+            presenter.getLocationForAll();
         } catch (SecurityException e) {
             Log.e(TAG, "configureMap: ", e);
         }
     }
 
     @Override
-    public void showAddress(@NonNull String address) {
-        Toast.makeText(requireContext(), address, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void addMarker(@NonNull LatLng latLng) {
+    public void addAllMarkers(@NonNull List<LatLng> locations) {
         if (map != null) {
             map.clear();
-            map.addMarker(new MarkerOptions().position(latLng));
+            for (LatLng location : locations) {
+                map.addMarker(new MarkerOptions().position(location));
+                Log.d(TAG, "addAllMarkers: " + location.toString());
+            }
         } else {
-            Log.d(TAG, "addMarker: map is null");
+            Log.d(TAG, "addAllMarkers: map is null");
         }
     }
 
     @Override
-    public void showMarker(@NonNull LatLng latLng) {
-        if (map != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "showMarker: map is null");
+    public void showAllMarkers(@NonNull List<LatLng> locations) {
+        if (map != null && !locations.isEmpty()) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (LatLng location : locations) {
+                builder.include(new LatLng(location.latitude, location.longitude));
+            }
+            LatLngBounds bounds = builder.build();
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING));
         }
     }
 
@@ -216,7 +195,7 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     }
 
     @ProvidePresenter
-    ContactMapPresenter providePresenter() {
+    ContactsMapPresenter providePresenter() {
         return presenterProvider.get();
     }
 }

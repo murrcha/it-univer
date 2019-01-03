@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import com.kkaysheva.ituniver.presentation.contact.ContactFragment;
 import com.kkaysheva.ituniver.presentation.contacts.ContactsFragment;
 import com.kkaysheva.ituniver.presentation.map.ContactMapFragment;
+import com.kkaysheva.ituniver.presentation.map.contacts.ContactsMapFragment;
 
 import ru.terrakok.cicerone.android.support.SupportAppScreen;
 
@@ -38,17 +39,25 @@ public final class Screens {
         }
     }
 
-    public static final class MapScreen extends SupportAppScreen {
+    public static final class ContactMapScreen extends SupportAppScreen {
 
         private final int contactId;
 
-        public MapScreen(int contactId) {
+        public ContactMapScreen(int contactId) {
             this.contactId = contactId;
         }
 
         @Override
         public Fragment getFragment() {
             return ContactMapFragment.newInstance(contactId);
+        }
+    }
+
+    public static final class ContactsMapScreen extends SupportAppScreen {
+
+        @Override
+        public Fragment getFragment() {
+            return ContactsMapFragment.newInstance();
         }
     }
 }

@@ -73,10 +73,10 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        latLng -> {
-                            getViewState().addMarker(latLng);
-                            getViewState().showMarker(latLng);
-                            Log.d(TAG, "getLocationById: " + latLng.toString());
+                        location -> {
+                            getViewState().addMarker(location);
+                            getViewState().showMarker(location);
+                            Log.d(TAG, "getLocationById: " + location.toString());
                         },
                         throwable -> Log.e(TAG, "getLocationById: error", throwable)
                 );

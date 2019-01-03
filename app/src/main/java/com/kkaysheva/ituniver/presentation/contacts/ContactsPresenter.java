@@ -92,8 +92,12 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
                 );
     }
 
-    public void onForwardCommandClick(int contactId) {
+    public void onForwardCommandClickToContact(int contactId) {
         router.navigateTo(new Screens.ContactScreen(contactId));
+    }
+
+    public void onForwardCommandClickToMap() {
+        router.navigateTo(new Screens.ContactsMapScreen());
     }
 
     public void showMessage(int message) {

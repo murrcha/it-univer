@@ -2,6 +2,7 @@ package com.kkaysheva.ituniver.di.map;
 
 import com.kkaysheva.ituniver.di.scope.FragmentScope;
 import com.kkaysheva.ituniver.presentation.map.ContactMapFragment;
+import com.kkaysheva.ituniver.presentation.map.contacts.ContactsMapFragment;
 
 import dagger.Subcomponent;
 
@@ -15,4 +16,5 @@ import dagger.Subcomponent;
 @Subcomponent(modules = {MapModule.class})
 public interface MapComponent {
     void inject(ContactMapFragment fragment);
+    void inject(ContactsMapFragment fragment);
 }

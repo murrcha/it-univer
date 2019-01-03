@@ -7,6 +7,9 @@ import com.kkaysheva.ituniver.database.ContactRepository;
 import com.kkaysheva.ituniver.model.ContactInfo;
 import com.kkaysheva.ituniver.network.GeoCodeServiceRetrofit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
@@ -47,11 +50,25 @@ public final class ContactMapInteractor {
     public Single<LatLng> getLatLngById(int contactId) {
         return repository.getById((long) contactId)
                 .flatMap(contactInfo ->
-                        Single.just(
-                                new LatLng(
-                                        Double.parseDouble(contactInfo.getLatitude()),
-                                        Double.parseDouble(contactInfo.getLongitude()))
-                        )
+                        Single.just(convertContactInfoToLatLng(contactInfo))
                 );
+    }
+
+    public Single<List<LatLng>> getLatLngAll() {
+        List<LatLng> locations = new ArrayList<>();
+        return repository.getAll()
+                .flatMap(contactInfoList -> {
+                    for (ContactInfo contactInfo : contactInfoList) {
+                        locations.add(convertContactInfoToLatLng(contactInfo));
+                    }
+                    return Single.just(locations);
+                });
+    }
+
+    private LatLng convertContactInfoToLatLng(@NonNull ContactInfo contactInfo) {
+        return new LatLng(
+            Double.parseDouble(contactInfo.getLatitude()),
+            Double.parseDouble(contactInfo.getLongitude())
+        );
     }
 }
