@@ -10,6 +10,7 @@ import com.kkaysheva.ituniver.model.ContactInfo;
 
 import javax.inject.Inject;
 
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
@@ -18,7 +19,7 @@ import io.reactivex.Single;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public class ContactInteractor {
+public final class ContactInteractor {
 
     @NonNull
     private final Context context;
@@ -36,7 +37,7 @@ public class ContactInteractor {
         return ContactFetcher.getContactById(contactId, context);
     }
 
-    public Single<ContactInfo> getContactInfoById(int contactId) {
+    public Maybe<ContactInfo> getContactInfoById(int contactId) {
         return repository.getById((long) contactId);
     }
 }

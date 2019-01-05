@@ -15,7 +15,7 @@ import ru.terrakok.cicerone.Router;
  * @since 12.2018
  */
 @Module
-public class NavigationModule {
+public final class NavigationModule {
 
     private final Cicerone<Router> cicerone;
 

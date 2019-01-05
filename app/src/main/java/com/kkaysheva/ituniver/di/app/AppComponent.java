@@ -10,6 +10,7 @@ import com.kkaysheva.ituniver.di.main.MainComponent;
 import com.kkaysheva.ituniver.di.main.MainModule;
 import com.kkaysheva.ituniver.di.map.MapComponent;
 import com.kkaysheva.ituniver.network.GeoCodeApi;
+import com.kkaysheva.ituniver.network.GoogleDirectionsApi;
 
 import javax.inject.Singleton;
 
@@ -24,18 +25,32 @@ import ru.terrakok.cicerone.Router;
  * @since 12.2018
  */
 @Singleton
-@Component (modules = {AppModule.class, NavigationModule.class, DatabaseModule.class, NetworkModule.class})
+@Component(modules = {
+        AppModule.class,
+        NavigationModule.class,
+        DatabaseModule.class,
+        NetworkModule.class,
+        MapperModule.class })
 public interface AppComponent {
 
     Router provideRouter();
+
     NavigatorHolder provideNavigationHolder();
+
     Context provideApplicationContext();
+
     AppDatabase provideDatabase();
+
     GeoCodeApi provideGeoCodeApi();
 
+    GoogleDirectionsApi provideGoogleDirections();
+
     MainComponent plusMainComponent(MainModule mainModule);
+
     ContactsComponent plusContactsComponent();
+
     ContactComponent plusContactComponent();
+
     MapComponent plusMapComponent();
 
     void inject(AppDelegate appDelegate);

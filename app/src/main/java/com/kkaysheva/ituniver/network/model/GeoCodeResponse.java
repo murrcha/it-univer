@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @since generated 12.2018
  */
-public class GeoCodeResponse {
+public final class GeoCodeResponse {
 
     /**
      * response : {"geoObjectCollection":{...}}

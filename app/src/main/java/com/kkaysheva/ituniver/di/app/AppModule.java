@@ -2,6 +2,7 @@ package com.kkaysheva.ituniver.di.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
 
@@ -15,11 +16,12 @@ import dagger.Provides;
  * @since 12.2018
  */
 @Module
-public class AppModule {
+public final class AppModule {
 
-    private Application application;
+    @NonNull
+    private final Application application;
 
-    public AppModule(Application application) {
+    public AppModule(@NonNull Application application) {
         this.application = application;
     }
 

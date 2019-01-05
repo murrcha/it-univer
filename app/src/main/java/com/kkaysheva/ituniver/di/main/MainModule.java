@@ -21,10 +21,10 @@ import ru.terrakok.cicerone.android.support.SupportAppNavigator;
 public final class MainModule {
 
     @NonNull
-    private FragmentActivity activity;
+    private final FragmentActivity activity;
 
     @NonNull
-    private FragmentManager fragmentManager;
+    private final FragmentManager fragmentManager;
 
     public MainModule(@NonNull FragmentActivity activity, @NonNull FragmentManager fragmentManager) {
         this.activity = activity;

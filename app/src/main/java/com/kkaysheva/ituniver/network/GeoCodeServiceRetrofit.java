@@ -2,6 +2,9 @@ package com.kkaysheva.ituniver.network;
 
 import android.support.annotation.NonNull;
 
+import com.kkaysheva.ituniver.domain.mapper.Mapper;
+import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
+
 import javax.inject.Inject;
 
 import io.reactivex.Single;
@@ -16,31 +19,23 @@ import io.reactivex.Single;
 public final class GeoCodeServiceRetrofit {
 
     private static final String FORMAT = "json";
-    private static final int FIRST_ELEMENT = 0;
 
     @NonNull
-    private GeoCodeApi geoCodeApi;
+    private final GeoCodeApi geoCodeApi;
+
+    @NonNull
+    private final Mapper<GeoCodeResponse, String> mapper;
 
     @Inject
-    public GeoCodeServiceRetrofit(@NonNull GeoCodeApi geoCodeApi) {
+    public GeoCodeServiceRetrofit(@NonNull GeoCodeApi geoCodeApi,
+                                  @NonNull Mapper<GeoCodeResponse, String> responseMapper) {
         this.geoCodeApi = geoCodeApi;
+        this.mapper = responseMapper;
     }
 
     @NonNull
-    public Single<String> loadGeoCode(String latLng) {
+    public Single<String> loadGeoCode(@NonNull String latLng) {
         return geoCodeApi.loadAddress(latLng, FORMAT)
-                .flatMap(geoCodeResponse ->
-                        Single.just(geoCodeResponse
-                                .getResponse()
-                                .getGeoObjectCollection()
-                                .getFeatureMember()
-                                .get(FIRST_ELEMENT)
-                                .getGeoObject()
-                                .getMetaDataProperty()
-                                .getGeocoderMetaData()
-                                .getAddressDetails()
-                                .getCountry()
-                                .getAddressLine()
-                        ));
+                .flatMap(geoCodeResponse -> Single.just(mapper.map(geoCodeResponse)));
     }
 }

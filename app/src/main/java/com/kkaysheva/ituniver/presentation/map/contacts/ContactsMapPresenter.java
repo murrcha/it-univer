@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.map.ContactMapInteractor;
 
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ import io.reactivex.schedulers.Schedulers;
  * @since 01.2019
  */
 @InjectViewState
-public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
+public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
 
     private static final String TAG = ContactsMapPresenter.class.getSimpleName();
 
@@ -46,6 +47,7 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
         getViewState().configureMap();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getLocationForAll() {
         interactor.getLatLngAll()
@@ -58,6 +60,22 @@ public class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                             getViewState().showAllMarkers(locations);
                         },
                         throwable -> Log.e(TAG, "getLocationForAll: error", throwable)
+                );
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void getRoute(LatLng origin, LatLng destination) {
+        interactor.getDirections(origin, destination)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(compositeDisposable::add)
+                .subscribe(
+                        locations -> getViewState().showRoute(locations),
+                        throwable -> {
+                            Log.e(TAG, "getRoute: error", throwable);
+                            getViewState().showError(throwable.getMessage());
+                        }
                 );
     }
 }

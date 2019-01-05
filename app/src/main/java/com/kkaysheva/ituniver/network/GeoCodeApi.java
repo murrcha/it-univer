@@ -14,7 +14,7 @@ import retrofit2.http.Query;
  */
 public interface GeoCodeApi {
 
-    String BASE_URL = "https://geocode-maps.yandex.ru/1.x/";
+    String GEO_BASE_URL = "https://geocode-maps.yandex.ru/1.x/";
 
     @GET(".")
     Single<GeoCodeResponse> loadAddress(

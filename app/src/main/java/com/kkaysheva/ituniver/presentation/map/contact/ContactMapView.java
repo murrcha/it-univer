@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.presentation.map;
+package com.kkaysheva.ituniver.presentation.map.contact;
 
 import android.support.annotation.NonNull;
 
@@ -26,4 +26,7 @@ public interface ContactMapView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showMarker(@NonNull LatLng latLng);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showError(@NonNull Throwable throwable);
 }

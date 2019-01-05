@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,9 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
     protected static final double DEFAULT_LONGITUDE = 37.622504;
     protected static final int DEFAULT_ZOOM = 17;
     protected static final int MIN_ZOOM = 11;
+
+    private static final String TAG = BaseMapFragment.class.getSimpleName();
+
     private static final String KEY_MAP_VIEW_OUT_STATE = "map_view_state";
     private static final int REQUEST_ERROR = 0;
     private static final String[] LOCATION_PERMISSIONS = new String[]{
@@ -49,6 +53,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
         super.onCreate(savedInstanceState);
 
         getMvpDelegate().onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
     }
 
     @Nullable
@@ -56,6 +61,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         return inflater.inflate(fragmentLayout(), container, false);
     }
 
@@ -73,6 +79,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
 
         isGoogleMapReady = false;
         mapView.getMapAsync(this);
+        Log.d(TAG, "onViewCreated: ");
     }
 
     @Override
@@ -84,6 +91,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
             getMvpDelegate().onAttach();
         }
         mapView.onStart();
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
@@ -97,11 +105,13 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
             getMvpDelegate().onAttach();
         }
         mapView.onResume();
+        Log.d(TAG, "onResume: ");
     }
 
     @Override
     public void onPause() {
         mapView.onPause();
+        Log.d(TAG, "onPause: ");
 
         super.onPause();
     }
@@ -110,6 +120,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
     public void onStop() {
         mapView.onStop();
         getMvpDelegate().onDetach();
+        Log.d(TAG, "onStop: ");
 
         super.onStop();
     }
@@ -118,6 +129,7 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
     public void onDestroyView() {
         getMvpDelegate().onDetach();
         getMvpDelegate().onDestroyView();
+        Log.d(TAG, "onDestroyView: ");
 
         super.onDestroyView();
     }
@@ -147,6 +159,8 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
         if (isRemoving() || anyParentIsRemoving) {
             getMvpDelegate().onDestroy();
         }
+
+        Log.d(TAG, "onDestroy: ");
     }
 
     @Override
@@ -160,12 +174,16 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
         mapView.onSaveInstanceState(bundle);
         outState.putBundle(KEY_MAP_VIEW_OUT_STATE, bundle);
 
+        Log.d(TAG, "onSaveInstanceState: ");
+
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onLowMemory() {
         mapView.onLowMemory();
+        Log.d(TAG, "onLowMemory: ");
+
         super.onLowMemory();
     }
 
@@ -173,6 +191,8 @@ public abstract class BaseMapFragment extends Fragment implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         isGoogleMapReady = true;
         getMvpDelegate().onAttach();
+
+        Log.d(TAG, "onMapReady: ");
     }
 
     public MvpDelegate getMvpDelegate() {

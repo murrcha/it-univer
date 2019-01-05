@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.kkaysheva.ituniver.presentation.contact.ContactFragment;
 import com.kkaysheva.ituniver.presentation.contacts.ContactsFragment;
-import com.kkaysheva.ituniver.presentation.map.ContactMapFragment;
+import com.kkaysheva.ituniver.presentation.map.contact.ContactMapFragment;
 import com.kkaysheva.ituniver.presentation.map.contacts.ContactsMapFragment;
 
 import ru.terrakok.cicerone.android.support.SupportAppScreen;

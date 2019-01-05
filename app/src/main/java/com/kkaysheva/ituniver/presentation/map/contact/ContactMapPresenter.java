@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.presentation.map;
+package com.kkaysheva.ituniver.presentation.map.contact;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
@@ -51,6 +51,7 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
         getViewState().addMarker(latLng);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getAddress(int contactId, LatLng latLng) {
         interactor.getAddress(latLng)
@@ -62,10 +63,14 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                             getViewState().showAddress(address);
                             saveAddress(contactId, latLng, address);
                         },
-                        throwable -> Log.e(TAG, "getAddress: error", throwable)
+                        throwable -> {
+                            getViewState().showError(throwable);
+                            Log.e(TAG, "getAddress: error", throwable);
+                        }
                 );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getLocationById(int contactId) {
         interactor.getLatLngById(contactId)
@@ -78,10 +83,12 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                             getViewState().showMarker(location);
                             Log.d(TAG, "getLocationById: " + location.toString());
                         },
-                        throwable -> Log.e(TAG, "getLocationById: error", throwable)
+                        throwable -> Log.e(TAG, "getLocationById: error", throwable),
+                        () -> Log.d(TAG, "getLocationById: no location")
                 );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     private void saveAddress(int contactId, LatLng latLng, String address) {
         interactor.saveAddress(contactId, latLng, address)

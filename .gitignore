@@ -9,3 +9,4 @@
 /captures
 .externalNativeBuild
 .idea/
+**/*/res/values/secrets.xml

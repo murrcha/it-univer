@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.presentation.map;
+package com.kkaysheva.ituniver.presentation.map.contact;
 
 import android.content.Context;
 import android.location.Location;
@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.app.AppDelegate;
 import com.kkaysheva.ituniver.di.map.MapComponent;
+import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -192,6 +193,11 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
         } else {
             Log.d(TAG, "showMarker: map is null");
         }
+    }
+
+    @Override
+    public void showError(@NonNull Throwable throwable) {
+        Toast.makeText(requireContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     private void getDeviceLocation() {

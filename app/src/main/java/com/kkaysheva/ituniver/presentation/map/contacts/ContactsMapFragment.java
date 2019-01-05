@@ -1,6 +1,7 @@
 package com.kkaysheva.ituniver.presentation.map.contacts;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +20,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.app.AppDelegate;
@@ -40,7 +44,7 @@ import javax.inject.Provider;
 public final class ContactsMapFragment extends BaseMapFragment implements ContactsMapView {
 
     private static final String TAG = ContactsMapFragment.class.getSimpleName();
-    private static final int PADDING = 100;
+    private static final int PADDING = 200;
 
     @Inject
     Provider<ContactsMapPresenter> presenterProvider;
@@ -49,6 +53,12 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
     ContactsMapPresenter presenter;
 
     private GoogleMap map;
+
+    private Polyline routeLine;
+
+    private boolean firstMarkerSelected = false;
+    private Marker origin;
+    private Marker destination;
 
     private Location lastKnownLocation;
     private LatLng defaultLocation;
@@ -95,6 +105,25 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         map = googleMap;
+        map.setOnMarkerClickListener(marker -> {
+            Log.d(TAG, "onMarkerClick: " + marker.getPosition().toString());
+            if (firstMarkerSelected) {
+                destination = marker;
+                marker.setTitle("To");
+                marker.showInfoWindow();
+                if (routeLine != null) {
+                    routeLine.remove();
+                }
+                presenter.getRoute(origin.getPosition(), destination.getPosition());
+                firstMarkerSelected = false;
+            } else {
+                origin = marker;
+                marker.setTitle("From");
+                marker.showInfoWindow();
+                firstMarkerSelected = true;
+            }
+            return true;
+        });
         presenter.configureMap();
         Log.d(TAG, "onMapReady: ready");
     }
@@ -119,7 +148,6 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
         }
         try {
             if (hasLocationPermission()) {
-                Log.d(TAG, "configureMap: has permissions");
                 map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
                 map.getUiSettings().setZoomControlsEnabled(true);
@@ -135,14 +163,16 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                     }
                     return false;
                 });
+                Log.d(TAG, "configureMap: has permissions");
             } else {
-                Log.d(TAG, "configureMap: request permissions");
                 map.setMyLocationEnabled(false);
                 map.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
                 requestPermissions();
+                Log.d(TAG, "configureMap: request permissions");
             }
             presenter.getLocationForAll();
+            Log.d(TAG, "configureMap: get all locations");
         } catch (SecurityException e) {
             Log.e(TAG, "configureMap: ", e);
         }
@@ -154,8 +184,8 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
             map.clear();
             for (LatLng location : locations) {
                 map.addMarker(new MarkerOptions().position(location));
-                Log.d(TAG, "addAllMarkers: " + location.toString());
             }
+            Log.d(TAG, "addAllMarkers: add markers ");
         } else {
             Log.d(TAG, "addAllMarkers: map is null");
         }
@@ -170,7 +200,34 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
             }
             LatLngBounds bounds = builder.build();
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING));
+            Log.d(TAG, "showAllMarkers: show markers");
+        } else {
+            Log.d(TAG, "showAllMarkers: map is null");
         }
+    }
+
+    @Override
+    public void showRoute(@NonNull List<LatLng> polyline) {
+        if (map != null && !polyline.isEmpty()) {
+            PolylineOptions polylineOptions = new PolylineOptions();
+            polylineOptions.addAll(polyline);
+            polylineOptions.color(Color.BLUE);
+            routeLine = map.addPolyline(polylineOptions);
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (LatLng location : polyline) {
+                builder.include(new LatLng(location.latitude, location.longitude));
+            }
+            LatLngBounds bounds = builder.build();
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING));
+            Log.d(TAG, "showRoute: show route");
+        } else {
+            Log.d(TAG, "showRoute: map is null");
+        }
+    }
+
+    @Override
+    public void showError(@NonNull String message) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private void getDeviceLocation() {
@@ -188,6 +245,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                         map.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
+                Log.d(TAG, "getDeviceLocation: success");
             }
         } catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: ", e);
