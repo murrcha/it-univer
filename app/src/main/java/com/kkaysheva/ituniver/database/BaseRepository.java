@@ -28,8 +28,7 @@ public interface BaseRepository<Entity, Id> {
     @NonNull
     Completable insert(@NonNull Entity entity);
 
-    @NonNull
-    Completable delete(@NonNull Entity entity);
+    void delete(@NonNull Entity entity);
 
     @NonNull
     Completable deleteAll();

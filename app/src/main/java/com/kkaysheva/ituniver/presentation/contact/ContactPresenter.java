@@ -34,7 +34,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
     @NonNull
     private final Router router;
 
-    @io.reactivex.annotations.NonNull
+    @NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
@@ -49,6 +49,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
         super.onDestroy();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContact(int contactId) {
         interactor.getContactById(contactId)
@@ -70,6 +71,7 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
                 );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContactInfo(int contactId) {
         interactor.getContactInfoById(contactId)

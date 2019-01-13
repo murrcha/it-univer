@@ -52,10 +52,9 @@ public final class ContactRepository implements BaseRepository<ContactInfo, Long
         return Completable.fromAction(() -> appDatabase.getContactDao().insertContactInfo(contactInfo));
     }
 
-    @NonNull
     @Override
-    public Completable delete(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDao().deleteContactInfo(contactInfo));
+    public void delete(@NonNull ContactInfo contactInfo) {
+        appDatabase.getContactDao().deleteContactInfo(contactInfo);
     }
 
     @NonNull

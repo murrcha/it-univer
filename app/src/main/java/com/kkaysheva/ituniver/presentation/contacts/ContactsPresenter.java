@@ -7,7 +7,10 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.domain.contacts.ContactsInteractor;
+import com.kkaysheva.ituniver.model.Contact;
 import com.kkaysheva.ituniver.presentation.Screens;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,7 +37,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
     @NonNull
     private final ContactsInteractor interactor;
 
-    @io.reactivex.annotations.NonNull
+    @NonNull
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
@@ -49,6 +52,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
         super.onDestroy();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContacts() {
         interactor.getContacts()
@@ -62,6 +66,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
                         contacts -> {
                             getViewState().showContacts(contacts);
                             getViewState().showProgress(false);
+                            checkForDelete(contacts);
                         },
                         throwable -> {
                             getViewState().showProgress(false);
@@ -70,6 +75,7 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
                 );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
@@ -106,5 +112,18 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
 
     public void hideMessage() {
         getViewState().hideMessage();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    private void checkForDelete(List<Contact> contacts) {
+        interactor.checkForDelete(contacts)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(compositeDisposable::add)
+                .subscribe(
+                        () -> Log.d(TAG, "checkForDelete: complete"),
+                        throwable -> Log.e(TAG, "checkForDelete: error", throwable)
+                );
     }
 }
