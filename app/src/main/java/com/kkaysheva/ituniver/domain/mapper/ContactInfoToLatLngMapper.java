@@ -3,7 +3,7 @@ package com.kkaysheva.ituniver.domain.mapper;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kkaysheva.ituniver.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 /**
  * ContactInfoToLatLngMapper
@@ -11,7 +11,7 @@ import com.kkaysheva.ituniver.model.ContactInfo;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class ContactInfoToLatLngMapper implements Mapper<ContactInfo, LatLng> {
+public final class ContactInfoToLatLngMapper implements Mapper<ContactInfo, LatLng> {
 
     @NonNull
     @Override

@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.kkaysheva.ituniver.BuildConfig;
-import com.kkaysheva.ituniver.network.GeoCodeApi;
-import com.kkaysheva.ituniver.network.GoogleDirectionsApi;
+import com.kkaysheva.ituniver.data.network.geocode.GeoCodeApi;
+import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsApi;
 
 import javax.inject.Singleton;
 
@@ -16,8 +16,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.kkaysheva.ituniver.network.GeoCodeApi.GEO_BASE_URL;
-import static com.kkaysheva.ituniver.network.GoogleDirectionsApi.GOOGLE_BASE_URL;
+import static com.kkaysheva.ituniver.data.network.geocode.GeoCodeApi.GEO_BASE_URL;
+import static com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsApi.GOOGLE_BASE_URL;
 
 /**
  * NetworkModule

@@ -7,7 +7,7 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.kkaysheva.ituniver.domain.contacts.ContactsInteractor;
-import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.presentation.Screens;
 
 import java.util.List;
@@ -117,13 +117,13 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     private void checkForDelete(List<Contact> contacts) {
-        interactor.checkForDelete(contacts)
+        interactor.deleteEmptyRows(contacts)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribe(
-                        () -> Log.d(TAG, "checkForDelete: complete"),
-                        throwable -> Log.e(TAG, "checkForDelete: error", throwable)
+                        () -> Log.d(TAG, "deleteEmptyRows: complete"),
+                        throwable -> Log.e(TAG, "deleteEmptyRows: error", throwable)
                 );
     }
 }

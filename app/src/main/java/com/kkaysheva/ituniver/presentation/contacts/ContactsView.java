@@ -3,7 +3,7 @@ package com.kkaysheva.ituniver.presentation.contacts;
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.List;
 

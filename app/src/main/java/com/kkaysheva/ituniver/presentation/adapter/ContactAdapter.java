@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.List;
 

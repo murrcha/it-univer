@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.network.model;
+package com.kkaysheva.ituniver.data.network.directions;
 
 import com.google.gson.annotations.SerializedName;
 

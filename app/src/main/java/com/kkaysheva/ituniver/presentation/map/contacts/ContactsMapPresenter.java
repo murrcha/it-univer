@@ -7,7 +7,7 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.google.android.gms.maps.model.LatLng;
-import com.kkaysheva.ituniver.domain.map.ContactMapInteractor;
+import com.kkaysheva.ituniver.domain.map.MapInteractor;
 
 import javax.inject.Inject;
 
@@ -30,10 +30,10 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @NonNull
-    private final ContactMapInteractor interactor;
+    private final MapInteractor interactor;
 
     @Inject
-    public ContactsMapPresenter(@NonNull ContactMapInteractor interactor) {
+    public ContactsMapPresenter(@NonNull MapInteractor interactor) {
         this.interactor = interactor;
     }
 
@@ -50,7 +50,7 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getLocationForAll() {
-        interactor.getLatLngAll()
+        interactor.getLocations()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)

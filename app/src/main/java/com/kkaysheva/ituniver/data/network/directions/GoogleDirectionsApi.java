@@ -1,6 +1,4 @@
-package com.kkaysheva.ituniver.network;
-
-import com.kkaysheva.ituniver.network.model.DirectionsResponse;
+package com.kkaysheva.ituniver.data.network.directions;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

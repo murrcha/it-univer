@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.database;
+package com.kkaysheva.ituniver.data.database;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -8,7 +8,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import java.util.List;
 

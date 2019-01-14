@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.AppDelegate;
 import com.kkaysheva.ituniver.di.map.MapComponent;
 import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
 

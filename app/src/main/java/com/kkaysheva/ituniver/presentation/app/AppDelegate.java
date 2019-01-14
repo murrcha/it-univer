@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.app;
+package com.kkaysheva.ituniver.presentation.app;
 
 import android.app.Application;
 import android.support.annotation.NonNull;

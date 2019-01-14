@@ -1,14 +1,9 @@
 package com.kkaysheva.ituniver.domain.contact;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.database.ContactRepository;
-import com.kkaysheva.ituniver.model.Contact;
-import com.kkaysheva.ituniver.model.ContactFetcher;
-import com.kkaysheva.ituniver.model.ContactInfo;
-
-import javax.inject.Inject;
+import com.kkaysheva.ituniver.domain.model.Contact;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -17,27 +12,13 @@ import io.reactivex.Single;
  * ContactInteractor
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
- * @since 12.2018
+ * @since 01.2019
  */
-public final class ContactInteractor {
+public interface ContactInteractor {
 
     @NonNull
-    private final Context context;
+    Single<Contact> getContactById(int contactId);
 
     @NonNull
-    private final ContactRepository repository;
-
-    @Inject
-    public ContactInteractor(@NonNull Context context, @NonNull ContactRepository repository) {
-        this.context = context;
-        this.repository = repository;
-    }
-
-    public Single<Contact> getContactById(int contactId) {
-        return ContactFetcher.getContactById(contactId, context);
-    }
-
-    public Maybe<ContactInfo> getContactInfoById(int contactId) {
-        return repository.getById((long) contactId);
-    }
+    Maybe<ContactInfo> getContactInfoById(int contactId);
 }

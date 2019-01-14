@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.network;
+package com.kkaysheva.ituniver.data.network.directions;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
-import com.kkaysheva.ituniver.network.model.DirectionsResponse;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import io.reactivex.Single;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class GoogleDirectionsServiceRetrofit {
+public final class GoogleDirectionsServiceRetrofit implements GoogleDirectionsService {
 
     private static final String TRAVEL_MODE = "walking";
 
@@ -42,6 +41,8 @@ public final class GoogleDirectionsServiceRetrofit {
         this.context = context;
     }
 
+    @NonNull
+    @Override
     public Single<List<LatLng>> loadDirections(@NonNull String origin, @NonNull String destination) {
         return googleDirectionsApi
                 .getDirections(origin, destination, TRAVEL_MODE, context.getString(R.string.directions_api_key))

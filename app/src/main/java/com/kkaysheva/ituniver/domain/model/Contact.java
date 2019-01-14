@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.model;
+package com.kkaysheva.ituniver.domain.model;
 
 /**
  * Contact

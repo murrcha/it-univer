@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.database;
+package com.kkaysheva.ituniver.data.database;
 
 import android.support.annotation.NonNull;
 

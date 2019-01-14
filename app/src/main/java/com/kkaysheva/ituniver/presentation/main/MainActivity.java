@@ -8,7 +8,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.AppDelegate;
 import com.kkaysheva.ituniver.di.main.MainComponent;
 import com.kkaysheva.ituniver.di.main.MainModule;
 

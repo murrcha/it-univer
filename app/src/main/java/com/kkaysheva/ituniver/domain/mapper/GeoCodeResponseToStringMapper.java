@@ -2,7 +2,7 @@ package com.kkaysheva.ituniver.domain.mapper;
 
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
+import com.kkaysheva.ituniver.data.network.geocode.GeoCodeResponse;
 
 /**
  * GeoCodeResponseToStringMapper

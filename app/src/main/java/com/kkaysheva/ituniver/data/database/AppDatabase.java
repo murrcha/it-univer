@@ -1,9 +1,9 @@
-package com.kkaysheva.ituniver.database;
+package com.kkaysheva.ituniver.data.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
-import com.kkaysheva.ituniver.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 /**
  * AppDatabase

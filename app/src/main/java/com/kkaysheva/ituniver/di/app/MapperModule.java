@@ -4,8 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.mapper.DirectionsResponseToListLatLngMapper;
 import com.kkaysheva.ituniver.domain.mapper.GeoCodeResponseToStringMapper;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
-import com.kkaysheva.ituniver.network.model.DirectionsResponse;
-import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
+import com.kkaysheva.ituniver.data.network.directions.DirectionsResponse;
+import com.kkaysheva.ituniver.data.network.geocode.GeoCodeResponse;
 
 import java.util.List;
 

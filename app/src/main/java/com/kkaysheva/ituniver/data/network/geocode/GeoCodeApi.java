@@ -1,6 +1,4 @@
-package com.kkaysheva.ituniver.network;
-
-import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
+package com.kkaysheva.ituniver.data.network.geocode;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

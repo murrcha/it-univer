@@ -2,7 +2,7 @@ package com.kkaysheva.ituniver.presentation.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.List;
 

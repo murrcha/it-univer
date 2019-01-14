@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.model;
+package com.kkaysheva.ituniver.domain.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

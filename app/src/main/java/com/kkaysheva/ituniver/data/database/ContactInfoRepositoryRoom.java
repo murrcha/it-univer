@@ -1,8 +1,8 @@
-package com.kkaysheva.ituniver.database;
+package com.kkaysheva.ituniver.data.database;
 
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import java.util.List;
 
@@ -13,18 +13,18 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
- * ContactRepository
+ * ContactInfoRepositoryRoom
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public final class ContactRepository implements BaseRepository<ContactInfo, Long> {
+public final class ContactInfoRepositoryRoom implements ContactInfoRepository {
 
     @NonNull
     private final AppDatabase appDatabase;
 
     @Inject
-    public ContactRepository(@NonNull AppDatabase appDatabase) {
+    public ContactInfoRepositoryRoom(@NonNull AppDatabase appDatabase) {
         this.appDatabase = appDatabase;
     }
 

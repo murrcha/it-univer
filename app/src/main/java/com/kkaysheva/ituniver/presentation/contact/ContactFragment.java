@@ -25,10 +25,10 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.AppDelegate;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
-import com.kkaysheva.ituniver.model.Contact;
-import com.kkaysheva.ituniver.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.model.Contact;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

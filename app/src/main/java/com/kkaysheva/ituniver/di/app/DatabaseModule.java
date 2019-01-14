@@ -4,7 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 
 import com.kkaysheva.ituniver.BuildConfig;
-import com.kkaysheva.ituniver.database.AppDatabase;
+import com.kkaysheva.ituniver.data.database.AppDatabase;
 
 import javax.inject.Singleton;
 

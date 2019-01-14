@@ -30,8 +30,8 @@ import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.presentation.adapter.ContactAdapter;
 import com.kkaysheva.ituniver.presentation.adapter.ContactItemDecoration;
-import com.kkaysheva.ituniver.app.AppDelegate;
-import com.kkaysheva.ituniver.model.Contact;
+import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.List;
 

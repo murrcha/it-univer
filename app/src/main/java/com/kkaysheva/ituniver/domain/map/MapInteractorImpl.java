@@ -3,11 +3,11 @@ package com.kkaysheva.ituniver.domain.map;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kkaysheva.ituniver.database.ContactRepository;
+import com.kkaysheva.ituniver.data.database.ContactInfoRepository;
+import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
+import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
-import com.kkaysheva.ituniver.model.ContactInfo;
-import com.kkaysheva.ituniver.network.GeoCodeServiceRetrofit;
-import com.kkaysheva.ituniver.network.GoogleDirectionsServiceRetrofit;
+import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,56 +19,62 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
- * ContactMapInteractor
+ * MapInteractorImpl
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public final class ContactMapInteractor {
+public final class MapInteractorImpl implements MapInteractor {
 
     @NonNull
-    private final GeoCodeServiceRetrofit geoService;
+    private final GeoCodeService geoService;
 
     @NonNull
-    private final ContactRepository repository;
+    private final ContactInfoRepository repository;
 
     @NonNull
-    private final GoogleDirectionsServiceRetrofit googleService;
+    private final GoogleDirectionsService googleService;
 
     @NonNull
     private final Mapper<ContactInfo, LatLng> mapper;
 
     @Inject
-    public ContactMapInteractor(@NonNull GeoCodeServiceRetrofit service,
-                                @NonNull ContactRepository repository,
-                                @NonNull GoogleDirectionsServiceRetrofit googleService,
-                                @NonNull Mapper<ContactInfo, LatLng> mapper) {
-        this.geoService = service;
+    public MapInteractorImpl(@NonNull GeoCodeService geoService,
+                             @NonNull ContactInfoRepository repository,
+                             @NonNull GoogleDirectionsService googleService,
+                             @NonNull Mapper<ContactInfo, LatLng> mapper) {
+        this.geoService = geoService;
         this.repository = repository;
         this.googleService = googleService;
         this.mapper = mapper;
     }
 
-    public Single<String> getAddress(LatLng latLng) {
+    @NonNull
+    @Override
+    public Single<String> getAddress(@NonNull LatLng latLng) {
         String latLngString = String.format("%s,%s", latLng.longitude, latLng.latitude);
         return geoService.loadGeoCode(latLngString);
     }
 
-    public Completable saveAddress(int contactId, LatLng latLng, String address) {
+    @NonNull
+    @Override
+    public Completable saveAddress(int contactId, @NonNull LatLng latLng, @NonNull String address) {
         String longitude = String.valueOf(latLng.longitude);
         String latitude = String.valueOf(latLng.latitude);
         ContactInfo contactInfo = new ContactInfo(contactId, longitude, latitude, address);
         return repository.insert(contactInfo);
     }
 
-    public Maybe<LatLng> getLatLngById(int contactId) {
+    @NonNull
+    @Override
+    public Maybe<LatLng> getLocationById(int contactId) {
         return repository.getById((long) contactId)
-                .flatMap(contactInfo ->
-                        Maybe.just(mapper.map(contactInfo))
-                );
+                .flatMap(contactInfo -> Maybe.just(mapper.map(contactInfo)));
     }
 
-    public Single<List<LatLng>> getLatLngAll() {
+    @NonNull
+    @Override
+    public Single<List<LatLng>> getLocations() {
         List<LatLng> locations = new ArrayList<>();
         return repository.getAll()
                 .flatMap(contactInfoList -> {
@@ -79,7 +85,9 @@ public final class ContactMapInteractor {
                 });
     }
 
-    public Single<List<LatLng>> getDirections(LatLng origin, LatLng destination) {
+    @NonNull
+    @Override
+    public Single<List<LatLng>> getDirections(@NonNull LatLng origin, @NonNull LatLng destination) {
         String originString = String.format("%s,%s", origin.latitude, origin.longitude);
         String destinationString = String.format("%s,%s", destination.latitude, destination.longitude);
         return googleService.loadDirections(originString, destinationString);

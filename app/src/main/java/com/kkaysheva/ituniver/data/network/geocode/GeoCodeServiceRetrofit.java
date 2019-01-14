@@ -1,9 +1,8 @@
-package com.kkaysheva.ituniver.network;
+package com.kkaysheva.ituniver.data.network.geocode;
 
 import android.support.annotation.NonNull;
 
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
-import com.kkaysheva.ituniver.network.model.GeoCodeResponse;
 
 import javax.inject.Inject;
 
@@ -16,7 +15,7 @@ import io.reactivex.Single;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
-public final class GeoCodeServiceRetrofit {
+public final class GeoCodeServiceRetrofit implements GeoCodeService {
 
     private static final String FORMAT = "json";
 
@@ -34,6 +33,7 @@ public final class GeoCodeServiceRetrofit {
     }
 
     @NonNull
+    @Override
     public Single<String> loadGeoCode(@NonNull String latLng) {
         return geoCodeApi.loadAddress(latLng, FORMAT)
                 .flatMap(geoCodeResponse -> Single.just(mapper.map(geoCodeResponse)));
