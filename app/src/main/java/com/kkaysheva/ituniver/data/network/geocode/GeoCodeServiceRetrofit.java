@@ -36,6 +36,6 @@ public final class GeoCodeServiceRetrofit implements GeoCodeService {
     @Override
     public Single<String> loadGeoCode(@NonNull String latLng) {
         return geoCodeApi.loadAddress(latLng, FORMAT)
-                .flatMap(geoCodeResponse -> Single.just(mapper.map(geoCodeResponse)));
+                .map(mapper::map);
     }
 }

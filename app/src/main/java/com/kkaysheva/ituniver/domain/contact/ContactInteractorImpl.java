@@ -3,7 +3,7 @@ package com.kkaysheva.ituniver.domain.contact;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.data.database.ContactInfoRepository;
+import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.provider.ContactFetcher;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;

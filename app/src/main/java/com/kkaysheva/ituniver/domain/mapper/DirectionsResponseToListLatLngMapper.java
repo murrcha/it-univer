@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
 import com.kkaysheva.ituniver.data.network.directions.DirectionsResponse;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,6 +27,6 @@ public final class DirectionsResponseToListLatLngMapper implements Mapper<Direct
                 .get(FIRST_ELEMENT)
                 .getOverviewPolyLine()
                 .getPoints();
-        return new ArrayList<>(PolyUtil.decode(polylineEncoded));
+        return Collections.unmodifiableList(PolyUtil.decode(polylineEncoded));
     }
 }

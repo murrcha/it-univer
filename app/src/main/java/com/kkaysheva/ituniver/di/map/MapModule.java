@@ -1,7 +1,7 @@
 package com.kkaysheva.ituniver.di.map;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kkaysheva.ituniver.data.database.ContactInfoRepository;
+import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.database.ContactInfoRepositoryRoom;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsServiceRetrofit;

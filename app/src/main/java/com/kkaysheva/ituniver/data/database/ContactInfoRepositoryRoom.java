@@ -2,6 +2,7 @@ package com.kkaysheva.ituniver.data.database;
 
 import android.support.annotation.NonNull;
 
+import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import java.util.List;
@@ -21,45 +22,45 @@ import io.reactivex.Single;
 public final class ContactInfoRepositoryRoom implements ContactInfoRepository {
 
     @NonNull
-    private final AppDatabase appDatabase;
+    private final ContactDao contactDao;
 
     @Inject
-    public ContactInfoRepositoryRoom(@NonNull AppDatabase appDatabase) {
-        this.appDatabase = appDatabase;
+    public ContactInfoRepositoryRoom(@NonNull ContactDao contactDao) {
+        this.contactDao = contactDao;
     }
 
     @NonNull
     @Override
     public Single<List<ContactInfo>> getAll() {
-        return appDatabase.getContactDao().getAll();
+        return contactDao.getAll();
     }
 
     @NonNull
     @Override
     public Maybe<ContactInfo> getById(@NonNull Long id) {
-        return appDatabase.getContactDao().getContactInfoById(id);
+        return contactDao.getContactInfoById(id);
     }
 
     @NonNull
     @Override
     public Completable update(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDao().updateContactInfo(contactInfo));
+        return Completable.fromAction(() -> contactDao.updateContactInfo(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable insert(@NonNull ContactInfo contactInfo) {
-        return Completable.fromAction(() -> appDatabase.getContactDao().insertContactInfo(contactInfo));
+        return Completable.fromAction(() -> contactDao.insertContactInfo(contactInfo));
     }
 
     @Override
     public void delete(@NonNull ContactInfo contactInfo) {
-        appDatabase.getContactDao().deleteContactInfo(contactInfo);
+        contactDao.deleteContactInfo(contactInfo);
     }
 
     @NonNull
     @Override
     public Completable deleteAll() {
-        return Completable.fromAction(() -> appDatabase.getContactDao().deleteAll());
+        return Completable.fromAction(contactDao::deleteAll);
     }
 }

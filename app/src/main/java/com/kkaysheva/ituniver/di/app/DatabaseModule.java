@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.kkaysheva.ituniver.BuildConfig;
 import com.kkaysheva.ituniver.data.database.AppDatabase;
+import com.kkaysheva.ituniver.data.database.ContactDao;
 
 import javax.inject.Singleton;
 
@@ -25,5 +26,11 @@ public final class DatabaseModule {
     public AppDatabase provideDatabase(Context context) {
         return Room.databaseBuilder(context, AppDatabase.class, BuildConfig.DATA_BASE_NAME)
                 .build();
+    }
+
+    @Singleton
+    @Provides
+    public ContactDao provideContactDao(AppDatabase database) {
+        return database.getContactDao();
     }
 }

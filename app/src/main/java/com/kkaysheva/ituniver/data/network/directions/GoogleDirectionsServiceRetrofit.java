@@ -46,6 +46,6 @@ public final class GoogleDirectionsServiceRetrofit implements GoogleDirectionsSe
     public Single<List<LatLng>> loadDirections(@NonNull String origin, @NonNull String destination) {
         return googleDirectionsApi
                 .getDirections(origin, destination, TRAVEL_MODE, context.getString(R.string.directions_api_key))
-                .flatMap(directionsResponse -> Single.just(mapper.map(directionsResponse)));
+                .map(mapper::map);
     }
 }

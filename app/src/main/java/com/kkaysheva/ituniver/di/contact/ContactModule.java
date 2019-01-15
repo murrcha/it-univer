@@ -1,6 +1,6 @@
 package com.kkaysheva.ituniver.di.contact;
 
-import com.kkaysheva.ituniver.data.database.ContactInfoRepository;
+import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.database.ContactInfoRepositoryRoom;
 import com.kkaysheva.ituniver.di.scope.FragmentScope;
 import com.kkaysheva.ituniver.domain.contact.ContactInteractor;

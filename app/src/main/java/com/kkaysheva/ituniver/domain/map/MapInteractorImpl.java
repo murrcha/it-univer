@@ -3,9 +3,9 @@ package com.kkaysheva.ituniver.domain.map;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kkaysheva.ituniver.data.database.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
 import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
+import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
@@ -69,19 +69,19 @@ public final class MapInteractorImpl implements MapInteractor {
     @Override
     public Maybe<LatLng> getLocationById(int contactId) {
         return repository.getById((long) contactId)
-                .flatMap(contactInfo -> Maybe.just(mapper.map(contactInfo)));
+                .map(mapper::map);
     }
 
     @NonNull
     @Override
     public Single<List<LatLng>> getLocations() {
-        List<LatLng> locations = new ArrayList<>();
         return repository.getAll()
-                .flatMap(contactInfoList -> {
+                .map(contactInfoList -> {
+                    List<LatLng> locations = new ArrayList<>();
                     for (ContactInfo contactInfo : contactInfoList) {
                         locations.add(mapper.map(contactInfo));
                     }
-                    return Single.just(locations);
+                    return locations;
                 });
     }
 
