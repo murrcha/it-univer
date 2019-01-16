@@ -64,7 +64,7 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                             saveAddress(contactId, latLng, address);
                         },
                         throwable -> {
-                            getViewState().showError(throwable);
+                            getViewState().showError(throwable.getMessage());
                             Log.e(TAG, "getAddress: error", throwable);
                         }
                 );
@@ -98,6 +98,20 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 .subscribe(
                         () -> Log.d(TAG, "saveAddress: saved"),
                         throwable -> Log.e(TAG, "saveAddress: error", throwable)
+                );
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void getDeviceLocation() {
+        interactor.getDeviceLocation()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(compositeDisposable::add)
+                .subscribe(
+                        location -> getViewState().saveDeviceLocation(location),
+                        throwable -> getViewState().showError(throwable.getMessage()),
+                        () -> getViewState().showError("No location")
                 );
     }
 }

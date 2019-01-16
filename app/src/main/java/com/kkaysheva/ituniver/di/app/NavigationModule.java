@@ -23,14 +23,14 @@ public final class NavigationModule {
         cicerone = Cicerone.create();
     }
 
-    @Provides
     @Singleton
+    @Provides
     Router provideRouter() {
         return cicerone.getRouter();
     }
 
-    @Provides
     @Singleton
+    @Provides
     NavigatorHolder provideNavigatorHolder() {
         return cicerone.getNavigatorHolder();
     }

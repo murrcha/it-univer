@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.data.provider;
+package com.kkaysheva.ituniver.data.provider.contacts;
 
 import android.content.ContentResolver;
 import android.content.Context;

@@ -1,5 +1,10 @@
 package com.kkaysheva.ituniver.di.map;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.database.ContactInfoRepositoryRoom;
@@ -26,33 +31,39 @@ import dagger.Provides;
 @Module
 public final class MapModule {
 
-    @Provides
     @FragmentScope
+    @Provides
     public Mapper<ContactInfo, LatLng> provideMapper() {
         return new ContactInfoToLatLngMapper();
     }
 
-    @Provides
     @FragmentScope
+    @Provides
     public ContactInfoRepository provideContactInfoRepository(ContactInfoRepositoryRoom repository) {
         return repository;
     }
 
-    @Provides
     @FragmentScope
+    @Provides
     public GeoCodeService provideGeoCodeService(GeoCodeServiceRetrofit service) {
         return service;
     }
 
-    @Provides
     @FragmentScope
+    @Provides
     public GoogleDirectionsService provideGoogleDirectionsService(GoogleDirectionsServiceRetrofit service) {
         return service;
     }
 
-    @Provides
     @FragmentScope
+    @Provides
     public MapInteractor provideInteractor(MapInteractorImpl interactor) {
         return interactor;
+    }
+
+    @FragmentScope
+    @Provides
+    public FusedLocationProviderClient provideFusedLocationProviderClient(@NonNull Context context) {
+        return LocationServices.getFusedLocationProviderClient(context);
     }
 }

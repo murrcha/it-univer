@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,10 +22,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.Task;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
 import com.kkaysheva.ituniver.di.map.MapComponent;
+import com.kkaysheva.ituniver.presentation.app.AppDelegate;
 import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
 
 import java.util.List;
@@ -61,8 +58,6 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
     private Marker destination;
 
     private Location lastKnownLocation;
-    private LatLng defaultLocation;
-    private FusedLocationProviderClient fusedLocationProviderClient;
 
     public static ContactsMapFragment newInstance() {
         return new ContactsMapFragment();
@@ -76,14 +71,6 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
         mapComponent.inject(this);
 
         super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        defaultLocation = new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
 
     @Override
@@ -151,7 +138,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                 map.setMyLocationEnabled(true);
                 map.getUiSettings().setMyLocationButtonEnabled(true);
                 map.getUiSettings().setZoomControlsEnabled(true);
-                getDeviceLocation();
+                presenter.getDeviceLocation();
                 map.setOnMyLocationButtonClickListener(() -> {
                     if (lastKnownLocation != null) {
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
@@ -230,26 +217,9 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private void getDeviceLocation() {
-        try {
-            if (hasLocationPermission()) {
-                Task locationResult = fusedLocationProviderClient.getLastLocation();
-                //noinspection unchecked
-                locationResult.addOnCompleteListener(requireActivity(), task -> {
-                    if (task.isSuccessful()) {
-                        lastKnownLocation = (Location) task.getResult();
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "getDeviceLocation: ", task.getException());
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                        map.getUiSettings().setMyLocationButtonEnabled(false);
-                    }
-                });
-                Log.d(TAG, "getDeviceLocation: success");
-            }
-        } catch (SecurityException e) {
-            Log.e(TAG, "getDeviceLocation: ", e);
-        }
+    @Override
+    public void saveDeviceLocation(@NonNull Location location) {
+        lastKnownLocation = location;
     }
 
     @ProvidePresenter

@@ -18,14 +18,14 @@ import dagger.Provides;
 @Module
 public final class ContactModule {
 
-    @Provides
     @FragmentScope
+    @Provides
     public ContactInfoRepository provideContactInfoRepository(ContactInfoRepositoryRoom repository) {
         return repository;
     }
 
-    @Provides
     @FragmentScope
+    @Provides
     public ContactInteractor provideContactInteractor(ContactInteractorImpl interactor) {
         return interactor;
     }

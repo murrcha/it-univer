@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
-import com.kkaysheva.ituniver.data.provider.ContactFetcher;
+import com.kkaysheva.ituniver.data.provider.contacts.ContactFetcher;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 

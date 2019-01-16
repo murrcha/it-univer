@@ -78,4 +78,19 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                         }
                 );
     }
+
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    public void getDeviceLocation() {
+        interactor.getDeviceLocation()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(compositeDisposable::add)
+                .subscribe(
+                        location -> getViewState().saveDeviceLocation(location),
+                        throwable -> getViewState().showError(throwable.getMessage()),
+                        () -> getViewState().showError("No location")
+                );
+    }
 }

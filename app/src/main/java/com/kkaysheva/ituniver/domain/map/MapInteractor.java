@@ -1,5 +1,6 @@
 package com.kkaysheva.ituniver.domain.map;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -32,4 +33,7 @@ public interface MapInteractor {
 
     @NonNull
     Single<List<LatLng>> getDirections(@NonNull LatLng origin, @NonNull LatLng destination);
+
+    @NonNull
+    Maybe<Location> getDeviceLocation();
 }

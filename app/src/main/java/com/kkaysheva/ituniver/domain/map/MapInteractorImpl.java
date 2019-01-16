@@ -1,10 +1,12 @@
 package com.kkaysheva.ituniver.domain.map;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
 import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
+import com.kkaysheva.ituniver.data.provider.location.LocationFetcher;
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
@@ -38,15 +40,20 @@ public final class MapInteractorImpl implements MapInteractor {
     @NonNull
     private final Mapper<ContactInfo, LatLng> mapper;
 
+    @NonNull
+    private final LocationFetcher locationFetcher;
+
     @Inject
     public MapInteractorImpl(@NonNull GeoCodeService geoService,
                              @NonNull ContactInfoRepository repository,
                              @NonNull GoogleDirectionsService googleService,
-                             @NonNull Mapper<ContactInfo, LatLng> mapper) {
+                             @NonNull Mapper<ContactInfo, LatLng> mapper,
+                             @NonNull LocationFetcher locationFetcher) {
         this.geoService = geoService;
         this.repository = repository;
         this.googleService = googleService;
         this.mapper = mapper;
+        this.locationFetcher = locationFetcher;
     }
 
     @NonNull
@@ -91,5 +98,11 @@ public final class MapInteractorImpl implements MapInteractor {
         String originString = String.format("%s,%s", origin.latitude, origin.longitude);
         String destinationString = String.format("%s,%s", destination.latitude, destination.longitude);
         return googleService.loadDirections(originString, destinationString);
+    }
+
+    @NonNull
+    @Override
+    public Maybe<Location> getDeviceLocation() {
+        return locationFetcher.getDeviceLocation();
     }
 }

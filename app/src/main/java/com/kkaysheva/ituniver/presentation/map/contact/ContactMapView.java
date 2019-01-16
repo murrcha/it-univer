@@ -1,5 +1,6 @@
 package com.kkaysheva.ituniver.presentation.map.contact;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.arellomobile.mvp.MvpView;
@@ -28,5 +29,8 @@ public interface ContactMapView extends MvpView {
     void showMarker(@NonNull LatLng latLng);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void showError(@NonNull Throwable throwable);
+    void showError(@NonNull String error);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void saveDeviceLocation(Location location);
 }

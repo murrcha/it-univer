@@ -28,16 +28,16 @@ import static com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsApi
 @Module
 public final class NetworkModule {
 
-    @Provides
     @Singleton
+    @Provides
     public Gson provideGson() {
         return new GsonBuilder()
                 .setLenient()
                 .create();
     }
 
-    @Provides
     @Singleton
+    @Provides
     public OkHttpClient provideOkHttpClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         if (BuildConfig.DEBUG) {
@@ -50,8 +50,8 @@ public final class NetworkModule {
         return client.build();
     }
 
-    @Provides
     @Singleton
+    @Provides
     public GeoCodeApi provideGeoCodeApi(Gson gson, OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(GEO_BASE_URL)
@@ -62,8 +62,8 @@ public final class NetworkModule {
                 .create(GeoCodeApi.class);
     }
 
-    @Provides
     @Singleton
+    @Provides
     public GoogleDirectionsApi provideGoogleDirectionsApi(Gson gson, OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(GOOGLE_BASE_URL)

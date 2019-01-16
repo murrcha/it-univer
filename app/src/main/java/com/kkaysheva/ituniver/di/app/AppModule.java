@@ -25,8 +25,8 @@ public final class AppModule {
         this.application = application;
     }
 
-    @Provides
     @Singleton
+    @Provides
     public Context provideApplicationContext() {
         return application;
     }
