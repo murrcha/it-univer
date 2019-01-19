@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.map.MapInteractor;
 
@@ -43,12 +44,12 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
         super.onDestroy();
     }
 
-    public void configureMap() {
-        getViewState().configureMap();
+    public void configureMap(GoogleMap map) {
+        getViewState().configureMap(map);
     }
 
-    public void addMarker(LatLng latLng) {
-        getViewState().addMarker(latLng);
+    public void addMarker(LatLng latLng, GoogleMap map) {
+        getViewState().addMarker(latLng, map);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -72,15 +73,15 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getLocationById(int contactId) {
+    public void getLocationById(int contactId, GoogleMap map) {
         interactor.getLocationById(contactId)
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         location -> {
-                            getViewState().addMarker(location);
-                            getViewState().showMarker(location);
+                            getViewState().addMarker(location, map);
+                            getViewState().showMarker(location, map);
                             Log.d(TAG, "getLocationById: " + location.toString());
                         },
                         throwable -> Log.e(TAG, "getLocationById: error", throwable),

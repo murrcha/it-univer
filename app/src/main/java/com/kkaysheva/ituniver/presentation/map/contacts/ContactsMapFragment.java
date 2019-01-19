@@ -6,8 +6,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -76,11 +74,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Toolbar toolbar = view.findViewById(R.id.map_toolbar);
-        toolbar.setTitle(R.string.map_title);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar(view, R.id.map_toolbar, R.string.map_title);
     }
 
     @Override
@@ -101,7 +95,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                 if (routeLine != null) {
                     routeLine.remove();
                 }
-                presenter.getRoute(origin.getPosition(), destination.getPosition());
+                presenter.getRoute(origin.getPosition(), destination.getPosition(), map);
                 firstMarkerSelected = false;
             } else {
                 origin = marker;
@@ -111,7 +105,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
             }
             return true;
         });
-        presenter.configureMap();
+        presenter.configureMap(map);
         Log.d(TAG, "onMapReady: ready");
     }
 
@@ -121,18 +115,14 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS:
-                presenter.configureMap();
+                presenter.configureMap(map);
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     @Override
-    public void configureMap() {
-        if (map == null) {
-            Log.d(TAG, "configureMap: map = null");
-            return;
-        }
+    public void configureMap(GoogleMap map) {
         try {
             if (hasLocationPermission()) {
                 map.setMyLocationEnabled(true);
@@ -158,7 +148,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
                 requestPermissions();
                 Log.d(TAG, "configureMap: request permissions");
             }
-            presenter.getLocationForAll();
+            presenter.getLocationForAll(map);
             Log.d(TAG, "configureMap: get all locations");
         } catch (SecurityException e) {
             Log.e(TAG, "configureMap: ", e);
@@ -166,21 +156,17 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
     }
 
     @Override
-    public void addAllMarkers(@NonNull List<LatLng> locations) {
-        if (map != null) {
-            map.clear();
-            for (LatLng location : locations) {
-                map.addMarker(new MarkerOptions().position(location));
-            }
-            Log.d(TAG, "addAllMarkers: add markers ");
-        } else {
-            Log.d(TAG, "addAllMarkers: map is null");
+    public void addAllMarkers(@NonNull List<LatLng> locations, GoogleMap map) {
+        map.clear();
+        for (LatLng location : locations) {
+            map.addMarker(new MarkerOptions().position(location));
         }
+        Log.d(TAG, "addAllMarkers: add markers ");
     }
 
     @Override
-    public void showAllMarkers(@NonNull List<LatLng> locations) {
-        if (map != null && !locations.isEmpty()) {
+    public void showAllMarkers(@NonNull List<LatLng> locations, GoogleMap map) {
+        if (!locations.isEmpty()) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (LatLng location : locations) {
                 builder.include(new LatLng(location.latitude, location.longitude));
@@ -189,13 +175,13 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING));
             Log.d(TAG, "showAllMarkers: show markers");
         } else {
-            Log.d(TAG, "showAllMarkers: map is null");
+            Log.d(TAG, "showAllMarkers: locations is empty");
         }
     }
 
     @Override
-    public void showRoute(@NonNull List<LatLng> polyline) {
-        if (map != null && !polyline.isEmpty()) {
+    public void showRoute(@NonNull List<LatLng> polyline, GoogleMap map) {
+        if (!polyline.isEmpty()) {
             PolylineOptions polylineOptions = new PolylineOptions();
             polylineOptions.addAll(polyline);
             polylineOptions.color(Color.BLUE);
@@ -208,7 +194,7 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, PADDING));
             Log.d(TAG, "showRoute: show route");
         } else {
-            Log.d(TAG, "showRoute: map is null");
+            Log.d(TAG, "showRoute: polyline is empty");
         }
     }
 

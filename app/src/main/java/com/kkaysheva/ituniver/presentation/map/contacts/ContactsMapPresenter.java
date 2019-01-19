@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.map.MapInteractor;
 
@@ -43,21 +44,21 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
         super.onDestroy();
     }
 
-    public void configureMap() {
-        getViewState().configureMap();
+    public void configureMap(GoogleMap map) {
+        getViewState().configureMap(map);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getLocationForAll() {
+    public void getLocationForAll(GoogleMap map) {
         interactor.getLocations()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribe(
                         locations -> {
-                            getViewState().addAllMarkers(locations);
-                            getViewState().showAllMarkers(locations);
+                            getViewState().addAllMarkers(locations, map);
+                            getViewState().showAllMarkers(locations, map);
                         },
                         throwable -> Log.e(TAG, "getLocationForAll: error", throwable)
                 );
@@ -65,20 +66,19 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
-    public void getRoute(LatLng origin, LatLng destination) {
+    public void getRoute(LatLng origin, LatLng destination, GoogleMap map) {
         interactor.getDirections(origin, destination)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribe(
-                        locations -> getViewState().showRoute(locations),
+                        locations -> getViewState().showRoute(locations, map),
                         throwable -> {
                             Log.e(TAG, "getRoute: error", throwable);
                             getViewState().showError(throwable.getMessage());
                         }
                 );
     }
-
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")

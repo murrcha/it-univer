@@ -5,8 +5,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -76,11 +74,7 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Toolbar toolbar = view.findViewById(R.id.map_toolbar);
-        toolbar.setTitle(R.string.map_title);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar(view, R.id.map_toolbar, R.string.map_title);
     }
 
     @Override
@@ -104,12 +98,12 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     public void onMapReady(GoogleMap googleMap) {
         super.onMapReady(googleMap);
         map = googleMap;
-        presenter.configureMap();
+        presenter.configureMap(map);
         map.setOnMapClickListener(latLng -> {
-            presenter.addMarker(latLng);
+            presenter.addMarker(latLng, map);
             presenter.getAddress(contactId, latLng);
         });
-        Log.d(TAG, "onMapReady: ready");
+        Log.d(TAG, "onMapReady: ");
     }
 
     @Override
@@ -118,18 +112,14 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_PERMISSIONS:
-                presenter.configureMap();
+                presenter.configureMap(map);
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     @Override
-    public void configureMap() {
-        if (map == null) {
-            Log.d(TAG, "configureMap: map = null");
-            return;
-        }
+    public void configureMap(GoogleMap map) {
         try {
             if (hasLocationPermission()) {
                 Log.d(TAG, "configureMap: has permissions");
@@ -155,7 +145,7 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
                 lastKnownLocation = null;
                 requestPermissions();
             }
-            presenter.getLocationById(contactId);
+            presenter.getLocationById(contactId, map);
         } catch (SecurityException e) {
             Log.e(TAG, "configureMap: ", e);
         }
@@ -164,35 +154,32 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
     @Override
     public void showAddress(@NonNull String address) {
         Toast.makeText(requireContext(), address, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "showAddress: ");
     }
 
     @Override
-    public void addMarker(@NonNull LatLng latLng) {
-        if (map != null) {
-            map.clear();
-            map.addMarker(new MarkerOptions().position(latLng));
-        } else {
-            Log.d(TAG, "addMarker: map is null");
-        }
+    public void addMarker(@NonNull LatLng latLng, GoogleMap map) {
+        map.clear();
+        map.addMarker(new MarkerOptions().position(latLng));
+        Log.d(TAG, "addMarker: ");
     }
 
     @Override
-    public void showMarker(@NonNull LatLng latLng) {
-        if (map != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-        } else {
-            Log.d(TAG, "showMarker: map is null");
-        }
+    public void showMarker(@NonNull LatLng latLng, GoogleMap map) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+        Log.d(TAG, "showMarker: ");
     }
 
     @Override
     public void showError(@NonNull String error) {
         Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "showError: ");
     }
 
     @Override
     public void saveDeviceLocation(Location location) {
         lastKnownLocation = location;
+        Log.d(TAG, "saveDeviceLocation: ");
     }
 
     @ProvidePresenter
