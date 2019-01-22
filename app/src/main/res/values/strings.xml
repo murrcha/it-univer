@@ -8,4 +8,7 @@
     <string name="location">Location</string>
     <string name="search">Search by name</string>
     <string name="map_title">Map</string>
+    <string name="no_info">No information</string>
+    <string name="directions_api_key">no key</string>
+    <string name="no_location">No location</string>
 </resources>
