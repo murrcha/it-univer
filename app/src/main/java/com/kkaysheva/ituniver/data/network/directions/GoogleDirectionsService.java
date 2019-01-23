@@ -17,5 +17,5 @@ import io.reactivex.Single;
 public interface GoogleDirectionsService {
 
     @NonNull
-    Single<List<LatLng>> loadDirections(@NonNull String origin, @NonNull String destination);
+    Single<List<LatLng>> loadDirections(@NonNull LatLng origin, @NonNull LatLng destination);
 }

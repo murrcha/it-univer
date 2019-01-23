@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.kkaysheva.ituniver.data.provider.contacts.ContactFetcher;
+import com.kkaysheva.ituniver.data.provider.location.LocationFetcher;
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.data.database.ContactInfoRepositoryRoom;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
@@ -13,6 +15,8 @@ import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsServiceRet
 import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
 import com.kkaysheva.ituniver.data.network.geocode.GeoCodeServiceRetrofit;
 import com.kkaysheva.ituniver.di.scope.FragmentScope;
+import com.kkaysheva.ituniver.domain.ContactRepository;
+import com.kkaysheva.ituniver.domain.LocationRepository;
 import com.kkaysheva.ituniver.domain.map.MapInteractor;
 import com.kkaysheva.ituniver.domain.map.MapInteractorImpl;
 import com.kkaysheva.ituniver.domain.mapper.ContactInfoToLatLngMapper;
@@ -65,5 +69,17 @@ public final class MapModule {
     @Provides
     public FusedLocationProviderClient provideFusedLocationProviderClient(@NonNull Context context) {
         return LocationServices.getFusedLocationProviderClient(context);
+    }
+
+    @FragmentScope
+    @Provides
+    public ContactRepository provideContactRepository(@NonNull ContactFetcher repository) {
+        return repository;
+    }
+
+    @FragmentScope
+    @Provides
+    public LocationRepository provideLocationRepository(@NonNull LocationFetcher repository) {
+        return repository;
     }
 }

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
-import com.kkaysheva.ituniver.data.provider.contacts.ContactFetcher;
+import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
@@ -31,30 +31,36 @@ public final class ContactsInteractorImpl implements ContactsInteractor {
     private final Context context;
 
     @NonNull
-    private final ContactInfoRepository repository;
+    private final ContactInfoRepository contactInfoRepository;
+
+    @NonNull
+    private final ContactRepository contactRepository;
 
     @Inject
-    public ContactsInteractorImpl(@NonNull Context context, @NonNull ContactInfoRepository repository) {
+    public ContactsInteractorImpl(@NonNull Context context,
+                                  @NonNull ContactInfoRepository contactInfoRepository,
+                                  @NonNull ContactRepository contactRepository) {
         this.context = context;
-        this.repository = repository;
+        this.contactInfoRepository = contactInfoRepository;
+        this.contactRepository = contactRepository;
     }
 
     @NonNull
     @Override
     public Single<List<Contact>> getContacts() {
-        return ContactFetcher.getContacts(context);
+        return contactRepository.getContacts(context);
     }
 
     @NonNull
     @Override
     public Single<List<Contact>> getContactsByName(@NonNull String name) {
-        return ContactFetcher.getContactsByName(name, context);
+        return contactRepository.getContactsByName(name, context);
     }
 
     @NonNull
     @Override
     public Completable deleteEmptyRows(@NonNull List<Contact> contacts) {
-        return repository.getAll()
+        return contactInfoRepository.getAll()
                 .map(contactInfoList -> getEmptyIdsFromContactsInfo(contacts, contactInfoList))
                 .filter(ids -> !ids.isEmpty())
                 .flatMapCompletable(this::deleteEmptyIds);
@@ -81,7 +87,7 @@ public final class ContactsInteractorImpl implements ContactsInteractor {
     private Completable deleteEmptyIds(List<Integer> emptyIds) {
         return Completable.fromAction(() -> {
             for (Integer id : emptyIds) {
-                repository.delete(new ContactInfo(id, null, null, null));
+                contactInfoRepository.delete(new ContactInfo(id, null, null, null));
                 Log.d(TAG, "deleteEmptyIds: delete empty id");
             }
         });

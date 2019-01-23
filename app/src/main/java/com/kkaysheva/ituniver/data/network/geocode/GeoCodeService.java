@@ -2,6 +2,8 @@ package com.kkaysheva.ituniver.data.network.geocode;
 
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import io.reactivex.Single;
 
 /**
@@ -13,5 +15,5 @@ import io.reactivex.Single;
 public interface GeoCodeService {
 
     @NonNull
-    Single<String> loadGeoCode(@NonNull String latLng);
+    Single<String> loadGeoCode(@NonNull LatLng latLng);
 }

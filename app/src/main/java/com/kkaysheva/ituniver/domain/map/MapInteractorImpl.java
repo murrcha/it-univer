@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsService;
 import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
-import com.kkaysheva.ituniver.data.provider.location.LocationFetcher;
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
+import com.kkaysheva.ituniver.domain.LocationRepository;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
@@ -32,7 +32,7 @@ public final class MapInteractorImpl implements MapInteractor {
     private final GeoCodeService geoService;
 
     @NonNull
-    private final ContactInfoRepository repository;
+    private final ContactInfoRepository contactInfoRepository;
 
     @NonNull
     private final GoogleDirectionsService googleService;
@@ -41,26 +41,25 @@ public final class MapInteractorImpl implements MapInteractor {
     private final Mapper<ContactInfo, LatLng> mapper;
 
     @NonNull
-    private final LocationFetcher locationFetcher;
+    private final LocationRepository locationRepository;
 
     @Inject
     public MapInteractorImpl(@NonNull GeoCodeService geoService,
-                             @NonNull ContactInfoRepository repository,
+                             @NonNull ContactInfoRepository contactInfoRepository,
                              @NonNull GoogleDirectionsService googleService,
                              @NonNull Mapper<ContactInfo, LatLng> mapper,
-                             @NonNull LocationFetcher locationFetcher) {
+                             @NonNull LocationRepository locationRepository) {
         this.geoService = geoService;
-        this.repository = repository;
+        this.contactInfoRepository = contactInfoRepository;
         this.googleService = googleService;
         this.mapper = mapper;
-        this.locationFetcher = locationFetcher;
+        this.locationRepository = locationRepository;
     }
 
     @NonNull
     @Override
     public Single<String> getAddress(@NonNull LatLng latLng) {
-        String latLngString = String.format("%s,%s", latLng.longitude, latLng.latitude);
-        return geoService.loadGeoCode(latLngString);
+        return geoService.loadGeoCode(latLng);
     }
 
     @NonNull
@@ -69,20 +68,20 @@ public final class MapInteractorImpl implements MapInteractor {
         String longitude = String.valueOf(latLng.longitude);
         String latitude = String.valueOf(latLng.latitude);
         ContactInfo contactInfo = new ContactInfo(contactId, longitude, latitude, address);
-        return repository.insert(contactInfo);
+        return contactInfoRepository.insert(contactInfo);
     }
 
     @NonNull
     @Override
     public Maybe<LatLng> getLocationById(int contactId) {
-        return repository.getById((long) contactId)
+        return contactInfoRepository.getById((long) contactId)
                 .map(mapper::map);
     }
 
     @NonNull
     @Override
     public Single<List<LatLng>> getLocations() {
-        return repository.getAll()
+        return contactInfoRepository.getAll()
                 .map(contactInfoList -> {
                     List<LatLng> locations = new ArrayList<>();
                     for (ContactInfo contactInfo : contactInfoList) {
@@ -95,14 +94,12 @@ public final class MapInteractorImpl implements MapInteractor {
     @NonNull
     @Override
     public Single<List<LatLng>> getDirections(@NonNull LatLng origin, @NonNull LatLng destination) {
-        String originString = String.format("%s,%s", origin.latitude, origin.longitude);
-        String destinationString = String.format("%s,%s", destination.latitude, destination.longitude);
-        return googleService.loadDirections(originString, destinationString);
+        return googleService.loadDirections(origin, destination);
     }
 
     @NonNull
     @Override
     public Maybe<Location> getDeviceLocation() {
-        return locationFetcher.getDeviceLocation();
+        return locationRepository.getDeviceLocation();
     }
 }

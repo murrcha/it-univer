@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'jacoco-android'
+apply plugin: 'com.github.kt3k.coveralls'
 apply from: "$project.rootDir/tools/checkstyle.gradle"
 
 android {
@@ -25,11 +26,24 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            testCoverageEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'jacocoTestDebugUnitTestReport'
+    onlyIf { System.env.'CI' }
 }
 
 dependencies {
@@ -86,4 +100,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+    androidTestImplementation 'org.mockito:mockito-android:2.23.4'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
 }

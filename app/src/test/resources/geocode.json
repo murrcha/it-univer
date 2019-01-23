@@ -1,0 +1,565 @@
+{
+  "response": {
+    "GeoObjectCollection": {
+      "metaDataProperty": {
+        "GeocoderResponseMetaData": {
+          "request": "53.2060394436121,56.85790293372913",
+          "found": "9",
+          "results": "10",
+          "Point": {
+            "pos": "53.206039 56.857903"
+          }
+        }
+      },
+      "featureMember": [
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "house",
+                "text": "Россия, Удмуртская Республика, Ижевск, Пушкинская улица, 253Б",
+                "precision": "exact",
+                "Address": {
+                  "country_code": "RU",
+                  "postal_code": "426008",
+                  "formatted": "Удмуртская Республика, Ижевск, Пушкинская улица, 253Б",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    },
+                    {
+                      "kind": "locality",
+                      "name": "Ижевск"
+                    },
+                    {
+                      "kind": "street",
+                      "name": "Пушкинская улица"
+                    },
+                    {
+                      "kind": "house",
+                      "name": "253Б"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, Ижевск, Пушкинская улица, 253Б",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск",
+                        "Locality": {
+                          "LocalityName": "Ижевск",
+                          "Thoroughfare": {
+                            "ThoroughfareName": "Пушкинская улица",
+                            "Premise": {
+                              "PremiseNumber": "253Б",
+                              "PostalCode": {
+                                "PostalCodeNumber": "426008"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Ижевск, Удмуртская Республика, Россия",
+            "name": "Пушкинская улица, 253Б",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.201995 56.855634",
+                "upperCorner": "53.210206 56.860132"
+              }
+            },
+            "Point": {
+              "pos": "53.2061 56.857883"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "street",
+                "text": "Россия, Удмуртская Республика, Ижевск, Пушкинская улица",
+                "precision": "street",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика, Ижевск, Пушкинская улица",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    },
+                    {
+                      "kind": "locality",
+                      "name": "Ижевск"
+                    },
+                    {
+                      "kind": "street",
+                      "name": "Пушкинская улица"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, Ижевск, Пушкинская улица",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск",
+                        "Locality": {
+                          "LocalityName": "Ижевск",
+                          "Thoroughfare": {
+                            "ThoroughfareName": "Пушкинская улица"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Ижевск, Удмуртская Республика, Россия",
+            "name": "Пушкинская улица",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.207663 56.82569",
+                "upperCorner": "53.220384 56.875512"
+              }
+            },
+            "Point": {
+              "pos": "53.212595 56.850132"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "district",
+                "text": "Россия, Удмуртская Республика, Ижевск, Центральный жилой район",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика, Ижевск, Центральный жилой район",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    },
+                    {
+                      "kind": "locality",
+                      "name": "Ижевск"
+                    },
+                    {
+                      "kind": "district",
+                      "name": "Центральный жилой район"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, Ижевск, Центральный жилой район",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск",
+                        "Locality": {
+                          "LocalityName": "Ижевск",
+                          "DependentLocality": {
+                            "DependentLocalityName": "Центральный жилой район"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Ижевск, Удмуртская Республика, Россия",
+            "name": "Центральный жилой район",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.189275 56.834678",
+                "upperCorner": "53.244674 56.861697"
+              }
+            },
+            "Point": {
+              "pos": "53.218237 56.84932"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "district",
+                "text": "Россия, Удмуртская Республика, Ижевск, Октябрьский район",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика, Ижевск, Октябрьский район",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    },
+                    {
+                      "kind": "locality",
+                      "name": "Ижевск"
+                    },
+                    {
+                      "kind": "district",
+                      "name": "Октябрьский район"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, Ижевск, Октябрьский район",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск",
+                        "Locality": {
+                          "LocalityName": "Ижевск",
+                          "DependentLocality": {
+                            "DependentLocalityName": "Октябрьский район"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Ижевск, Удмуртская Республика, Россия",
+            "name": "Октябрьский район",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.054034 56.843895",
+                "upperCorner": "53.232403 56.987619"
+              }
+            },
+            "Point": {
+              "pos": "53.165137 56.909721"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "locality",
+                "text": "Россия, Удмуртская Республика, Ижевск",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика, Ижевск",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    },
+                    {
+                      "kind": "locality",
+                      "name": "Ижевск"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, Ижевск",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск",
+                        "Locality": {
+                          "LocalityName": "Ижевск"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Удмуртская Республика, Россия",
+            "name": "Ижевск",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.013259 56.716517",
+                "upperCorner": "53.39224 56.987747"
+              }
+            },
+            "Point": {
+              "pos": "53.204843 56.852593"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "area",
+                "text": "Россия, Удмуртская Республика, городской округ Ижевск",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика, городской округ Ижевск",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    },
+                    {
+                      "kind": "area",
+                      "name": "городской округ Ижевск"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика, городской округ Ижевск",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика",
+                      "SubAdministrativeArea": {
+                        "SubAdministrativeAreaName": "городской округ Ижевск"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Удмуртская Республика, Россия",
+            "name": "городской округ Ижевск",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "53.007609 56.716517",
+                "upperCorner": "53.39224 57.009803"
+              }
+            },
+            "Point": {
+              "pos": "53.184397 56.859217"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "province",
+                "text": "Россия, Удмуртская Республика",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Удмуртская Республика",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Удмуртская Республика"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Удмуртская Республика",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия",
+                    "AdministrativeArea": {
+                      "AdministrativeAreaName": "Удмуртская Республика"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Россия",
+            "name": "Удмуртская Республика",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "51.124192 55.85628",
+                "upperCorner": "54.434052 58.545777"
+              }
+            },
+            "Point": {
+              "pos": "52.796972 57.166784"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "province",
+                "text": "Россия, Приволжский федеральный округ",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "Приволжский федеральный округ",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    },
+                    {
+                      "kind": "province",
+                      "name": "Приволжский федеральный округ"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "Приволжский федеральный округ",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия"
+                  }
+                }
+              }
+            },
+            "description": "Россия",
+            "name": "Приволжский федеральный округ",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "41.776287 49.801539",
+                "upperCorner": "61.690455 61.66299"
+              }
+            },
+            "Point": {
+              "pos": "51.524283 55.485362"
+            }
+          }
+        },
+        {
+          "GeoObject": {
+            "metaDataProperty": {
+              "GeocoderMetaData": {
+                "kind": "country",
+                "text": "Россия",
+                "precision": "other",
+                "Address": {
+                  "country_code": "RU",
+                  "formatted": "",
+                  "Components": [
+                    {
+                      "kind": "country",
+                      "name": "Россия"
+                    }
+                  ]
+                },
+                "AddressDetails": {
+                  "Country": {
+                    "AddressLine": "",
+                    "CountryNameCode": "RU",
+                    "CountryName": "Россия"
+                  }
+                }
+              }
+            },
+            "name": "Россия",
+            "boundedBy": {
+              "Envelope": {
+                "lowerCorner": "19.484764 41.18599",
+                "upperCorner": "191.128003 81.886117"
+              }
+            },
+            "Point": {
+              "pos": "99.505405 61.698653"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
