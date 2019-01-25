@@ -19,7 +19,7 @@ import io.reactivex.observers.TestObserver;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class ContactInteractorImplTest {
+public final class ContactInteractorImplTest {
 
     private ContactRepository stubContactRepository;
 
@@ -28,7 +28,7 @@ public class ContactInteractorImplTest {
     private ContactInteractor interactor;
 
     @Before
-    public void setup() {
+    public void before() {
         stubContactRepository = new ContactRepositoryStubImpl();
         stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
         interactor = new ContactInteractorImpl(stubContactInfoRepository, stubContactRepository);
@@ -40,19 +40,20 @@ public class ContactInteractorImplTest {
         ((ContactRepositoryStubImpl) stubContactRepository).addContact(contact);
         TestObserver<Contact> testObserver = new TestObserver<>();
         interactor.getContactById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(contact);
-        testObserver.assertOf(contactTestObserver -> contactTestObserver.onSuccess(contact));
+        testObserver
+                .assertSubscribed()
+                .assertResult(contact);
     }
 
     @Test
     public void whenGetContactByInvalidIdThenReturnError() {
         TestObserver<Contact> testObserver = new TestObserver<>();
         interactor.getContactById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertNoValues();
-        testObserver.assertError(NullPointerException.class);
-        testObserver.onComplete();
+        testObserver
+                .assertSubscribed()
+                .assertNoValues()
+                .assertError(NullPointerException.class)
+                .onComplete();
     }
 
     @Test
@@ -63,18 +64,19 @@ public class ContactInteractorImplTest {
         completableTestObserver.assertSubscribed();
         TestObserver<ContactInfo> testObserver = new TestObserver<>();
         interactor.getContactInfoById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(contactInfo);
-        testObserver.assertOf(contactInfoTestObserver -> contactInfoTestObserver.onSuccess(contactInfo));
+        testObserver
+                .assertSubscribed()
+                .assertResult(contactInfo);
     }
 
     @Test
     public void whenGetContactInfoByInvalidIdThenReturnError() {
         TestObserver<ContactInfo> testObserver = new TestObserver<>();
         interactor.getContactInfoById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertNoValues();
-        testObserver.assertNoErrors();
-        testObserver.assertComplete();
+        testObserver
+                .assertSubscribed()
+                .assertNoValues()
+                .assertNoErrors()
+                .assertComplete();
     }
 }

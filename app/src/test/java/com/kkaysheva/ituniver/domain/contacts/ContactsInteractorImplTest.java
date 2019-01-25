@@ -23,7 +23,7 @@ import io.reactivex.observers.TestObserver;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class ContactsInteractorImplTest {
+public final class ContactsInteractorImplTest {
 
     private ContactRepository stubContactRepository;
 
@@ -38,7 +38,6 @@ public class ContactsInteractorImplTest {
         interactor = new ContactsInteractorImpl(stubContactInfoRepository, stubContactRepository);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsThenReturnAllContacts() {
         List<Contact> contacts = Arrays.asList(
@@ -48,23 +47,23 @@ public class ContactsInteractorImplTest {
         ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContacts().subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(contacts);
-        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
+        //noinspection unchecked
+        testObserver
+                .assertSubscribed()
+                .assertResult(contacts);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsFromEmptyRepositoryThenReturnEmptyList() {
         List<Contact> contacts = new ArrayList<>();
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContacts().subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(contacts);
-        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
+        //noinspection unchecked
+        testObserver
+                .assertSubscribed()
+                .assertResult(contacts);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsByNameThenReturnContactsByThisName() {
         List<Contact> contacts = Arrays.asList(
@@ -76,29 +75,39 @@ public class ContactsInteractorImplTest {
         ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContactsByName("Name").subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(result);
-        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(result));
+        //noinspection unchecked
+        testObserver
+                .assertSubscribed()
+                .assertResult(result);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsByNameWhichNotExistsThenReturnEmptyList() {
         List<Contact> contacts = new ArrayList<>();
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContactsByName("Name").subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(contacts);
-        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
+        //noinspection unchecked
+        testObserver
+                .assertSubscribed()
+                .assertResult(contacts);
     }
 
     @Test
     public void whenCallDeleteEmptyRowsThenEmptyRowsDeletedFromContactInfoRepository() {
-        stubContactInfoRepository.insert(new ContactInfo(1, "1.2", "1.3", "address"));
+        TestObserver<Completable> completableTestObserver = new TestObserver<>();
+        stubContactInfoRepository.insert(
+                new ContactInfo(1, "1.2", "1.3", "address"))
+                .subscribe(completableTestObserver);
+        completableTestObserver
+                .assertSubscribed()
+                .assertComplete();
         List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact(1, "test", "123", "test"));
+        contacts.add(new Contact(2, "test", "123", "test"));
         TestObserver<Completable> testObserver = new TestObserver<>();
         interactor.deleteEmptyRows(contacts).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertOf(TestObserver::onComplete);
+        testObserver
+                .assertSubscribed()
+                .assertOf(TestObserver::onComplete);
     }
 }

@@ -15,8 +15,7 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DirectionsResponseToListLatLngMapperTest
@@ -24,12 +23,12 @@ import static org.junit.Assert.assertThat;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class DirectionsResponseToListLatLngMapperTest {
+public final class DirectionsResponseToListLatLngMapperTest {
 
     private DirectionsResponse response;
 
     @Before
-    public void setup() throws FileNotFoundException {
+    public void before() throws FileNotFoundException {
         ClassLoader loader = getClass().getClassLoader();
         File file = new File(loader.getResource("directions.json").getFile());
         Reader reader = new FileReader(file);
@@ -42,6 +41,6 @@ public class DirectionsResponseToListLatLngMapperTest {
         String POLYLINE = "g~_zIurvcIjA[@FB@B@dAQPdKBzBFdBT|JB~Af@AZ@NJVZTNFALC";
         List<LatLng> latLngList = PolyUtil.decode(POLYLINE);
         DirectionsResponseToListLatLngMapper mapper = new DirectionsResponseToListLatLngMapper();
-        assertThat(mapper.map(response), is(latLngList));
+        assertThat(mapper.map(response)).isEqualTo(latLngList);
     }
 }

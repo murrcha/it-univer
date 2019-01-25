@@ -5,8 +5,7 @@ import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * ContactInfoToLatLngMapperTest
@@ -14,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Kaysheva Ksenya (murrcha@me.com)
  * @since 01.2019
  */
-public class ContactInfoToLatLngMapperTest {
+public final class ContactInfoToLatLngMapperTest {
 
     @Test
     public void whenCallMapForContactInfoThenReturnLatLng() {
@@ -25,6 +24,6 @@ public class ContactInfoToLatLngMapperTest {
         String address = "Izhevsk, Lenina, 1";
         ContactInfo contactInfo = new ContactInfo(contactId, longitude, latitude, address);
         ContactInfoToLatLngMapper mapper = new ContactInfoToLatLngMapper();
-        assertThat(mapper.map(contactInfo), is(latLng));
+        assertThat(mapper.map(contactInfo)).isEqualTo(latLng);
     }
 }

@@ -18,9 +18,6 @@ public final class LocationRepositoryStubImpl implements LocationRepository {
     @NonNull
     @Override
     public Maybe<Location> getDeviceLocation() {
-        return Maybe.fromCallable(() -> {
-            String fakeProvider = "fake_provider";
-            return new Location(fakeProvider);
-        });
+        return Maybe.just(new Location("fake_provider"));
     }
 }

@@ -11,8 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * GeoCodeResponseToStringMapperTest
@@ -20,12 +19,12 @@ import static org.junit.Assert.assertThat;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class GeoCodeResponseToStringMapperTest {
+public final class GeoCodeResponseToStringMapperTest {
 
     private GeoCodeResponse response;
 
     @Before
-    public void setup() throws FileNotFoundException {
+    public void before() throws FileNotFoundException {
         ClassLoader loader = getClass().getClassLoader();
         File file = new File(loader.getResource("geocode.json").getFile());
         Reader reader = new FileReader(file);
@@ -37,6 +36,6 @@ public class GeoCodeResponseToStringMapperTest {
     public void whenCallMapGeoCodeResponseThenReturnAddressString() {
         GeoCodeResponseToStringMapper mapper = new GeoCodeResponseToStringMapper();
         String ADDRESS = "Удмуртская Республика, Ижевск, Пушкинская улица, 253Б";
-        assertThat(mapper.map(response), is(ADDRESS));
+        assertThat(mapper.map(response)).isEqualTo(ADDRESS);
     }
 }

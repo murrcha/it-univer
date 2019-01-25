@@ -10,28 +10,20 @@ import com.kkaysheva.ituniver.domain.LocationRepository;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
+import com.kkaysheva.ituniver.domain.stubs.DirectionsServiceStubImpl;
 import com.kkaysheva.ituniver.domain.stubs.GeoCodeServiceStubImpl;
 import com.kkaysheva.ituniver.domain.stubs.LocationRepositoryStubImpl;
 import com.kkaysheva.ituniver.domain.stubs.MapperContactInfoToLatLngStubImpl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
-
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * MapInteractorImplTest
@@ -39,33 +31,25 @@ import static org.mockito.Mockito.when;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public class MapInteractorImplTest {
+public final class MapInteractorImplTest {
 
     private MapInteractor interactor;
 
-    private ContactInfoRepository contactInfoRepository;
-
-    private GeoCodeService geoCodeService;
-
-    private GoogleDirectionsService googleDirectionsService;
-
-    private Mapper<ContactInfo, LatLng> mapper;
-
-    private LocationRepository locationRepository;
+    private ContactInfoRepository stubContactInfoRepository;
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        geoCodeService = new GeoCodeServiceStubImpl();
-        contactInfoRepository = new ContactInfoRepositoryStubImpl();
-        mapper = new MapperContactInfoToLatLngStubImpl();
-        locationRepository = new LocationRepositoryStubImpl();
+    public void before() {
+        GeoCodeService stubGeoCodeService = new GeoCodeServiceStubImpl();
+        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
+        Mapper<ContactInfo, LatLng> stubMapper = new MapperContactInfoToLatLngStubImpl();
+        LocationRepository stubLocationRepository = new LocationRepositoryStubImpl();
+        GoogleDirectionsService stubDirectionsService = new DirectionsServiceStubImpl();
         interactor = new MapInteractorImpl(
-                geoCodeService,
-                contactInfoRepository,
-                googleDirectionsService,
-                mapper,
-                locationRepository);
+                stubGeoCodeService,
+                stubContactInfoRepository,
+                stubDirectionsService,
+                stubMapper,
+                stubLocationRepository);
     }
 
     @Test
@@ -74,8 +58,9 @@ public class MapInteractorImplTest {
         String address = "Izhevsk, Lenina, 1";
         TestObserver<String> testObserver = new TestObserver<>();
         interactor.getAddress(latLng).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(address);
+        testObserver
+                .assertSubscribed()
+                .assertResult(address);
     }
 
     @Test
@@ -85,8 +70,9 @@ public class MapInteractorImplTest {
         String address = "Izhevsk, Lenina, 1";
         TestObserver<Completable> testObserver = new TestObserver<>();
         interactor.saveAddress(contactId, latLng, address).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertComplete();
+        testObserver
+                .assertSubscribed()
+                .assertComplete();
     }
 
     @Test
@@ -99,14 +85,16 @@ public class MapInteractorImplTest {
                 "Izhevsk, Lenina, 1");
         List<LatLng> locations = Arrays.asList(latLng);
         TestObserver<Completable> completableTestObserver = new TestObserver<>();
-        contactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
-        completableTestObserver.assertSubscribed();
-        completableTestObserver.assertComplete();
+        stubContactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
+        completableTestObserver
+                .assertSubscribed()
+                .assertComplete();
         TestObserver<List<LatLng>> testObserver = new TestObserver<>();
         interactor.getLocations().subscribe(testObserver);
-        testObserver.assertSubscribed();
         //noinspection unchecked
-        testObserver.assertResult(locations);
+        testObserver
+                .assertSubscribed()
+                .assertResult(locations);
     }
 
     @Test
@@ -117,35 +105,37 @@ public class MapInteractorImplTest {
                 "53.198438",
                 "Izhevsk, Lenina, 1");
         TestObserver<Completable> completableTestObserver = new TestObserver<>();
-        contactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
-        completableTestObserver.assertSubscribed();
-        completableTestObserver.assertComplete();
+        stubContactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
+        completableTestObserver
+                .assertSubscribed()
+                .assertComplete();
         TestObserver<LatLng> testObserver = new TestObserver<>();
         interactor.getLocationById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertResult(latLng);
+        testObserver
+                .assertSubscribed()
+                .assertResult(latLng);
     }
 
     @Test
     public void whenCallGetLocationByInvalidIdThenReturnError() {
         TestObserver<LatLng> testObserver = new TestObserver<>();
         interactor.getLocationById(1).subscribe(testObserver);
-        testObserver.assertSubscribed();
-        testObserver.assertNoValues();
-        testObserver.assertNoErrors();
+        testObserver
+                .assertSubscribed()
+                .assertNoValues()
+                .assertNoErrors();
     }
 
-    @Ignore
     @Test
     public void whenCallGetDeviceLocationThenReturnLocation() {
-        String fakeProvider = "fake_provider";
-        Location location = new Location(fakeProvider);
-        when(locationRepository.getDeviceLocation()).thenReturn(Maybe.just(location));
-        assertThat(interactor.getDeviceLocation(), instanceOf(Maybe.class));
-        assertThat(interactor.getDeviceLocation().blockingGet(), is(location));
+        TestObserver<Location> testObserver = new TestObserver<>();
+        interactor.getDeviceLocation().subscribe(testObserver);
+        testObserver
+                .assertSubscribed()
+                .assertNoErrors()
+                .assertComplete();
     }
 
-    @Ignore
     @Test
     public void whenCallGetDirectionsThenReturnDirections() {
         LatLng origin = new LatLng(53.198438, 56.843609);
@@ -153,9 +143,11 @@ public class MapInteractorImplTest {
         List<LatLng> route = new ArrayList<>();
         route.add(origin);
         route.add(destination);
-        Single<List<LatLng>> response = Single.just(route);
-        when(googleDirectionsService.loadDirections(origin, destination)).thenReturn(response);
-        assertThat(interactor.getDirections(origin, destination), instanceOf(Single.class));
-        assertThat(interactor.getDirections(origin, destination).blockingGet().size(), is(2));
+        TestObserver<List<LatLng>> testObserver = new TestObserver<>();
+        interactor.getDirections(origin, destination).subscribe(testObserver);
+        //noinspection unchecked
+        testObserver
+                .assertSubscribed()
+                .assertResult(route);
     }
 }
