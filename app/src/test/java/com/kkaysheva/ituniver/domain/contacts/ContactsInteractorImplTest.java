@@ -1,29 +1,21 @@
 package com.kkaysheva.ituniver.domain.contacts;
 
-import android.content.Context;
-
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
-import com.kkaysheva.ituniver.domain.tools.ContactInfoRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.tools.ContactRepositoryStubImpl;
+import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
+import com.kkaysheva.ituniver.domain.stubs.ContactRepositoryStubImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import io.reactivex.observers.TestObserver;
 
 /**
  * ContactsInteractorImplTest
@@ -33,74 +25,80 @@ import static org.junit.Assert.assertThat;
  */
 public class ContactsInteractorImplTest {
 
-    private ContactRepository contactRepository;
+    private ContactRepository stubContactRepository;
 
-    private ContactInfoRepository contactInfoRepository;
+    private ContactInfoRepository stubContactInfoRepository;
 
     private ContactsInteractor interactor;
 
-    @Inject
-    private Context context;
-
     @Before
-    public void beforeTest() {
-        contactRepository = new ContactRepositoryStubImpl();
-        contactInfoRepository = new ContactInfoRepositoryStubImpl();
-        interactor = new ContactsInteractorImpl(context, contactInfoRepository, contactRepository);
+    public void before() {
+        stubContactRepository = new ContactRepositoryStubImpl();
+        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
+        interactor = new ContactsInteractorImpl(stubContactInfoRepository, stubContactRepository);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsThenReturnAllContacts() {
-        ((ContactRepositoryStubImpl) contactRepository)
-                .addContact(new Contact(1, "Name", "123", "uri"));
-        assertThat(interactor.getContacts(), instanceOf(Single.class));
-        assertThat(interactor.getContacts().blockingGet().size(), is(1));
-        assertThat(interactor.getContacts().blockingGet().get(0).getId(), is(1));
-        assertThat(interactor.getContacts().blockingGet().get(0).getName(), is("Name"));
-        assertThat(interactor.getContacts().blockingGet().get(0).getNumber(), is("123"));
-        assertThat(interactor.getContacts().blockingGet().get(0).getPhotoUri(), is("uri"));
+        List<Contact> contacts = Arrays.asList(
+                new Contact(1, "Name1", "123", "uri"),
+                new Contact(2, "Name2", "123", "uri")
+        );
+        ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
+        TestObserver<List<Contact>> testObserver = new TestObserver<>();
+        interactor.getContacts().subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(contacts);
+        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsFromEmptyRepositoryThenReturnEmptyList() {
-        assertThat(interactor.getContacts(), instanceOf(Single.class));
-        assertThat(interactor.getContacts().blockingGet().size(), is(0));
+        List<Contact> contacts = new ArrayList<>();
+        TestObserver<List<Contact>> testObserver = new TestObserver<>();
+        interactor.getContacts().subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(contacts);
+        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsByNameThenReturnContactsByThisName() {
-        ((ContactRepositoryStubImpl) contactRepository)
-                .addContact(new Contact(1, "Name1", "123", "uri"));
-        ((ContactRepositoryStubImpl) contactRepository)
-                .addContact(new Contact(1, "Name2", "123", "uri"));
-        ((ContactRepositoryStubImpl) contactRepository)
-                .addContact(new Contact(1, "Name3", "123", "uri"));
-        ((ContactRepositoryStubImpl) contactRepository)
-                .addContact(new Contact(1, "Test1", "123", "uri"));
-        assertThat(interactor.getContactsByName("Name"), instanceOf(Single.class));
-        assertThat(interactor.getContactsByName("Name").blockingGet().size(), is(3));
-        assertThat(interactor.getContactsByName("Name").blockingGet().get(0).getName(), is("Name1"));
-        assertThat(interactor.getContactsByName("Name").blockingGet().get(1).getName(), is("Name2"));
-        assertThat(interactor.getContactsByName("Name").blockingGet().get(2).getName(), is("Name3"));
+        List<Contact> contacts = Arrays.asList(
+                new Contact(1, "Name1", "123", "uri"),
+                new Contact(2, "Name2", "123", "uri"),
+                new Contact(3, "Test1", "123", "uri")
+        );
+        List<Contact> result = Arrays.asList(contacts.get(0), contacts.get(1));
+        ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
+        TestObserver<List<Contact>> testObserver = new TestObserver<>();
+        interactor.getContactsByName("Name").subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(result);
+        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(result));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void whenCallGetContactsByNameWhichNotExistsThenReturnEmptyList() {
-        assertThat(interactor.getContactsByName("Name"), instanceOf(Single.class));
-        assertThat(interactor.getContactsByName("Name").blockingGet().size(), is(0));
+        List<Contact> contacts = new ArrayList<>();
+        TestObserver<List<Contact>> testObserver = new TestObserver<>();
+        interactor.getContactsByName("Name").subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(contacts);
+        testObserver.assertOf(listTestObserver -> listTestObserver.onSuccess(contacts));
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void whenCallDeleteEmptyRowsThenEmptyRowsDeletedFromContactInfoRepository() {
-        contactInfoRepository.insert(new ContactInfo(1, "1.2", "1.3", "address"));
+        stubContactInfoRepository.insert(new ContactInfo(1, "1.2", "1.3", "address"));
         List<Contact> contacts = new ArrayList<>();
-        assertThat(interactor.deleteEmptyRows(contacts), instanceOf(Completable.class));
-        Disposable disposable = interactor.deleteEmptyRows(contacts)
-                .subscribe(
-                        () -> assertThat(contactInfoRepository.getAll().blockingGet().isEmpty(), is(true)),
-                        Completable::error
-                );
-        disposable.dispose();
+        TestObserver<Completable> testObserver = new TestObserver<>();
+        interactor.deleteEmptyRows(contacts).subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertOf(TestObserver::onComplete);
     }
 }

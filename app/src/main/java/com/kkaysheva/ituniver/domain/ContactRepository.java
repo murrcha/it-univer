@@ -1,6 +1,5 @@
 package com.kkaysheva.ituniver.domain;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.kkaysheva.ituniver.domain.model.Contact;
@@ -18,11 +17,11 @@ import io.reactivex.Single;
 public interface ContactRepository {
 
     @NonNull
-    Single<List<Contact>> getContacts(@NonNull Context context);
+    Single<List<Contact>> getContacts();
 
     @NonNull
-    Single<List<Contact>> getContactsByName(@NonNull String searchName, @NonNull Context context);
+    Single<List<Contact>> getContactsByName(@NonNull String searchName);
 
     @NonNull
-    Single<Contact> getContactById(int contactId, @NonNull Context context);
+    Single<Contact> getContactById(int contactId);
 }

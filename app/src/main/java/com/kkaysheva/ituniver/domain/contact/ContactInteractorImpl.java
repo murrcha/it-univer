@@ -1,6 +1,5 @@
 package com.kkaysheva.ituniver.domain.contact;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
@@ -22,19 +21,14 @@ import io.reactivex.Single;
 public final class ContactInteractorImpl implements ContactInteractor {
 
     @NonNull
-    private final Context context;
-
-    @NonNull
     private final ContactInfoRepository contactInfoRepository;
 
     @NonNull
     private final ContactRepository contactRepository;
 
     @Inject
-    public ContactInteractorImpl(@NonNull Context context,
-                                 @NonNull ContactInfoRepository contactInfoRepository,
+    public ContactInteractorImpl(@NonNull ContactInfoRepository contactInfoRepository,
                                  @NonNull ContactRepository contactRepository) {
-        this.context = context;
         this.contactInfoRepository = contactInfoRepository;
         this.contactRepository = contactRepository;
     }
@@ -42,7 +36,7 @@ public final class ContactInteractorImpl implements ContactInteractor {
     @NonNull
     @Override
     public Single<Contact> getContactById(int contactId) {
-        return contactRepository.getContactById(contactId, context);
+        return contactRepository.getContactById(contactId);
     }
 
     @NonNull

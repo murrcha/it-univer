@@ -25,12 +25,16 @@ import io.reactivex.Single;
  */
 public final class ContactFetcher implements ContactRepository {
 
+    @NonNull
+    private final Context context;
+
     @Inject
-    public ContactFetcher() {
+    public ContactFetcher(@NonNull Context context) {
+        this.context = context;
     }
 
     @NonNull
-    public Single<List<Contact>> getContacts(@NonNull Context context) {
+    public Single<List<Contact>> getContacts() {
         return Single.fromCallable(() -> {
             List<Contact> contacts = new ArrayList<>();
             ContentResolver contentResolver = context.getContentResolver();
@@ -50,7 +54,7 @@ public final class ContactFetcher implements ContactRepository {
     }
 
     @NonNull
-    public Single<List<Contact>> getContactsByName(@NonNull String searchName, @NonNull Context context) {
+    public Single<List<Contact>> getContactsByName(@NonNull String searchName) {
         return Single.fromCallable(() -> {
             List<Contact> contacts = new ArrayList<>();
             ContentResolver contentResolver = context.getContentResolver();
@@ -70,7 +74,7 @@ public final class ContactFetcher implements ContactRepository {
     }
 
     @NonNull
-    public Single<Contact> getContactById(int contactId, @NonNull Context context) {
+    public Single<Contact> getContactById(int contactId) {
         return Single.fromCallable(() -> {
             Contact contact = null;
             ContentResolver contentResolver = context.getContentResolver();

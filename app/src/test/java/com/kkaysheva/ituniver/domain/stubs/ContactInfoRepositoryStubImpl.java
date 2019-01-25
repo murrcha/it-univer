@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.tools;
+package com.kkaysheva.ituniver.domain.stubs;
 
 import android.support.annotation.NonNull;
 
@@ -7,7 +7,6 @@ import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
@@ -15,6 +14,7 @@ import io.reactivex.Single;
 
 /**
  * ContactInfoRepositoryStubImpl
+ *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
@@ -25,34 +25,34 @@ public final class ContactInfoRepositoryStubImpl implements ContactInfoRepositor
     @NonNull
     @Override
     public Single<List<ContactInfo>> getAll() {
-        return Single.just(repository);
+        return Single.fromCallable(() -> repository);
     }
 
     @NonNull
     @Override
     public Maybe<ContactInfo> getById(@NonNull Long id) {
-        ContactInfo result = null;
-        for (ContactInfo contactInfo : repository) {
-            if (contactInfo.getId() == id) {
-                result = contactInfo;
-                break;
+        return Maybe.fromCallable(() -> {
+            ContactInfo result = null;
+            for (ContactInfo contactInfo : repository) {
+                if (contactInfo.getId() == id) {
+                    result = contactInfo;
+                    break;
+                }
             }
-        }
-        return Maybe.just(Objects.requireNonNull(result));
+            return result;
+        });
     }
 
     @NonNull
     @Override
     public Completable insert(@NonNull ContactInfo contactInfo) {
-        repository.add(contactInfo);
-        return Completable.complete();
+        return Completable.fromAction(() -> repository.add(contactInfo));
     }
 
     @NonNull
     @Override
     public Completable update(@NonNull ContactInfo contactInfo) {
-        //no implementation
-        return Completable.complete();
+        return Completable.fromAction(() -> {});
     }
 
     @Override
@@ -68,7 +68,6 @@ public final class ContactInfoRepositoryStubImpl implements ContactInfoRepositor
     @NonNull
     @Override
     public Completable deleteAll() {
-        repository.clear();
-        return Completable.complete();
+        return Completable.fromAction(() -> repository.clear());
     }
 }

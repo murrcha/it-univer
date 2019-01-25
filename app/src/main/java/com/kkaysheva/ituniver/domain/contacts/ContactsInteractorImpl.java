@@ -1,6 +1,5 @@
 package com.kkaysheva.ituniver.domain.contacts;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -28,19 +27,14 @@ public final class ContactsInteractorImpl implements ContactsInteractor {
     private static final String TAG = ContactsInteractorImpl.class.getSimpleName();
 
     @NonNull
-    private final Context context;
-
-    @NonNull
     private final ContactInfoRepository contactInfoRepository;
 
     @NonNull
     private final ContactRepository contactRepository;
 
     @Inject
-    public ContactsInteractorImpl(@NonNull Context context,
-                                  @NonNull ContactInfoRepository contactInfoRepository,
+    public ContactsInteractorImpl(@NonNull ContactInfoRepository contactInfoRepository,
                                   @NonNull ContactRepository contactRepository) {
-        this.context = context;
         this.contactInfoRepository = contactInfoRepository;
         this.contactRepository = contactRepository;
     }
@@ -48,13 +42,13 @@ public final class ContactsInteractorImpl implements ContactsInteractor {
     @NonNull
     @Override
     public Single<List<Contact>> getContacts() {
-        return contactRepository.getContacts(context);
+        return contactRepository.getContacts();
     }
 
     @NonNull
     @Override
     public Single<List<Contact>> getContactsByName(@NonNull String name) {
-        return contactRepository.getContactsByName(name, context);
+        return contactRepository.getContactsByName(name);
     }
 
     @NonNull

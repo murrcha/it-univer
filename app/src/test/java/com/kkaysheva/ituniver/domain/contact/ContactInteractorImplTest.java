@@ -1,26 +1,17 @@
 package com.kkaysheva.ituniver.domain.contact;
 
-import android.content.Context;
-
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.ContactRepository;
-import com.kkaysheva.ituniver.domain.tools.ContactInfoRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.tools.ContactRepositoryStubImpl;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
+import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
+import com.kkaysheva.ituniver.domain.stubs.ContactRepositoryStubImpl;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.inject.Inject;
-
-import io.reactivex.Maybe;
-import io.reactivex.Single;
-
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import io.reactivex.Completable;
+import io.reactivex.observers.TestObserver;
 
 /**
  * ContactInteractorImplTest
@@ -30,51 +21,60 @@ import static org.junit.Assert.assertThat;
  */
 public class ContactInteractorImplTest {
 
-    private ContactRepository contactRepository;
+    private ContactRepository stubContactRepository;
 
-    private ContactInfoRepository contactInfoRepository;
+    private ContactInfoRepository stubContactInfoRepository;
 
     private ContactInteractor interactor;
 
-    @Inject
-    private Context context;
-
     @Before
-    public void beforeTest() {
-        contactRepository = new ContactRepositoryStubImpl();
-        contactInfoRepository = new ContactInfoRepositoryStubImpl();
-        interactor = new ContactInteractorImpl(context, contactInfoRepository, contactRepository);
+    public void setup() {
+        stubContactRepository = new ContactRepositoryStubImpl();
+        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
+        interactor = new ContactInteractorImpl(stubContactInfoRepository, stubContactRepository);
     }
 
     @Test
     public void whenGetContactByIdThenReturnContact() {
-        Contact contact = new Contact(1, "Name", "123", "uri");
-        ((ContactRepositoryStubImpl) contactRepository).addContact(contact);
-        assertThat(interactor.getContactById(1), instanceOf(Single.class));
-        assertThat(interactor.getContactById(1).blockingGet().getId(), is(1));
-        assertThat(interactor.getContactById(1).blockingGet().getName(), is("Name"));
-        assertThat(interactor.getContactById(1).blockingGet().getNumber(), is("123"));
-        assertThat(interactor.getContactById(1).blockingGet().getPhotoUri(), is("uri"));
+        Contact contact = new Contact(1, "Test", "123", "test");
+        ((ContactRepositoryStubImpl) stubContactRepository).addContact(contact);
+        TestObserver<Contact> testObserver = new TestObserver<>();
+        interactor.getContactById(1).subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(contact);
+        testObserver.assertOf(contactTestObserver -> contactTestObserver.onSuccess(contact));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void whenGetContactByInvalidIdThenReturnError() {
-        assertThat(interactor.getContactById(1), nullValue());
+        TestObserver<Contact> testObserver = new TestObserver<>();
+        interactor.getContactById(1).subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertNoValues();
+        testObserver.assertError(NullPointerException.class);
+        testObserver.onComplete();
     }
 
     @Test
     public void whenGetContactInfoByIdThenReturnContactInfo() {
         ContactInfo contactInfo = new ContactInfo(1, "1.2", "1.3", "address");
-        contactInfoRepository.insert(contactInfo);
-        assertThat(interactor.getContactInfoById(1), instanceOf(Maybe.class));
-        assertThat(interactor.getContactInfoById(1).blockingGet().getId(), is(1));
-        assertThat(interactor.getContactInfoById(1).blockingGet().getLongitude(), is("1.2"));
-        assertThat(interactor.getContactInfoById(1).blockingGet().getLatitude(), is("1.3"));
-        assertThat(interactor.getContactInfoById(1).blockingGet().getAddress(), is("address"));
+        TestObserver<Completable> completableTestObserver = new TestObserver<>();
+        stubContactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
+        completableTestObserver.assertSubscribed();
+        TestObserver<ContactInfo> testObserver = new TestObserver<>();
+        interactor.getContactInfoById(1).subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertResult(contactInfo);
+        testObserver.assertOf(contactInfoTestObserver -> contactInfoTestObserver.onSuccess(contactInfo));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void whenGetContactInfoByInvalidIdThenReturnError() {
-        assertThat(interactor.getContactInfoById(1), nullValue());
+        TestObserver<ContactInfo> testObserver = new TestObserver<>();
+        interactor.getContactInfoById(1).subscribe(testObserver);
+        testObserver.assertSubscribed();
+        testObserver.assertNoValues();
+        testObserver.assertNoErrors();
+        testObserver.assertComplete();
     }
 }
