@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.stubs;
+package com.kkaysheva.ituniver.stubs.service;
 
 import android.support.annotation.NonNull;
 
@@ -8,12 +8,12 @@ import com.kkaysheva.ituniver.data.network.geocode.GeoCodeService;
 import io.reactivex.Single;
 
 /**
- * GeoCodeServiceStubImpl
+ * GeoCodeServiceStub
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class GeoCodeServiceStubImpl implements GeoCodeService {
+public final class GeoCodeServiceStub implements GeoCodeService {
 
     @NonNull
     @Override

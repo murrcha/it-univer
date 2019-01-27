@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.stubs;
+package com.kkaysheva.ituniver.stubs.mapper;
 
 import android.support.annotation.NonNull;
 
@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
-public final class MapperContactInfoToLatLngStubImpl implements Mapper<ContactInfo, LatLng> {
+public final class MapperContactInfoToLatLngStub implements Mapper<ContactInfo, LatLng> {
 
     @NonNull
     @Override

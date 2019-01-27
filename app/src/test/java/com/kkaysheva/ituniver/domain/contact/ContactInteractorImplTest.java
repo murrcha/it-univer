@@ -4,8 +4,8 @@ import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
-import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.ContactRepositoryStubImpl;
+import com.kkaysheva.ituniver.stubs.repository.ContactInfoRepositoryStub;
+import com.kkaysheva.ituniver.stubs.repository.ContactRepositoryStub;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,20 +29,21 @@ public final class ContactInteractorImplTest {
 
     @Before
     public void before() {
-        stubContactRepository = new ContactRepositoryStubImpl();
-        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
+        stubContactRepository = new ContactRepositoryStub();
+        stubContactInfoRepository = new ContactInfoRepositoryStub();
         interactor = new ContactInteractorImpl(stubContactInfoRepository, stubContactRepository);
     }
 
     @Test
     public void whenGetContactByIdThenReturnContact() {
         Contact contact = new Contact(1, "Test", "123", "test");
-        ((ContactRepositoryStubImpl) stubContactRepository).addContact(contact);
+        ((ContactRepositoryStub) stubContactRepository).addContact(contact);
         TestObserver<Contact> testObserver = new TestObserver<>();
         interactor.getContactById(1).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertResult(contact);
+                .assertResult(contact)
+                .dispose();
     }
 
     @Test
@@ -53,7 +54,8 @@ public final class ContactInteractorImplTest {
                 .assertSubscribed()
                 .assertNoValues()
                 .assertError(NullPointerException.class)
-                .onComplete();
+                .assertNotComplete()
+                .dispose();
     }
 
     @Test
@@ -66,7 +68,8 @@ public final class ContactInteractorImplTest {
         interactor.getContactInfoById(1).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertResult(contactInfo);
+                .assertResult(contactInfo)
+                .dispose();
     }
 
     @Test
@@ -77,6 +80,7 @@ public final class ContactInteractorImplTest {
                 .assertSubscribed()
                 .assertNoValues()
                 .assertNoErrors()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
     }
 }

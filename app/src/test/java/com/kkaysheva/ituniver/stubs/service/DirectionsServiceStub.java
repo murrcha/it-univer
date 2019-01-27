@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.stubs;
+package com.kkaysheva.ituniver.stubs.service;
 
 import android.support.annotation.NonNull;
 
@@ -11,12 +11,12 @@ import java.util.List;
 import io.reactivex.Single;
 
 /**
- * DirectionsServiceStubImpl
+ * DirectionsServiceStub
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class DirectionsServiceStubImpl implements GoogleDirectionsService {
+public final class DirectionsServiceStub implements GoogleDirectionsService {
 
     @NonNull
     @Override

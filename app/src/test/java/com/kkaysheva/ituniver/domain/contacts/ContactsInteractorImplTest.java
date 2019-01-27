@@ -4,8 +4,8 @@ import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
-import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.ContactRepositoryStubImpl;
+import com.kkaysheva.ituniver.stubs.repository.ContactInfoRepositoryStub;
+import com.kkaysheva.ituniver.stubs.repository.ContactRepositoryStub;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,8 +33,8 @@ public final class ContactsInteractorImplTest {
 
     @Before
     public void before() {
-        stubContactRepository = new ContactRepositoryStubImpl();
-        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
+        stubContactRepository = new ContactRepositoryStub();
+        stubContactInfoRepository = new ContactInfoRepositoryStub();
         interactor = new ContactsInteractorImpl(stubContactInfoRepository, stubContactRepository);
     }
 
@@ -44,13 +44,14 @@ public final class ContactsInteractorImplTest {
                 new Contact(1, "Name1", "123", "uri"),
                 new Contact(2, "Name2", "123", "uri")
         );
-        ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
+        ((ContactRepositoryStub) stubContactRepository).addContacts(contacts);
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContacts().subscribe(testObserver);
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(contacts);
+                .assertResult(contacts)
+                .dispose();
     }
 
     @Test
@@ -61,7 +62,8 @@ public final class ContactsInteractorImplTest {
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(contacts);
+                .assertResult(contacts)
+                .dispose();
     }
 
     @Test
@@ -72,13 +74,14 @@ public final class ContactsInteractorImplTest {
                 new Contact(3, "Test1", "123", "uri")
         );
         List<Contact> result = Arrays.asList(contacts.get(0), contacts.get(1));
-        ((ContactRepositoryStubImpl) stubContactRepository).addContacts(contacts);
+        ((ContactRepositoryStub) stubContactRepository).addContacts(contacts);
         TestObserver<List<Contact>> testObserver = new TestObserver<>();
         interactor.getContactsByName("Name").subscribe(testObserver);
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(result);
+                .assertResult(result)
+                .dispose();
     }
 
     @Test
@@ -89,7 +92,8 @@ public final class ContactsInteractorImplTest {
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(contacts);
+                .assertResult(contacts)
+                .dispose();
     }
 
     @Test
@@ -100,7 +104,8 @@ public final class ContactsInteractorImplTest {
                 .subscribe(completableTestObserver);
         completableTestObserver
                 .assertSubscribed()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
         List<Contact> contacts = new ArrayList<>();
         contacts.add(new Contact(1, "test", "123", "test"));
         contacts.add(new Contact(2, "test", "123", "test"));
@@ -108,6 +113,7 @@ public final class ContactsInteractorImplTest {
         interactor.deleteEmptyRows(contacts).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertOf(TestObserver::onComplete);
+                .assertOf(TestObserver::onComplete)
+                .dispose();
     }
 }

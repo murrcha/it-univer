@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.stubs;
+package com.kkaysheva.ituniver.stubs.repository;
 
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -8,12 +8,12 @@ import com.kkaysheva.ituniver.domain.LocationRepository;
 import io.reactivex.Maybe;
 
 /**
- * LocationRepositoryStubImpl
+ * LocationRepositoryStub
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class LocationRepositoryStubImpl implements LocationRepository {
+public final class LocationRepositoryStub implements LocationRepository {
 
     @NonNull
     @Override

@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.domain.stubs;
+package com.kkaysheva.ituniver.stubs.repository;
 
 import android.support.annotation.NonNull;
 
@@ -12,12 +12,12 @@ import java.util.List;
 import io.reactivex.Single;
 
 /**
- * ContactRepositoryStubImpl
+ * ContactRepositoryStub
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class ContactRepositoryStubImpl implements ContactRepository {
+public final class ContactRepositoryStub implements ContactRepository {
 
     private List<Contact> repository = new ArrayList<>();
 

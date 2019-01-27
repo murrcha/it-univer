@@ -52,9 +52,9 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
         super.onDestroy();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContacts() {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getContacts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -75,10 +75,10 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContactsByName(String name) {
         getViewState().saveQuery(name);
+        //noinspection ResultOfMethodCallIgnored
         interactor.getContactsByName(name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,9 +114,9 @@ public final class ContactsPresenter extends MvpPresenter<ContactsView> {
         getViewState().hideMessage();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     private void checkForDelete(List<Contact> contacts) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.deleteEmptyRows(contacts)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

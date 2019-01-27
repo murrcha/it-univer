@@ -9,11 +9,11 @@ import com.kkaysheva.ituniver.domain.ContactInfoRepository;
 import com.kkaysheva.ituniver.domain.LocationRepository;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
-import com.kkaysheva.ituniver.domain.stubs.ContactInfoRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.DirectionsServiceStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.GeoCodeServiceStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.LocationRepositoryStubImpl;
-import com.kkaysheva.ituniver.domain.stubs.MapperContactInfoToLatLngStubImpl;
+import com.kkaysheva.ituniver.stubs.repository.ContactInfoRepositoryStub;
+import com.kkaysheva.ituniver.stubs.repository.LocationRepositoryStub;
+import com.kkaysheva.ituniver.stubs.service.DirectionsServiceStub;
+import com.kkaysheva.ituniver.stubs.service.GeoCodeServiceStub;
+import com.kkaysheva.ituniver.stubs.mapper.MapperContactInfoToLatLngStub;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,11 +39,11 @@ public final class MapInteractorImplTest {
 
     @Before
     public void before() {
-        GeoCodeService stubGeoCodeService = new GeoCodeServiceStubImpl();
-        stubContactInfoRepository = new ContactInfoRepositoryStubImpl();
-        Mapper<ContactInfo, LatLng> stubMapper = new MapperContactInfoToLatLngStubImpl();
-        LocationRepository stubLocationRepository = new LocationRepositoryStubImpl();
-        GoogleDirectionsService stubDirectionsService = new DirectionsServiceStubImpl();
+        GeoCodeService stubGeoCodeService = new GeoCodeServiceStub();
+        stubContactInfoRepository = new ContactInfoRepositoryStub();
+        Mapper<ContactInfo, LatLng> stubMapper = new MapperContactInfoToLatLngStub();
+        LocationRepository stubLocationRepository = new LocationRepositoryStub();
+        GoogleDirectionsService stubDirectionsService = new DirectionsServiceStub();
         interactor = new MapInteractorImpl(
                 stubGeoCodeService,
                 stubContactInfoRepository,
@@ -60,7 +60,8 @@ public final class MapInteractorImplTest {
         interactor.getAddress(latLng).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertResult(address);
+                .assertResult(address)
+                .dispose();
     }
 
     @Test
@@ -72,7 +73,8 @@ public final class MapInteractorImplTest {
         interactor.saveAddress(contactId, latLng, address).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
     }
 
     @Test
@@ -88,13 +90,15 @@ public final class MapInteractorImplTest {
         stubContactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
         completableTestObserver
                 .assertSubscribed()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
         TestObserver<List<LatLng>> testObserver = new TestObserver<>();
         interactor.getLocations().subscribe(testObserver);
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(locations);
+                .assertResult(locations)
+                .dispose();
     }
 
     @Test
@@ -108,12 +112,14 @@ public final class MapInteractorImplTest {
         stubContactInfoRepository.insert(contactInfo).subscribe(completableTestObserver);
         completableTestObserver
                 .assertSubscribed()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
         TestObserver<LatLng> testObserver = new TestObserver<>();
         interactor.getLocationById(1).subscribe(testObserver);
         testObserver
                 .assertSubscribed()
-                .assertResult(latLng);
+                .assertResult(latLng)
+                .dispose();
     }
 
     @Test
@@ -123,7 +129,8 @@ public final class MapInteractorImplTest {
         testObserver
                 .assertSubscribed()
                 .assertNoValues()
-                .assertNoErrors();
+                .assertNoErrors()
+                .dispose();
     }
 
     @Test
@@ -133,7 +140,8 @@ public final class MapInteractorImplTest {
         testObserver
                 .assertSubscribed()
                 .assertNoErrors()
-                .assertComplete();
+                .assertComplete()
+                .dispose();
     }
 
     @Test
@@ -148,6 +156,7 @@ public final class MapInteractorImplTest {
         //noinspection unchecked
         testObserver
                 .assertSubscribed()
-                .assertResult(route);
+                .assertResult(route)
+                .dispose();
     }
 }
