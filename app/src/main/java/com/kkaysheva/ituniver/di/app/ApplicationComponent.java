@@ -2,7 +2,7 @@ package com.kkaysheva.ituniver.di.app;
 
 import android.content.Context;
 
-import com.kkaysheva.ituniver.presentation.app.ITUniverApplication;
+import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 import com.kkaysheva.ituniver.data.database.AppDatabase;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
@@ -53,5 +53,5 @@ public interface ApplicationComponent {
 
     MapComponent plusMapComponent();
 
-    void inject(ITUniverApplication ITUniverApplication);
+    void inject(UniverApplication univerApplication);
 }

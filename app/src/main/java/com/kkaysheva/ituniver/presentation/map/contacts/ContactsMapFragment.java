@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.di.map.MapComponent;
-import com.kkaysheva.ituniver.presentation.app.ITUniverApplication;
+import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
 
 import java.util.List;
@@ -63,8 +63,8 @@ public final class ContactsMapFragment extends BaseMapFragment implements Contac
 
     @Override
     public void onAttach(Context context) {
-        ITUniverApplication ITUniverApplication = (ITUniverApplication) requireActivity().getApplication();
-        MapComponent mapComponent = ITUniverApplication.getApplicationComponent()
+        UniverApplication univerApplication = (UniverApplication) requireActivity().getApplication();
+        MapComponent mapComponent = univerApplication.getApplicationComponent()
                 .plusMapComponent();
         mapComponent.inject(this);
 

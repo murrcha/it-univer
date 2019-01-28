@@ -11,12 +11,12 @@ import com.kkaysheva.ituniver.di.app.NavigationModule;
 import com.kkaysheva.ituniver.di.app.NetworkModule;
 
 /**
- * ITUniverApplication
+ * UniverApplication
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class ITUniverApplication extends Application {
+public final class UniverApplication extends Application {
 
     private ApplicationComponent applicationComponent;
 
