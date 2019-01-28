@@ -3,22 +3,22 @@ package com.kkaysheva.ituniver.presentation.app;
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import com.kkaysheva.ituniver.di.app.AppComponent;
-import com.kkaysheva.ituniver.di.app.AppModule;
-import com.kkaysheva.ituniver.di.app.DaggerAppComponent;
+import com.kkaysheva.ituniver.di.app.ApplicationComponent;
+import com.kkaysheva.ituniver.di.app.ApplicationModule;
+import com.kkaysheva.ituniver.di.app.DaggerApplicationComponent;
 import com.kkaysheva.ituniver.di.app.DatabaseModule;
 import com.kkaysheva.ituniver.di.app.NavigationModule;
 import com.kkaysheva.ituniver.di.app.NetworkModule;
 
 /**
- * AppDelegate
+ * ITUniverApplication
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class AppDelegate extends Application {
+public final class ITUniverApplication extends Application {
 
-    private AppComponent appComponent;
+    private ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
@@ -27,8 +27,8 @@ public final class AppDelegate extends Application {
     }
 
     private void initDependencies() {
-        appComponent = DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
+        applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
                 .navigationModule(new NavigationModule())
                 .databaseModule(new DatabaseModule())
                 .networkModule(new NetworkModule())
@@ -36,10 +36,10 @@ public final class AppDelegate extends Application {
     }
 
     @NonNull
-    public AppComponent getAppComponent() {
-        if (appComponent == null) {
+    public ApplicationComponent getApplicationComponent() {
+        if (applicationComponent == null) {
             initDependencies();
         }
-        return appComponent;
+        return applicationComponent;
     }
 }

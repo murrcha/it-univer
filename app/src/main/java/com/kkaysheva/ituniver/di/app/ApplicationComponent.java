@@ -2,7 +2,7 @@ package com.kkaysheva.ituniver.di.app;
 
 import android.content.Context;
 
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.ITUniverApplication;
 import com.kkaysheva.ituniver.data.database.AppDatabase;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
@@ -19,19 +19,19 @@ import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 
 /**
- * AppComponent
+ * ApplicationComponent
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
 @Singleton
 @Component(modules = {
-        AppModule.class,
+        ApplicationModule.class,
         NavigationModule.class,
         DatabaseModule.class,
         NetworkModule.class,
         MapperModule.class })
-public interface AppComponent {
+public interface ApplicationComponent {
 
     Router provideRouter();
 
@@ -53,5 +53,5 @@ public interface AppComponent {
 
     MapComponent plusMapComponent();
 
-    void inject(AppDelegate appDelegate);
+    void inject(ITUniverApplication ITUniverApplication);
 }

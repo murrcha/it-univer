@@ -30,7 +30,7 @@ import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.presentation.adapter.ContactAdapter;
 import com.kkaysheva.ituniver.presentation.adapter.ContactItemDecoration;
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.ITUniverApplication;
 import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.List;
@@ -68,8 +68,8 @@ public final class ContactsFragment extends MvpAppCompatFragment implements Cont
 
     @Override
     public void onAttach(Context context) {
-        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
-        ContactsComponent contactsComponent = appDelegate.getAppComponent()
+        ITUniverApplication ITUniverApplication = (ITUniverApplication) requireActivity().getApplication();
+        ContactsComponent contactsComponent = ITUniverApplication.getApplicationComponent()
                 .plusContactsComponent();
         contactsComponent.inject(this);
         super.onAttach(context);

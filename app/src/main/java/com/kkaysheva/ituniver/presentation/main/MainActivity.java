@@ -8,7 +8,7 @@ import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.ITUniverApplication;
 import com.kkaysheva.ituniver.di.main.MainComponent;
 import com.kkaysheva.ituniver.di.main.MainModule;
 
@@ -40,8 +40,8 @@ public final class MainActivity extends MvpAppCompatActivity implements MainView
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppDelegate appDelegate = (AppDelegate) getApplication();
-        MainComponent mainComponent = appDelegate.getAppComponent()
+        ITUniverApplication ITUniverApplication = (ITUniverApplication) getApplication();
+        MainComponent mainComponent = ITUniverApplication.getApplicationComponent()
                 .plusMainComponent(new MainModule(this, getSupportFragmentManager()));
         mainComponent.inject(this);
 
