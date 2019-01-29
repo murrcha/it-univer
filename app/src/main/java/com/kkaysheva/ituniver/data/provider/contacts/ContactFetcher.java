@@ -7,10 +7,13 @@ import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.support.annotation.NonNull;
 
+import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Single;
 
@@ -20,12 +23,18 @@ import io.reactivex.Single;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class ContactFetcher {
+public final class ContactFetcher implements ContactRepository {
 
-    private ContactFetcher() {
+    @NonNull
+    private final Context context;
+
+    @Inject
+    public ContactFetcher(@NonNull Context context) {
+        this.context = context;
     }
 
-    public static Single<List<Contact>> getContacts(@NonNull Context context) {
+    @NonNull
+    public Single<List<Contact>> getContacts() {
         return Single.fromCallable(() -> {
             List<Contact> contacts = new ArrayList<>();
             ContentResolver contentResolver = context.getContentResolver();
@@ -44,7 +53,8 @@ public final class ContactFetcher {
         });
     }
 
-    public static Single<List<Contact>> getContactsByName(@NonNull String searchName, @NonNull Context context) {
+    @NonNull
+    public Single<List<Contact>> getContactsByName(@NonNull String searchName) {
         return Single.fromCallable(() -> {
             List<Contact> contacts = new ArrayList<>();
             ContentResolver contentResolver = context.getContentResolver();
@@ -63,7 +73,8 @@ public final class ContactFetcher {
         });
     }
 
-    public static Single<Contact> getContactById(int contactId, @NonNull Context context) {
+    @NonNull
+    public Single<Contact> getContactById(int contactId) {
         return Single.fromCallable(() -> {
             Contact contact = null;
             ContentResolver contentResolver = context.getContentResolver();
@@ -88,7 +99,7 @@ public final class ContactFetcher {
         });
     }
 
-    private static List<Contact> getContactsFromCursor(Cursor cursor) {
+    private List<Contact> getContactsFromCursor(Cursor cursor) {
         List<Contact> contacts = new ArrayList<>();
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {

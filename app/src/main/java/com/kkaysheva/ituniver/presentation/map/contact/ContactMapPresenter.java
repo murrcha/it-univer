@@ -52,9 +52,9 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
         getViewState().addMarker(latLng, map);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getAddress(int contactId, LatLng latLng) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getAddress(latLng)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,9 +71,9 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getLocationById(int contactId, GoogleMap map) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getLocationById(contactId)
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribeOn(Schedulers.io())
@@ -89,9 +89,9 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     private void saveAddress(int contactId, LatLng latLng, String address) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.saveAddress(contactId, latLng, address)
                 .doOnSubscribe(compositeDisposable::add)
                 .subscribeOn(Schedulers.io())
@@ -102,9 +102,9 @@ public final class ContactMapPresenter extends MvpPresenter<ContactMapView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getDeviceLocation() {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getDeviceLocation()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

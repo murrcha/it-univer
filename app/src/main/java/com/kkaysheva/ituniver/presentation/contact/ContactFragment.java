@@ -25,7 +25,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
@@ -68,8 +68,8 @@ public final class ContactFragment extends MvpAppCompatFragment implements Conta
 
     @Override
     public void onAttach(Context context) {
-        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
-        ContactComponent contactComponent = appDelegate.getAppComponent()
+        UniverApplication univerApplication = (UniverApplication) requireActivity().getApplication();
+        ContactComponent contactComponent = univerApplication.getApplicationComponent()
                 .plusContactComponent();
         contactComponent.inject(this);
         super.onAttach(context);

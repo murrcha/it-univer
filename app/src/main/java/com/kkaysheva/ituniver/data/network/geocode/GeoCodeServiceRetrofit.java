@@ -2,6 +2,7 @@ package com.kkaysheva.ituniver.data.network.geocode;
 
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 
 import javax.inject.Inject;
@@ -34,8 +35,9 @@ public final class GeoCodeServiceRetrofit implements GeoCodeService {
 
     @NonNull
     @Override
-    public Single<String> loadGeoCode(@NonNull String latLng) {
-        return geoCodeApi.loadAddress(latLng, FORMAT)
+    public Single<String> loadGeoCode(@NonNull LatLng latLng) {
+        String latLngString = String.format("%s,%s", latLng.longitude, latLng.latitude);
+        return geoCodeApi.loadAddress(latLngString, FORMAT)
                 .map(mapper::map);
     }
 }

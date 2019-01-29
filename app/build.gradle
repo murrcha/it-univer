@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'jacoco-android'
+apply plugin: 'com.github.kt3k.coveralls'
 apply from: "$project.rootDir/tools/checkstyle.gradle"
 
 android {
@@ -25,11 +26,28 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            testCoverageEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+coveralls {
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml"
+}
+
+tasks.coveralls {
+    dependsOn 'jacocoTestDebugUnitTestReport'
+    onlyIf { System.env.'CI' }
 }
 
 dependencies {
@@ -65,8 +83,8 @@ dependencies {
     def dagger_version = "2.20"
     implementation "com.google.dagger:dagger:$dagger_version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
+    //implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    //annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
 
     // Room DB
     def room_version = "1.1.1"
@@ -84,6 +102,11 @@ dependencies {
 
     // Test
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+    testImplementation 'org.mockito:mockito-inline:2.23.4'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'org.mockito:mockito-android:2.23.4'
 }

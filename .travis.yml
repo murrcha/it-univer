@@ -22,5 +22,7 @@ notifications:
 script:
   - ./gradlew checkstyle
   - ./gradlew assembleDebug
-  - ./gradlew assembleDebugAndroidTest
+  - ./gradlew testDebugUnitTest
+  - ./gradlew jacocoTestDebugUnitTestReport coveralls
+#  - ./gradlew assembleDebugAndroidTest
 

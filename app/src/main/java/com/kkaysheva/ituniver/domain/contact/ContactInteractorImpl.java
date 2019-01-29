@@ -1,10 +1,9 @@
 package com.kkaysheva.ituniver.domain.contact;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.kkaysheva.ituniver.domain.ContactInfoRepository;
-import com.kkaysheva.ituniver.data.provider.contacts.ContactFetcher;
+import com.kkaysheva.ituniver.domain.ContactRepository;
 import com.kkaysheva.ituniver.domain.model.Contact;
 import com.kkaysheva.ituniver.domain.model.ContactInfo;
 
@@ -22,26 +21,27 @@ import io.reactivex.Single;
 public final class ContactInteractorImpl implements ContactInteractor {
 
     @NonNull
-    private final Context context;
+    private final ContactInfoRepository contactInfoRepository;
 
     @NonNull
-    private final ContactInfoRepository repository;
+    private final ContactRepository contactRepository;
 
     @Inject
-    public ContactInteractorImpl(@NonNull Context context, @NonNull ContactInfoRepository repository) {
-        this.context = context;
-        this.repository = repository;
+    public ContactInteractorImpl(@NonNull ContactInfoRepository contactInfoRepository,
+                                 @NonNull ContactRepository contactRepository) {
+        this.contactInfoRepository = contactInfoRepository;
+        this.contactRepository = contactRepository;
     }
 
     @NonNull
     @Override
     public Single<Contact> getContactById(int contactId) {
-        return ContactFetcher.getContactById(contactId, context);
+        return contactRepository.getContactById(contactId);
     }
 
     @NonNull
     @Override
     public Maybe<ContactInfo> getContactInfoById(int contactId) {
-        return repository.getById((long) contactId);
+        return contactInfoRepository.getById((long) contactId);
     }
 }

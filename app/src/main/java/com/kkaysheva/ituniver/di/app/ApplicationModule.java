@@ -10,18 +10,18 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * AppModule
+ * ApplicationModule
  *
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 12.2018
  */
 @Module
-public final class AppModule {
+public final class ApplicationModule {
 
     @NonNull
     private final Application application;
 
-    public AppModule(@NonNull Application application) {
+    public ApplicationModule(@NonNull Application application) {
         this.application = application;
     }
 

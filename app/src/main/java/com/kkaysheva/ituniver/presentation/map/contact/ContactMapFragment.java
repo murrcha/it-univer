@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.di.map.MapComponent;
-import com.kkaysheva.ituniver.presentation.app.AppDelegate;
+import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 import com.kkaysheva.ituniver.presentation.map.BaseMapFragment;
 
 import javax.inject.Inject;
@@ -56,8 +56,8 @@ public final class ContactMapFragment extends BaseMapFragment implements Contact
 
     @Override
     public void onAttach(Context context) {
-        AppDelegate appDelegate = (AppDelegate) requireActivity().getApplication();
-        MapComponent mapComponent = appDelegate.getAppComponent()
+        UniverApplication univerApplication = (UniverApplication) requireActivity().getApplication();
+        MapComponent mapComponent = univerApplication.getApplicationComponent()
                 .plusMapComponent();
         mapComponent.inject(this);
         super.onAttach(context);

@@ -43,9 +43,15 @@ public final class GoogleDirectionsServiceRetrofit implements GoogleDirectionsSe
 
     @NonNull
     @Override
-    public Single<List<LatLng>> loadDirections(@NonNull String origin, @NonNull String destination) {
+    public Single<List<LatLng>> loadDirections(@NonNull LatLng origin, @NonNull LatLng destination) {
+        String originString = String.format("%s,%s", origin.latitude, origin.longitude);
+        String destinationString = String.format("%s,%s", destination.latitude, destination.longitude);
         return googleDirectionsApi
-                .getDirections(origin, destination, TRAVEL_MODE, context.getString(R.string.directions_api_key))
+                .getDirections(
+                        originString,
+                        destinationString,
+                        TRAVEL_MODE,
+                        context.getString(R.string.directions_api_key))
                 .map(mapper::map);
     }
 }

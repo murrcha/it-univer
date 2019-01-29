@@ -5,6 +5,7 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.kkaysheva.ituniver.domain.LocationRepository;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,7 @@ import io.reactivex.Maybe;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 01.2019
  */
-public final class LocationFetcher {
+public final class LocationFetcher implements LocationRepository {
 
     @NonNull
     private final FusedLocationProviderClient client;
@@ -26,6 +27,7 @@ public final class LocationFetcher {
         this.client = client;
     }
 
+    @NonNull
     @SuppressLint({"CheckResult", "MissingPermission"})
     public Maybe<Location> getDeviceLocation() {
         return Maybe.create(

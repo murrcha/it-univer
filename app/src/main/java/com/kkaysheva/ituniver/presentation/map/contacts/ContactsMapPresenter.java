@@ -48,9 +48,9 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
         getViewState().configureMap(map);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getLocationForAll(GoogleMap map) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getLocations()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -64,9 +64,9 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getRoute(LatLng origin, LatLng destination, GoogleMap map) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getDirections(origin, destination)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -80,9 +80,9 @@ public final class ContactsMapPresenter extends MvpPresenter<ContactsMapView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void getDeviceLocation() {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getDeviceLocation()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

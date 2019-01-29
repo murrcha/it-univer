@@ -49,9 +49,9 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
         super.onDestroy();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     public void fetchContact(int contactId) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getContactById(contactId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,9 +71,10 @@ public final class ContactPresenter extends MvpPresenter<ContactView> {
                 );
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+
     @SuppressLint("CheckResult")
     public void fetchContactInfo(int contactId) {
+        //noinspection ResultOfMethodCallIgnored
         interactor.getContactInfoById(contactId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
