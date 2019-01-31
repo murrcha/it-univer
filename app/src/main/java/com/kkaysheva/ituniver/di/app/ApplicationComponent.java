@@ -2,15 +2,14 @@ package com.kkaysheva.ituniver.di.app;
 
 import android.content.Context;
 
-import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 import com.kkaysheva.ituniver.data.database.AppDatabase;
+import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsApi;
+import com.kkaysheva.ituniver.data.network.geocode.GeoCodeApi;
 import com.kkaysheva.ituniver.di.contact.ContactComponent;
 import com.kkaysheva.ituniver.di.contacts.ContactsComponent;
 import com.kkaysheva.ituniver.di.main.MainComponent;
-import com.kkaysheva.ituniver.di.main.MainModule;
 import com.kkaysheva.ituniver.di.map.MapComponent;
-import com.kkaysheva.ituniver.data.network.geocode.GeoCodeApi;
-import com.kkaysheva.ituniver.data.network.directions.GoogleDirectionsApi;
+import com.kkaysheva.ituniver.presentation.app.UniverApplication;
 
 import javax.inject.Singleton;
 
@@ -45,7 +44,7 @@ public interface ApplicationComponent {
 
     GoogleDirectionsApi provideGoogleDirections();
 
-    MainComponent plusMainComponent(MainModule mainModule);
+    MainComponent plusMainComponent();
 
     ContactsComponent plusContactsComponent();
 

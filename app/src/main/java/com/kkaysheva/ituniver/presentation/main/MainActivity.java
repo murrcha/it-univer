@@ -1,7 +1,9 @@
 package com.kkaysheva.ituniver.presentation.main;
 
-import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -9,14 +11,13 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.presentation.app.UniverApplication;
-import com.kkaysheva.ituniver.di.main.MainComponent;
-import com.kkaysheva.ituniver.di.main.MainModule;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.android.support.SupportAppNavigator;
 
 /**
  * MainActivity
@@ -30,23 +31,19 @@ public final class MainActivity extends MvpAppCompatActivity implements MainView
     NavigatorHolder navigatorHolder;
 
     @Inject
-    Navigator navigator;
-
-    @Inject
     Provider<MainPresenter> presenterProvider;
 
     @InjectPresenter
     MainPresenter presenter;
 
+    private Navigator navigator;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        UniverApplication univerApplication = (UniverApplication) getApplication();
-        MainComponent mainComponent = univerApplication.getApplicationComponent()
-                .plusMainComponent(new MainModule(this, getSupportFragmentManager()));
-        mainComponent.inject(this);
-
+        injectMainComponent();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        navigator = getNavigator(this, getSupportFragmentManager(), getContainer());
     }
 
     @Override
@@ -59,6 +56,12 @@ public final class MainActivity extends MvpAppCompatActivity implements MainView
     protected void onPause() {
         navigatorHolder.removeNavigator();
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        navigator = null;
+        super.onDestroy();
     }
 
     @Override
@@ -75,5 +78,20 @@ public final class MainActivity extends MvpAppCompatActivity implements MainView
     @ProvidePresenter
     MainPresenter providePresenter() {
         return presenterProvider.get();
+    }
+
+    private void injectMainComponent() {
+        ((UniverApplication) getApplication())
+                .getApplicationComponent()
+                .plusMainComponent()
+                .inject(this);
+    }
+
+    private int getContainer() {
+        return R.id.fragment_container;
+    }
+
+    private Navigator getNavigator(FragmentActivity activity, FragmentManager fragmentManager, int container) {
+        return new SupportAppNavigator(activity, fragmentManager, container);
     }
 }

@@ -16,7 +16,7 @@ import com.kkaysheva.ituniver.di.app.NetworkModule;
  * @author Ksenya Kaysheva (murrcha@me.com)
  * @since 11.2018
  */
-public final class UniverApplication extends Application {
+public class UniverApplication extends Application {
 
     private ApplicationComponent applicationComponent;
 
@@ -26,20 +26,20 @@ public final class UniverApplication extends Application {
         initDependencies();
     }
 
-    private void initDependencies() {
-        applicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this))
-                .navigationModule(new NavigationModule())
-                .databaseModule(new DatabaseModule())
-                .networkModule(new NetworkModule())
-                .build();
-    }
-
     @NonNull
     public ApplicationComponent getApplicationComponent() {
         if (applicationComponent == null) {
             initDependencies();
         }
         return applicationComponent;
+    }
+
+    protected void initDependencies() {
+        applicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .navigationModule(new NavigationModule())
+                .databaseModule(new DatabaseModule())
+                .networkModule(new NetworkModule())
+                .build();
     }
 }
