@@ -1,8 +1,10 @@
 package com.kkaysheva.ituniver.data.network.geocode;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.kkaysheva.ituniver.R;
 import com.kkaysheva.ituniver.domain.mapper.Mapper;
 
 import javax.inject.Inject;
@@ -19,6 +21,7 @@ import io.reactivex.Single;
 public final class GeoCodeServiceRetrofit implements GeoCodeService {
 
     private static final String FORMAT = "json";
+    private static final String LANG = "ru_RU";
 
     @NonNull
     private final GeoCodeApi geoCodeApi;
@@ -26,18 +29,26 @@ public final class GeoCodeServiceRetrofit implements GeoCodeService {
     @NonNull
     private final Mapper<GeoCodeResponse, String> mapper;
 
+    @NonNull
+    private final Context context;
+
     @Inject
     public GeoCodeServiceRetrofit(@NonNull GeoCodeApi geoCodeApi,
-                                  @NonNull Mapper<GeoCodeResponse, String> responseMapper) {
+                                  @NonNull Mapper<GeoCodeResponse, String> responseMapper,
+                                  @NonNull Context context) {
         this.geoCodeApi = geoCodeApi;
         this.mapper = responseMapper;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public Single<String> loadGeoCode(@NonNull LatLng latLng) {
         String latLngString = String.format("%s,%s", latLng.longitude, latLng.latitude);
-        return geoCodeApi.loadAddress(latLngString, FORMAT)
+        return geoCodeApi.loadAddress(LANG,
+                context.getString(R.string.geocoding_api_key),
+                latLngString,
+                FORMAT)
                 .map(mapper::map);
     }
 }

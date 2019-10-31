@@ -16,6 +16,8 @@ public interface GeoCodeApi {
 
     @GET(".")
     Single<GeoCodeResponse> loadAddress(
+            @Query("lang") String lang,
+            @Query("apikey") String apiKey,
             @Query("geocode") String latLng,
             @Query("format") String format);
 }

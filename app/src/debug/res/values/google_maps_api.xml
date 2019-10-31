@@ -14,6 +14,8 @@
     SHA-1 certificate fingerprint:
     D0:11:D8:8F:44:A8:D8:71:89:D1:28:37:D7:1E:19:6F:ED:07:9F:71
 
+    C5:7C:6A:6E:03:48:B3:B5:51:87:C7:15:02:1F:0D:F2:64:6C:5A:93
+
     Alternatively, follow the directions here:
     https://developers.google.com/maps/documentation/android/start#get-key
 
@@ -21,4 +23,6 @@
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDQLJ4TGr97PcyyoPlRlkZlpJey_kzUZjc</string>
+    <string name="directions_api_key">no key</string>
+    <string name="geocoding_api_key">no key</string>
 </resources>
