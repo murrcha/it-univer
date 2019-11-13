@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'jacoco-android'
 apply plugin: 'com.github.kt3k.coveralls'
 apply from: "$project.rootDir/tools/checkstyle.gradle"
@@ -119,5 +121,10 @@ dependencies {
     androidTestImplementation 'net.bytebuddy:byte-buddy:1.8.22'
     androidTestImplementation 'net.bytebuddy:byte-buddy-android:1.8.22'
     androidTestImplementation 'net.bytebuddy:byte-buddy-agent:1.8.22'
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//    androidTestImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
     //androidTestImplementation 'org.assertj:assertj-core:3.11.1'
+}
+repositories {
+    mavenCentral()
 }

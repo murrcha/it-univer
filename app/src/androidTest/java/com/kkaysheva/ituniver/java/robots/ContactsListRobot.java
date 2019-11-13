@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver.robots;
+package com.kkaysheva.ituniver.java.robots;
 
 import android.support.test.espresso.contrib.RecyclerViewActions;
 
@@ -13,13 +13,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasMinimumChild
 import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.kkaysheva.ituniver.robots.IdsResources.CONTACTS_MAP_BUTTON_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.ITEM_VIEW_NAME_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.NO_CONTACTS_TEXT_VIEW_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.RECYCLER_VIEW_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.SEARCH_BUTTON_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.SEARCH_CLOSE_BUTTON_ID;
-import static com.kkaysheva.ituniver.robots.IdsResources.SEARCH_TEXT_FIELD_ID;
+import static com.kkaysheva.ituniver.IdsResources.CONTACTS_MAP_BUTTON_ID;
+import static com.kkaysheva.ituniver.IdsResources.ITEM_VIEW_NAME_ID;
+import static com.kkaysheva.ituniver.IdsResources.NO_CONTACTS_TEXT_VIEW_ID;
+import static com.kkaysheva.ituniver.IdsResources.RECYCLER_VIEW_ID;
+import static com.kkaysheva.ituniver.IdsResources.SEARCH_BUTTON_ID;
+import static com.kkaysheva.ituniver.IdsResources.SEARCH_CLOSE_BUTTON_ID;
+import static com.kkaysheva.ituniver.IdsResources.SEARCH_TEXT_FIELD_ID;
 
 public class ContactsListRobot {
 

@@ -1,4 +1,4 @@
-package com.kkaysheva.ituniver;
+package com.kkaysheva.ituniver.java;
 
 import android.content.OperationApplicationException;
 import android.os.RemoteException;
@@ -7,11 +7,12 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.rule.GrantPermissionRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.kkaysheva.ituniver.ContactsHelper;
+import com.kkaysheva.ituniver.java.robots.ContactRobot;
+import com.kkaysheva.ituniver.java.robots.ContactsListRobot;
 import com.kkaysheva.ituniver.presentation.main.MainActivity;
-import com.kkaysheva.ituniver.robots.ContactsListRobot;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -24,7 +25,7 @@ import static android.Manifest.permission.WRITE_CONTACTS;
 
 @SuppressWarnings("squid:S2699")
 @RunWith(AndroidJUnit4.class)
-public class ContactsListTest {
+public class ContactTest {
 
     @ClassRule
     public static GrantPermissionRule permissionRule =
@@ -33,21 +34,18 @@ public class ContactsListTest {
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
-    private ContactsListRobot robot;
+    private ContactRobot robot;
 
     @BeforeClass
     public static void setData() throws OperationApplicationException, RemoteException {
-        ContactsHelper.fill(InstrumentationRegistry.getContext());
-    }
-
-    @AfterClass
-    public static void removeData() {
         ContactsHelper.clear(InstrumentationRegistry.getContext());
+        ContactsHelper.fill(InstrumentationRegistry.getContext());
     }
 
     @Before
     public void setUp() {
-        robot = new ContactsListRobot();
+        robot = new ContactsListRobot()
+                .navigateToContact("Alex Fetcher");
     }
 
     @After
@@ -56,41 +54,19 @@ public class ContactsListTest {
     }
 
     @Test
-    public void testContactsDisplayed() {
-        robot.contactsListDisplayed();
+    public void testContactDetailDisplayed() {
+        robot.contactDetailDisplayed();
     }
 
     @Test
-    public void testContactsNotDisplayed() {
-        robot.searchByText("any text")
-                .noContactsTextDisplayed()
-                .contactsListNotDisplayed();
-    }
-
-    @Test
-    public void testSearchContact() {
-        robot.searchByText("Alex Fetcher")
-                .contactsListDisplayed()
-                .contactDisplayed("Alex Fetcher");
-    }
-
-    @Test
-    public void testRemoveSearchText() {
-        robot.searchByText("abcdef")
-                .contactsListNotDisplayed()
-                .removeSearchText()
+    public void testBackToContactsList() {
+        robot.navigateBack()
                 .contactsListDisplayed();
-    }
-
-    @Test
-    public void testNavigateToContact() {
-        robot.navigateToContact("Alex Fetcher")
-                .contactDetailDisplayed();
     }
 
     @Test
     public void testNavigateToMap() {
         robot.navigateToMap()
-                .contactsMapDisplayed();
+                .contactMapDisplayed();
     }
 }

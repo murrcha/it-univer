@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
-class ContactsHelper {
+public class ContactsHelper {
 
     private static final String FAKE_NUMBER = "0987654321011";
 
@@ -20,7 +20,7 @@ class ContactsHelper {
         throw new IllegalAccessException();
     }
 
-    static void fill(@NonNull Context context) throws OperationApplicationException, RemoteException {
+    public static void fill(@NonNull Context context) throws OperationApplicationException, RemoteException {
         ArrayList<ContentProviderOperation> batch = new ArrayList<>();
         batch.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
                 .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
@@ -47,7 +47,7 @@ class ContactsHelper {
         context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, batch);
     }
 
-    static void clear(@NonNull Context context) {
+    public static void clear(@NonNull Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         try (Cursor cursor = contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
